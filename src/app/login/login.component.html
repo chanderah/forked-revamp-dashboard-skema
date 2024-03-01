@@ -1,0 +1,33 @@
+<div class="login flex justify-content-center align-items-center">
+  <p-card [style]="{ width: '420px' }">
+    <div class="text-center flex flex-column gap-4">
+      <h5>Welcome to,</h5>
+      <h3>Conventional Media Dashboard</h3>
+      <h5>News - Information - Insight</h5>
+    </div>
+    <form class="mt-6 flex flex-column gap-4">
+      <div class="flex flex-column gap-2">
+        <label for="username">Username</label>
+        <input pInputText id="username" />
+      </div>
+      <div class="flex flex-column gap-2">
+        <label for="password">Password</label>
+        <input pInputText id="password" />
+      </div>
+      <div class="flex justify-content-between">
+        <div class="flex align-items-center gap-1">
+          <p-checkbox
+            formControlName="city"
+            value="New York"
+            inputId="ny"
+          ></p-checkbox>
+          <label for="ny">New York</label>
+        </div>
+        <div>Forgot Password?</div>
+      </div>
+    </form>
+    <ng-template pTemplate="footer">
+      <p-button label="Sign in" class="w-full"></p-button>
+    </ng-template>
+  </p-card>
+</div>
