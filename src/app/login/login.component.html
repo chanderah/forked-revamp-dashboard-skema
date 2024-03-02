@@ -1,33 +1,45 @@
 <div class="login flex justify-content-center align-items-center">
-  <p-card [style]="{ width: '420px' }">
+  <p-card class="card">
+    <div class="flex align-items-center justify-content-center mb-6 mr-2">
+      <img class="w-10rem" alt="Skema Logo" src="../../assets/skema-logo.png" />
+    </div>
     <div class="text-center flex flex-column gap-4">
-      <h5>Welcome to,</h5>
+      <h6>Welcome to,</h6>
       <h3>Conventional Media Dashboard</h3>
-      <h5>News - Information - Insight</h5>
+      <h6>News - Information - Insight</h6>
     </div>
     <form class="mt-6 flex flex-column gap-4">
       <div class="flex flex-column gap-2">
-        <label for="username">Username</label>
-        <input pInputText id="username" />
+        <label for="username" class="font-bold">Username</label>
+        <span class="p-input-icon-right">
+          <i class="pi pi-user"></i>
+          <input pInputText id="username" class="w-full" />
+        </span>
       </div>
       <div class="flex flex-column gap-2">
-        <label for="password">Password</label>
-        <input pInputText id="password" />
+        <label for="password" class="font-bold">Password</label>
+        <p-password
+          id="password"
+          [toggleMask]="true"
+          styleClass="w-full"
+          inputStyleClass="w-full"
+        />
       </div>
-      <div class="flex justify-content-between">
+      <div class="flex justify-content-between align-items-center">
         <div class="flex align-items-center gap-1">
           <p-checkbox
             formControlName="city"
             value="New York"
             inputId="ny"
           ></p-checkbox>
-          <label for="ny">New York</label>
+          <label for="ny">Remember me</label>
         </div>
-        <div>Forgot Password?</div>
+        <p>Forgot Password?</p>
       </div>
+      <p-button label="Sign in" styleClass="submit-btn"></p-button>
     </form>
-    <ng-template pTemplate="footer">
-      <p-button label="Sign in" class="w-full"></p-button>
-    </ng-template>
+    <ng-template pTemplate="footer"
+      ><p class="text-center">copyright © conventional media</p></ng-template
+    >
   </p-card>
 </div>

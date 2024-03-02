@@ -1,3 +1,25 @@
 .login {
   height: 100vh;
+  background: linear-gradient(0deg, #f5f8fa, #f5f8fa),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.8) 0%,
+      rgba(255, 255, 255, 0.4) 7.81%
+    );
+}
+
+:host {
+  ::ng-deep .submit-btn {
+    width: 100%;
+  }
+
+  ::ng-deep .p-card {
+    width: 455px;
+    border-radius: 20px;
+    background: linear-gradient(
+      180deg,
+      #ffffff -25.03%,
+      rgba(255, 255, 255, 0) 111.79%
+    );
+  }
 }

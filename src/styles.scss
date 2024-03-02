@@ -1,6 +1,8 @@
-/* You can add global styles to this file, and also import other style files */
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
 @import "primeicons/primeicons.css";
 
+// RESET
 *,
 *::before,
 *::after {
@@ -9,4 +11,33 @@
 
 * {
   margin: 0;
+}
+
+
+// DEFAULT TYPOGRAPHY
+h1 {
+  font-size: 46px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 22px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6,
+label,
+p,
+button {
+  font-size: 12px;
+}
+
+// DEFAULT BUTTON
+.p-button {
+  background-color: #1999DC;
 }
