@@ -36,7 +36,7 @@
         </div>
         <p>Forgot Password?</p>
       </div>
-      <p-button label="Sign in" styleClass="submit-btn"></p-button>
+      <p-button label="Sign in" styleClass="submit-btn" (onClick)="login(username, password)"></p-button>
     </form>
     <ng-template pTemplate="footer"
       ><p class="text-center">copyright © conventional media</p></ng-template
