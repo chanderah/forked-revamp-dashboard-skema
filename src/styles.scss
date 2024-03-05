@@ -2,19 +2,32 @@
 @import "primeng/resources/primeng.css";
 @import "primeicons/primeicons.css";
 
-// RESET
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+@layer reset, primeng;
+
+@layer reset {
+  // RESET
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+  }
 }
 
-* {
+// DEFAULT TYPOGRAPHY
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
 }
 
-
-// DEFAULT TYPOGRAPHY
 h1 {
   font-size: 46px;
 }
@@ -39,5 +52,5 @@ button {
 
 // DEFAULT BUTTON
 .p-button {
-  background-color: #1999DC;
+  background-color: #1999dc;
 }

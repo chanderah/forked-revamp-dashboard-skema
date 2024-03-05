@@ -1,4 +1,5 @@
 <div class="login flex justify-content-center align-items-center">
+  <p-toast></p-toast>
   <p-card class="card">
     <div class="flex align-items-center justify-content-center mb-6 mr-2">
       <img class="w-10rem" alt="Skema Logo" src="../../assets/skema-logo.png" />
@@ -8,35 +9,47 @@
       <h3>Conventional Media Dashboard</h3>
       <h6>News - Information - Insight</h6>
     </div>
-    <form class="mt-6 flex flex-column gap-4">
+    <form
+      [formGroup]="loginForm"
+      (submit)="login()"
+      class="mt-6 flex flex-column gap-3"
+    >
       <div class="flex flex-column gap-2">
         <label for="username" class="font-bold">Username</label>
         <span class="p-input-icon-right">
           <i class="pi pi-user"></i>
-          <input pInputText id="username" class="w-full" />
+          <input
+            pInputText
+            formControlName="username"
+            id="username"
+            class="w-full"
+          />
         </span>
       </div>
       <div class="flex flex-column gap-2">
         <label for="password" class="font-bold">Password</label>
         <p-password
           id="password"
+          formControlName="password"
           [toggleMask]="true"
+          [feedback]="false"
           styleClass="w-full"
           inputStyleClass="w-full"
         />
       </div>
       <div class="flex justify-content-between align-items-center">
         <div class="flex align-items-center gap-1">
-          <p-checkbox
-            formControlName="city"
-            value="New York"
-            inputId="ny"
-          ></p-checkbox>
+          <p-checkbox value="New York" inputId="ny"></p-checkbox>
           <label for="ny">Remember me</label>
         </div>
         <p>Forgot Password?</p>
       </div>
-      <p-button label="Sign in" styleClass="submit-btn" (onClick)="login(username, password)"></p-button>
+      <p-button
+        label="Sign in"
+        styleClass="submit-btn"
+        type="submit"
+        [disabled]="!loginForm.valid"
+      ></p-button>
     </form>
     <ng-template pTemplate="footer"
       ><p class="text-center">copyright © conventional media</p></ng-template

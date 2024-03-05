@@ -1,8 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Observable } from 'rxjs';
-import { AuthState } from './store/auth/auth.reducer';
-import { Store,select } from '@ngrx/store';
 
 @Component({
   selector: 'app-root',
@@ -11,15 +8,4 @@ import { Store,select } from '@ngrx/store';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent implements OnInit {
-  auth$: Observable<AuthState>;
-
-  constructor(private store: Store<AuthState>) {
-    console.log(store)
-    this.auth$ = store.pipe(select((state) => state))
-  }
-
-  ngOnInit(): void {
-    console.log(this.auth$)
-  }
-}
+export class AppComponent {}
