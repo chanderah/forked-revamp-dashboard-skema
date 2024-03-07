@@ -1,0 +1,18 @@
+:host {
+  ::ng-deep .p-toolbar {
+    padding: 4px 30px 4px 30px;
+    border: 0;
+    border-radius: 0;
+    background-color: white;
+  }
+
+  ::ng-deep .p-menuitem-link {
+    border-color: white;
+  }
+
+  ::ng-deep .p-tabmenuitem.p-highlight .p-menuitem-link,
+  ::ng-deep .p-tabmenuitem.p-highlight .p-menuitem-icon,
+  ::ng-deep .p-tabmenuitem.p-highlight .p-menuitem-text {
+    border-color: #1999dc;
+  }
+}
