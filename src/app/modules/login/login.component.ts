@@ -60,7 +60,6 @@ export class LoginComponent implements OnInit {
         this.router.navigateByUrl('/');
       }
 
-      console.log(state);
       if (state.error) {
         this.messageService.add({
           severity: 'error',

@@ -1,19 +1,20 @@
 import { Routes, mapToCanActivate } from '@angular/router';
-import { LoginComponent } from './modules/login/login.component';
 import { AuthGuardService } from './core/guards/auth-guard.service';
-import { DashboardComponent } from './modules/dashboard/dashboard.component';
+import { DashboardRoutes } from './modules/dashboard/dashboard.routes';
 
 export const routes: Routes = [
   {
-    path: 'login',
-    title: 'Login',
-    component: LoginComponent,
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'dashboard'
   },
   {
-    path: '',
-    title: 'Overview',
-    pathMatch: 'full',
-    component: DashboardComponent,
+    path: 'dashboard',
+    children: DashboardRoutes,
     canActivate: mapToCanActivate([AuthGuardService]),
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./modules/login/login.component').then(module => module.LoginComponent),
   },
 ];
