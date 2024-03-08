@@ -1,0 +1,11 @@
+:host {
+  ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    background: white;
+    padding: 0;
+    border: 0;
+  }
+
+  ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+    padding: 0;
+  }
+}

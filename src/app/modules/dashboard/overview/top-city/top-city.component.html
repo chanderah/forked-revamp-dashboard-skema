@@ -1,0 +1,37 @@
+<section>
+  <div class="flex align-items-center gap-2 mb-4">
+    <i class="pi pi-car text-primary"></i>
+    <h5>Top Kota</h5>
+    <i class="pi pi-info-circle"></i>
+  </div>
+  <div class="mb-4">
+    <p-table [value]="cities" [scrollable]="true" scrollHeight="300px">
+      <ng-template pTemplate="header">
+        <tr class="bg-white">
+          <th><p>City</p></th>
+          <th class="text-right"><p>Total Article: 20</p></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-city>
+        <tr>
+          <td>
+            <p>{{ city.name }}</p>
+          </td>
+          <td class="text-right">
+            <p>{{ city.count }}</p>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+  <div class="bg-gray-100">
+    <angular-d3-cloud
+      [data]="data"
+      [width]="500"
+      [height]="200"
+      font="serif"
+      [rotate]="0"
+      [autoFill]="true"
+    ></angular-d3-cloud>
+  </div>
+</section>

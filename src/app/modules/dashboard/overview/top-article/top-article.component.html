@@ -1,0 +1,58 @@
+<section>
+  <div class="flex justify-content-between">
+    <div class="flex align-items-center gap-2 mb-4">
+      <i class="pi pi-file text-primary"></i>
+      <h5>Top Artikel</h5>
+      <i class="pi pi-info-circle"></i>
+    </div>
+    <div class="flex gap-2">
+      <h6>Selengkapnya</h6>
+      <i class="pi pi-arrow-right text-primary"></i>
+    </div>
+  </div>
+  <p-scroller
+    [items]="products"
+    [itemSize]="products.length"
+    scrollHeight="524px"
+  >
+    <ng-template pTemplate="item" let-item let-options="options">
+      <div class="grid grid-nogutter">
+        <div class="col-12">
+          <div
+            class="flex flex-column xl:flex-row xl:align-items-start py-3 gap-4"
+            [ngClass]="{ 'border-top-1 surface-border': !options.first }"
+          >
+            <img
+              class="w-5rem sm:w-5rem xl:w-5rem block xl:block mx-auto"
+              src="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+              [alt]="item.name"
+            />
+            <div
+              class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1"
+            >
+              <div class="flex flex-column">
+                <h5>{{ item.name }}</h5>
+                <p
+                  class="white-space-nowrap overflow-hidden text-overflow-ellipsis p-0 mt-2"
+                  style="width: 400px"
+                >
+                  {{ item.category }}
+                </p>
+                <div class="flex gap-3 align-items-center">
+                  <div class="flex align-items-center gap-2">
+                    <i class="pi pi-clock text-500 text-xs"></i>
+                    <span class="text-xs text-500 p-0 mt-0">Okezone</span>
+                  </div>
+                  <div class="flex align-items-center gap-2">
+                    <i class="pi pi-clock text-500 text-xs"></i>
+                    <span class="text-xs text-500 p-0 mt-0">Apr 14, 2021</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-scroller>
+</section>
