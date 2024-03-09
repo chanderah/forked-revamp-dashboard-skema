@@ -4,8 +4,9 @@ import { routes } from './app.routes';
 import { provideStore } from '@ngrx/store';
 import { reducers, effects } from './core/store';
 import { provideEffects } from '@ngrx/effects';
-import { provideHttpClient } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './core/interceptors/jwt.interceptors';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +14,6 @@ export const appConfig: ApplicationConfig = {
     provideStore(reducers),
     provideEffects(effects),
     provideAnimations(),
-    provideHttpClient()
+    provideHttpClient(withInterceptors([authInterceptor])),
   ],
 };

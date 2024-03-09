@@ -1,6 +1,6 @@
 import { User } from '../../core/models/user.model';
 
-const USER_KEY = 'token';
+const USER_KEY = 'user';
 
 export const getUserFromLocalStorage = (): User | null => {
   const user = window.localStorage.getItem(USER_KEY);

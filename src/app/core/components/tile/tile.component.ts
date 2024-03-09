@@ -15,7 +15,7 @@ import { IconNewspaperComponent } from '../icons/newspaper/newspaper.component';
 })
 export class TileComponent {
   @Input() title!: string;
-  @Input() content!: string;
+  @Input() content!: string | number;
   @Input() icon!: string;
   @Input() bgColor!: string;
   @Input() color!: string;

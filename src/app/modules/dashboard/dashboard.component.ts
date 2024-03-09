@@ -19,6 +19,8 @@ import { IconChartComponent } from '../../core/components/icons/chart/chart.comp
 import { IconNotesComponent } from '../../core/components/icons/notes/notes.component';
 import { IconPeopleComponent } from '../../core/components/icons/people/people.component';
 import { IconPreferenceComponent } from '../../core/components/icons/preference/preference.component';
+import { User } from '../../core/models/user.model';
+import { getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
 
 @Component({
   selector: 'app-dashboard',
@@ -53,6 +55,8 @@ export class DashboardComponent implements OnInit {
   navItems: MenuItem[] | undefined;
   navActiveItem: string | undefined;
   breadCrumbsItems: MenuItem[] | undefined;
+
+  user: User | null = getUserFromLocalStorage();
 
   ngOnInit() {
     const currentLocation = window.location.href.split('/').pop();

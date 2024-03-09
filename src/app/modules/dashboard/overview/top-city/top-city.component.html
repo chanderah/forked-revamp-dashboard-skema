@@ -9,16 +9,18 @@
       <ng-template pTemplate="header">
         <tr class="bg-white">
           <th class="font-semibold"><p>City</p></th>
-          <th class="text-right"><p>Total Article: 20</p></th>
+          <th class="text-right">
+            <p>Total Article: {{ totalArticles }}</p>
+          </th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-city>
         <tr>
           <td>
-            <p>{{ city.name }}</p>
+            <p>{{ city.key }}</p>
           </td>
           <td class="text-right">
-            <p>{{ city.count }}</p>
+            <p>{{ city.value }}</p>
           </td>
         </tr>
       </ng-template>
@@ -26,12 +28,13 @@
   </div>
   <div class="bg-gray-100">
     <angular-d3-cloud
-      [data]="data"
-      [width]="500"
+      [data]="wordCloud"
+      [width]="520"
       [height]="200"
       font="serif"
       [rotate]="0"
       [autoFill]="true"
+      [fontSizeMapper]="wordCloudFontSizeMapper"
     ></angular-d3-cloud>
   </div>
 </section>
