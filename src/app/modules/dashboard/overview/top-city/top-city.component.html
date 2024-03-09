@@ -1,14 +1,14 @@
 <section>
   <div class="flex align-items-center gap-2 mb-4">
-    <i class="pi pi-car text-primary"></i>
-    <h5>Top Kota</h5>
-    <i class="pi pi-info-circle"></i>
+    <icon-car fill="var(--primary-color)"></icon-car>
+    <div class="text-sm font-semibold">Top Kota</div>
+    <icon-info></icon-info>
   </div>
   <div class="mb-4">
     <p-table [value]="cities" [scrollable]="true" scrollHeight="300px">
       <ng-template pTemplate="header">
         <tr class="bg-white">
-          <th><p>City</p></th>
+          <th class="font-semibold"><p>City</p></th>
           <th class="text-right"><p>Total Article: 20</p></th>
         </tr>
       </ng-template>

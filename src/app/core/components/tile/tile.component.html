@@ -1,4 +1,7 @@
-<p-card [style]="{ width: '260px', position: 'relative' }">
+<p-card
+  styleClass="relative shadow-none border-1 border-200"
+  [style]="{ width: '260px' }"
+>
   <div class="flex p-4">
     <div class="flex gap-3">
       <div
@@ -9,7 +12,9 @@
           background: bgColor,
         }"
       >
-        <i [class]="icon" [style]="{color}"></i>
+        <icon-globe *ngIf="icon === 'globe'" [fill]="color"></icon-globe>
+        <icon-newspaper *ngIf="icon === 'newspaper'" [fill]="color"></icon-newspaper>
+        <icon-screen *ngIf="icon === 'screen'" [fill]="color"></icon-screen>
       </div>
       <div>
         <p class="m-0">{{ title }}</p>

@@ -2,11 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
+import { IconGlobeComponent } from '../../../../core/components/icons/globe/globe.component';
+import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 
 @Component({
   selector: 'app-top-media',
   standalone: true,
-  imports: [ChartModule, CardModule, ButtonModule],
+  imports: [ChartModule, CardModule, ButtonModule, IconGlobeComponent, IconInfoComponent],
   templateUrl: './top-media.component.html',
   styleUrl: './top-media.component.scss',
 })

@@ -1,13 +1,18 @@
 <section>
   <div class="flex justify-content-between">
-    <div class="flex align-items-center gap-2 mb-4">
-      <i class="pi pi-file text-primary"></i>
-      <h5>Top Artikel</h5>
-      <i class="pi pi-info-circle"></i>
+    <div class="flex align-items-start gap-2 mb-4">
+      <icon-newspaper fill="var(--primary-color)"></icon-newspaper>
+      <div class="text-sm font-semibold">Top Artikel</div>
+      <icon-info></icon-info>
     </div>
-    <div class="flex gap-2">
-      <h6>Selengkapnya</h6>
-      <i class="pi pi-arrow-right text-primary"></i>
+    <div>
+      <a
+        routerLink=""
+        class="flex align-items-center gap-2 no-underline text-color"
+      >
+        <div class="text-sm font-normal underline">Selengkapnya</div>
+        <i class="pi pi-arrow-right text-primary"></i>
+      </a>
     </div>
   </div>
   <p-scroller

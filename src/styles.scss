@@ -76,3 +76,23 @@ button {
 .fill-primary {
   fill: var(--primary-color) !important;
 }
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #F1F4FA;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--text-color-secondary);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-color);
+}

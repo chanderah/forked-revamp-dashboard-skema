@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { AngularD3CloudModule } from 'angular-d3-cloud';
+import { IconCarComponent } from '../../../../core/components/icons/car/car.component';
+import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 
 @Component({
   selector: 'app-top-city',
   standalone: true,
-  imports: [TableModule, AngularD3CloudModule],
+  imports: [TableModule, AngularD3CloudModule, IconCarComponent, IconInfoComponent],
   templateUrl: './top-city.component.html',
   styleUrl: './top-city.component.scss',
 })
