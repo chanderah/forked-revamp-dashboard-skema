@@ -1,6 +1,7 @@
-@import "primeng/resources/themes/lara-light-blue/theme.css";
 @import "primeng/resources/primeng.css";
 @import "primeicons/primeicons.css";
+@import "./primeng-themes.scss";
+@import "./primeflex-themes.scss";
 
 @layer reset, primeng;
 
@@ -50,15 +51,6 @@ button {
   font-size: 12px;
 }
 
-// DEFAULT BUTTON
-.p-button {
-  background-color: #1999dc;
-}
-
-.p-button-secondary {
-  background-color: #000000;
-}
-
 .container {
   padding-right: 15px;
   padding-left: 15px;
@@ -79,4 +71,8 @@ button {
   .container {
     width: 1400px;
   }
+}
+
+.fill-primary {
+  fill: var(--primary-color) !important;
 }

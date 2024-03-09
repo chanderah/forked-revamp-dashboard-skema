@@ -1,42 +1,46 @@
-<div class="flex flex-column gap-3">
-  <span class="p-float-label">
+<div class="flex flex-column gap-2">
+  <span class="select-container">
     <p-dropdown
       optionLabel="name"
-      [showClear]="true"
-      placeholder="Select a City"
-      inputId="float-label"
+      [options]="options"
+      placeholder="Yesterday"
+      inputId="periodic"
     ></p-dropdown>
-    <label for="float-label">Select a City</label>
+    <label for="periodic">Periodic</label>
   </span>
-  <span class="p-float-label">
+  <span class="select-container">
     <p-dropdown
       optionLabel="name"
-      [showClear]="true"
-      placeholder="Select a City"
-      inputId="float-label"
+      [options]="options"
+      placeholder="All Category"
+      inputId="category"
     ></p-dropdown>
-    <label for="float-label">Select a City</label>
+    <label for="category">Category</label>
   </span>
-  <span class="p-float-label">
+  <span class="select-container">
     <p-dropdown
       optionLabel="name"
-      [showClear]="true"
-      placeholder="Select a City"
-      inputId="float-label"
+      [options]="options"
+      placeholder="All Sub Category"
+      inputId="subcategory"
     ></p-dropdown>
-    <label for="float-label">Select a City</label>
+    <label for="subcategory">Sub Category</label>
   </span>
-  <span class="p-float-label">
+  <span class="select-container">
     <p-dropdown
       optionLabel="name"
-      [showClear]="true"
-      placeholder="Select a City"
-      inputId="float-label"
+      [options]="options"
+      placeholder="All Media"
+      inputId="media"
     ></p-dropdown>
-    <label for="float-label">Select a City</label>
+    <label for="media">Media</label>
   </span>
-  <div class="flex gap-3">
-    <p-button label="Set Filter" type="submit"></p-button>
-    <p-button label="Custom" type="submit" severity="secondary"></p-button>
+  <div class="grid">
+    <div class="col-6">
+      <p-button label="Set Filter" type="submit"></p-button>
+    </div>
+    <div class="col-6">
+      <p-button label="Custom" type="submit" severity="secondary"></p-button>
+    </div>
   </div>
 </div>
