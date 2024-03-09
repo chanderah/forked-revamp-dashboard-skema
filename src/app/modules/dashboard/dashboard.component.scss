@@ -13,7 +13,7 @@
   ::ng-deep .nav .p-menuitem-link {
     border-color: white;
     padding: 12px 0;
-    margin: 0 28px;
+    margin: 0 20px;
   }
 
   ::ng-deep .nav .p-tabmenuitem.p-highlight .p-menuitem-link {
@@ -27,8 +27,8 @@
     color: var(--primary-color);
   }
 
-  ::ng-deep .nav .logo-divider .p-divider-vertical {
-    padding: 5px 0;
+  ::ng-deep .logo-divider .p-divider-vertical {
+    padding: 0;
     margin-left: 8px;
     margin-right: 10px;
     &::before {

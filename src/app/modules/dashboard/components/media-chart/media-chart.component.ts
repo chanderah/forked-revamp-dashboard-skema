@@ -1,46 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
-import { IconGlobeComponent } from '../../../../core/components/icons/globe/globe.component';
-import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { MediaChartComponent } from '../../components/media-chart/media-chart.component';
 
 @Component({
-  selector: 'app-top-media',
+  selector: 'app-media-chart',
   standalone: true,
-  imports: [
-    ChartModule,
-    CardModule,
-    ButtonModule,
-    IconGlobeComponent,
-    IconInfoComponent,
-    MediaChartComponent
-  ],
-  templateUrl: './top-media.component.html',
-  styleUrl: './top-media.component.scss',
+  imports: [ButtonModule, ChartModule, CardModule],
+  templateUrl: './media-chart.component.html',
+  styleUrl: './media-chart.component.scss',
 })
-export class TopMediaComponent implements OnInit {
-  data: any;
+export class MediaChartComponent {
+  @Input() data!: any[];
+  @Input() title!: string;
+
   options: any;
   plugins = [ChartDataLabels];
 
   ngOnInit() {
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
-
-    this.data = {
-      datasets: [
-        {
-          data: [50, 20, 10],
-          datalabels: {
-            anchor: 'end',
-          },
-          backgroundColor: ['#fb3b52', '#05B9BF', '#1B81E2'],
-        },
-      ],
-    };
 
     this.options = {
       cutout: '75%',
