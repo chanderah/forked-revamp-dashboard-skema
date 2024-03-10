@@ -4,12 +4,14 @@ import { MediaCount } from '../../models/media-count.model';
 import { AllCount } from '../../models/all-count.model';
 import { WordCloud } from '../../models/wordcloud.model';
 import { ToneByMedia } from '../../models/tone-by-media.model';
+import { Article } from '../../models/article.model';
 
 export interface OverviewState {
   mediaCount: { data: MediaCount[]; error: string | null };
   allCount: { data: AllCount | null; error: string | null };
   wordCloud: { data: WordCloud[]; error: string | null };
   toneByMedia: { data: ToneByMedia[]; error: string | null };
+  highlights: { data: Article[]; error: string | null };
 }
 
 export const initialState: OverviewState = {
@@ -17,6 +19,7 @@ export const initialState: OverviewState = {
   allCount: { data: null, error: null },
   wordCloud: { data: [], error: null },
   toneByMedia: { data: [], error: null },
+  highlights: { data: [], error: null },
 };
 
 export const overviewReducer = createReducer(
@@ -52,5 +55,13 @@ export const overviewReducer = createReducer(
   on(OverviewActions.getToneByMediaError, (state, { error }) => ({
     ...state,
     toneByMedia: { data: [], error },
+  })),
+  on(OverviewActions.getHighlightsSuccess, (state, { data }) => ({
+    ...state,
+    highlights: { data, error: null },
+  })),
+  on(OverviewActions.getHighlightsError, (state, { error }) => ({
+    ...state,
+    highlights: { data: [], error },
   }))
 );

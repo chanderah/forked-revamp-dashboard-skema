@@ -12,7 +12,6 @@ import { CommonModule } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FilterComponent } from './components/filter/filter.component';
-import { BadgeModule } from 'primeng/badge';
 import { IconHomeComponent } from '../../core/components/icons/home/home.component';
 import { IconCableComponent } from '../../core/components/icons/cable/cable.component';
 import { IconChartComponent } from '../../core/components/icons/chart/chart.component';
@@ -40,7 +39,6 @@ import { getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
     FilterComponent,
     RouterOutlet,
     RouterLink,
-    BadgeModule,
     IconHomeComponent,
     IconCableComponent,
     IconChartComponent,

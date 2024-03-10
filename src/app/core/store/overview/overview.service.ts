@@ -5,6 +5,7 @@ import { MediaCount } from '../../models/media-count.model';
 import { AllCount } from '../../models/all-count.model';
 import { WordCloudResponse } from '../../models/wordcloud.model';
 import { ToneByMediaResponse } from '../../models/tone-by-media.model';
+import { HighlightsResponse } from '../../models/highlights.model copy';
 
 @Injectable({
   providedIn: 'root',
@@ -68,7 +69,21 @@ export class OverviewService {
         start_date: '2024-03-08',
         end_date: '2024-03-09',
         date_type: 'yesterday',
-        total_word: 40,
+      }
+    );
+  }
+
+  getHighlights(): Observable<HighlightsResponse> {
+    return this.http.post<HighlightsResponse>(
+      `${this.baseUrl}/v1/dashboard/high-lights`,
+      {
+        category_set: 0,
+        category_id: 'all',
+        user_media_type_id: 0,
+        media_id: '0',
+        start_date: '2024-03-08',
+        end_date: '2024-03-09',
+        date_type: 'yesterday',
       }
     );
   }

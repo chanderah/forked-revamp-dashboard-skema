@@ -3,6 +3,7 @@ import { MediaCount } from '../../models/media-count.model';
 import { AllCount } from '../../models/all-count.model';
 import { WordCloud } from '../../models/wordcloud.model';
 import { ToneByMedia } from '../../models/tone-by-media.model';
+import { Article } from '../../models/article.model';
 
 export const getMediaCount = createAction('[Overview] Get Media Count');
 export const getMediaCountSuccess = createAction(
@@ -41,5 +42,15 @@ export const getToneByMediaSuccess = createAction(
 );
 export const getToneByMediaError = createAction(
   '[Overview] Get Tone By Media Failure',
+  props<{ error: string }>()
+);
+
+export const getHighlights = createAction('[Overview] Get Highlights');
+export const getHighlightsSuccess = createAction(
+  '[Overview] Get Highlights Success',
+  props<{ data: Article[] }>()
+);
+export const getHighlightsError = createAction(
+  '[Overview] Get Highlights Failure',
   props<{ error: string }>()
 );

@@ -5,6 +5,13 @@ import { ScrollerModule } from 'primeng/scroller';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import { IconNewspaperComponent } from '../../../../core/components/icons/newspaper/newspaper.component';
 import { RouterLink } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { AppState } from '../../../../core/store';
+import { OverviewState } from '../../../../core/store/overview/overview.reducer';
+import { selectOverviewState } from '../../../../core/store/overview/overview.selectors';
+import { Article } from '../../../../core/models/article.model';
+import { getHighlights } from '../../../../core/store/overview/overview.actions';
 
 @Component({
   selector: 'app-top-article',
@@ -21,36 +28,18 @@ import { RouterLink } from '@angular/router';
   styleUrl: './top-article.component.scss',
 })
 export class TopArticleComponent {
-  products: any[] = [
-    {
-      name: 'test 1',
-      category:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ....',
-    },
-    {
-      name: 'test 2',
-      category:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ....',
-    },
-    {
-      name: 'test 3',
-      category:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ....',
-    },
-    {
-      name: 'test 4',
-      category:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ....',
-    },
-    {
-      name: 'test 5',
-      category:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ....',
-    },
-    {
-      name: 'test 6',
-      category:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ....',
-    },
-  ];
+  overviewState: Observable<OverviewState>;
+  articles: Article[] = [];
+
+  constructor(private store: Store<AppState>) {
+    this.overviewState = this.store.select(selectOverviewState);
+  }
+  
+  ngOnInit() {
+    this.store.dispatch(getHighlights());
+    this.overviewState.subscribe(({highlights}) => {
+      this.articles = highlights.data
+      console.log(this.articles.length)
+    })
+  }
 }

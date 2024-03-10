@@ -15,11 +15,7 @@
       </a>
     </div>
   </div>
-  <p-scroller
-    [items]="products"
-    [itemSize]="products.length"
-    scrollHeight="524px"
-  >
+  <p-scroller [items]="articles" [itemSize]="100" scrollHeight="524px">
     <ng-template pTemplate="item" let-item let-options="options">
       <div class="grid grid-nogutter">
         <div class="col-12">
@@ -27,30 +23,40 @@
             class="flex flex-column xl:flex-row xl:align-items-start py-3 gap-4"
             [ngClass]="{ 'border-top-1 surface-border': !options.first }"
           >
-            <img
-              class="w-5rem sm:w-5rem xl:w-5rem block xl:block mx-auto"
-              src="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
-              [alt]="item.name"
-            />
+            <div
+              style="
+                background-image: url('https://primefaces.org/cdn/primeng/images/demo/product/green-earbuds.jpg');
+              "
+              class="w-6rem h-6rem bg-cover bg-center border-round-lg"
+            ></div>
             <div
               class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1"
             >
               <div class="flex flex-column">
-                <div class="text-sm font-semibold">{{ item.name }}</div>
+                <div
+                  class="text-sm font-semibold white-space-nowrap text-overflow-ellipsis overflow-hidden"
+                  style="width: 370px"
+                >
+                  {{ item.title }}
+                </div>
                 <p
                   class="white-space-nowrap overflow-hidden text-overflow-ellipsis p-0 mt-2"
-                  style="width: 400px"
+                  style="width: 370px"
                 >
-                  {{ item.category }}
+                  {{ item.content }}
                 </p>
                 <div class="flex gap-3 align-items-center">
                   <div class="flex align-items-center gap-2">
-                    <i class="pi pi-clock text-500 text-xs"></i>
-                    <span class="text-xs text-500 p-0 mt-0">Okezone</span>
+                    <i class="pi pi-globe text-500 text-xs"></i>
+                    <span class="text-xs text-500 p-0 mt-0 white-space-nowrap overflow-hidden text-overflow-ellipsis" style="width: 80px;">{{
+                      item.journalist
+                    }}</span>
                   </div>
                   <div class="flex align-items-center gap-2">
                     <i class="pi pi-clock text-500 text-xs"></i>
-                    <span class="text-xs text-500 p-0 mt-0">Apr 14, 2021</span>
+                    <span class="text-xs text-500 p-0 mt-0">{{
+                      item.datee.split(" ")[0]
+                    }}</span>
                   </div>
                 </div>
               </div>

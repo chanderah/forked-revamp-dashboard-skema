@@ -86,4 +86,24 @@ export class OverviewEffects {
       })
     )
   );
+
+  getHighlights = createEffect(() =>
+    this.actions$.pipe(
+      ofType(OverviewActions.getHighlights),
+      switchMap(() => {
+        return this.overviewService.getHighlights().pipe(
+          map((response) => {
+            if ((response as any).code === 401)
+              throw new Error((response as any).message);
+            return OverviewActions.getHighlightsSuccess({
+              data: response.data,
+            });
+          }),
+          catchError((error) =>
+            of(OverviewActions.getHighlightsError({ error: error.message }))
+          )
+        );
+      })
+    )
+  );
 }
