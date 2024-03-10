@@ -23,7 +23,7 @@
       >
         <div class="flex flex-column align-items-center justify-content-center">
           <div class="text-sm text-color-secondary">Total Artikel</div>
-          <div class="text-5xl font-semibold">50</div>
+          <div class="text-5xl font-semibold">{{data.totalTones}}</div>
         </div>
       </div>
       <p-chart
@@ -42,7 +42,9 @@
           <div class="text-sm font-bold">Negative</div>
         </div>
         <div class="flex align-items-baseline gap-2">
-          <div class="font-bold text-3xl">50</div>
+          <div class="font-bold text-3xl">
+            {{ data.combinedTones.negative }}
+          </div>
           <div class="text-sm text-400">Artikel</div>
         </div>
       </div>
@@ -54,7 +56,7 @@
           <div class="text-sm font-bold">Neutral</div>
         </div>
         <div class="flex align-items-baseline gap-2">
-          <div class="font-bold text-3xl">100</div>
+          <div class="font-bold text-3xl">{{ data.combinedTones.neutral }}</div>
           <div class="text-sm text-400">Artikel</div>
         </div>
       </div>
@@ -66,7 +68,7 @@
           <div class="text-sm font-bold">Positive</div>
         </div>
         <div class="flex align-items-baseline gap-2">
-          <div class="font-bold text-3xl">200</div>
+          <div class="font-bold text-3xl">{{ data.combinedTones.positive }}</div>
           <div class="text-sm text-400">Artikel</div>
         </div>
       </div>

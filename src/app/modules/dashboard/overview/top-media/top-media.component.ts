@@ -6,6 +6,14 @@ import { IconGlobeComponent } from '../../../../core/components/icons/globe/glob
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { MediaChartComponent } from '../../components/media-chart/media-chart.component';
+import { OverviewState } from '../../../../core/store/overview/overview.reducer';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { AppState } from '../../../../core/store';
+import { selectOverviewState } from '../../../../core/store/overview/overview.selectors';
+import { getToneByMedia } from '../../../../core/store/overview/overview.actions';
+import { Tone, ToneByMedia } from '../../../../core/models/tone-by-media.model';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-top-media',
@@ -16,55 +24,63 @@ import { MediaChartComponent } from '../../components/media-chart/media-chart.co
     ButtonModule,
     IconGlobeComponent,
     IconInfoComponent,
-    MediaChartComponent
+    MediaChartComponent,
+    CommonModule,
   ],
   templateUrl: './top-media.component.html',
   styleUrl: './top-media.component.scss',
 })
 export class TopMediaComponent implements OnInit {
-  data: any;
-  options: any;
   plugins = [ChartDataLabels];
 
-  ngOnInit() {
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color');
+  overviewState: Observable<OverviewState>;
+  chartsData: any[] = [];
 
-    this.data = {
-      datasets: [
-        {
-          data: [50, 20, 10],
-          datalabels: {
-            anchor: 'end',
-          },
-          backgroundColor: ['#fb3b52', '#05B9BF', '#1B81E2'],
-        },
-      ],
-    };
-
-    this.options = {
-      cutout: '75%',
-      plugins: {
-        tooltip: { enabled: false },
-        datalabels: {
-          font: { size: '14px', color: textColor },
-          borderColor: '#E0E0E0',
-          borderRadius: 100,
-          borderWidth: 1,
-          color: textColor,
-          backgroundColor: 'white',
-          formatter: (value: number) => value + '%',
-          padding: 8,
-        },
-      },
-      layout: {
-        padding: {
-          top: 0,
-          bottom: 0,
-          left: 24,
-          right: 24,
-        },
-      },
-    };
+  constructor(private store: Store<AppState>) {
+    this.overviewState = this.store.select(selectOverviewState);
   }
+
+  ngOnInit() {
+    this.store.dispatch(getToneByMedia());
+    this.overviewState.subscribe(({ toneByMedia }) => {
+      this.chartsData = this.parseToChartData(toneByMedia.data);
+    });
+  }
+
+  parseToChartData = (toneByMedia: ToneByMedia[]) => {
+    const documentStyle = getComputedStyle(document.documentElement);
+    const positiveColor = documentStyle.getPropertyValue('--positive-color');
+    const negativeColor = documentStyle.getPropertyValue('--negative-color');
+    const neutralColor = documentStyle.getPropertyValue('--neutral-color');
+
+    return toneByMedia.map((t) => {
+      const simplifiedTones: any[] = [];
+      const combinedTones: any = {};
+      const totalTones = t.tones.reduce((prev, tone) => {
+        if (Object.keys(tone)[0] === 'media favorability index') return prev;
+        return prev + Object.values(tone)[0];
+      }, 0);
+
+      t.tones.forEach((tone) => {
+        const key = Object.keys(tone)[0];
+        if (key === 'media favorability index') return;
+        const toneVal = Object.values(tone)[0];
+        const percentageVal = (toneVal / totalTones) * 100;
+        simplifiedTones.push(percentageVal.toFixed(0));
+        combinedTones[key] = toneVal;
+      });
+      return {
+        ...t,
+        totalTones,
+        combinedTones,
+        datasets: [
+          {
+            data: simplifiedTones,
+            datalabels: { anchor: 'end' },
+            backgroundColor: [positiveColor, negativeColor, neutralColor],
+          },
+        ],
+      };
+    });
+  };
 }

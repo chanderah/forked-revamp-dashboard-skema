@@ -66,4 +66,24 @@ export class OverviewEffects {
       })
     )
   );
+
+  getToneByMedia = createEffect(() =>
+    this.actions$.pipe(
+      ofType(OverviewActions.getToneByMedia),
+      switchMap(() => {
+        return this.overviewService.getToneByMedia().pipe(
+          map((response) => {
+            if ((response as any).code === 401)
+              throw new Error((response as any).message);
+            return OverviewActions.getToneByMediaSuccess({
+              data: response.data,
+            });
+          }),
+          catchError((error) =>
+            of(OverviewActions.getToneByMediaError({ error: error.message }))
+          )
+        );
+      })
+    )
+  );
 }

@@ -5,17 +5,8 @@
     <icon-info></icon-info>
   </div>
   <div class="grid">
-    <div class="col-6">
-      <app-media-chart [data]="data" title="Tribunnews.com"></app-media-chart>
-    </div>
-    <div class="col-6">
-      <app-media-chart [data]="data" title="Detik.com"></app-media-chart>
-    </div>
-    <div class="col-6">
-      <app-media-chart [data]="data" title="Inews.Id"></app-media-chart>
-    </div>
-    <div class="col-6">
-      <app-media-chart [data]="data" title="Okezone.com"></app-media-chart>
+    <div class="col-6" *ngFor="let chart of chartsData">
+      <app-media-chart [data]="chart" [title]="chart.media_name"></app-media-chart>
     </div>
   </div>
 </section>

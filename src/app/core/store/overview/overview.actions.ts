@@ -2,6 +2,7 @@ import { createAction, props } from '@ngrx/store';
 import { MediaCount } from '../../models/media-count.model';
 import { AllCount } from '../../models/all-count.model';
 import { WordCloud } from '../../models/wordcloud.model';
+import { ToneByMedia } from '../../models/tone-by-media.model';
 
 export const getMediaCount = createAction('[Overview] Get Media Count');
 export const getMediaCountSuccess = createAction(
@@ -30,5 +31,15 @@ export const getWordCloudSuccess = createAction(
 );
 export const getWordCloudError = createAction(
   '[Overview] Get Word Cloud Failure',
+  props<{ error: string }>()
+);
+
+export const getToneByMedia = createAction('[Overview] Get Tone By Media');
+export const getToneByMediaSuccess = createAction(
+  '[Overview] Get Tone By Media Success',
+  props<{ data: ToneByMedia[] }>()
+);
+export const getToneByMediaError = createAction(
+  '[Overview] Get Tone By Media Failure',
   props<{ error: string }>()
 );

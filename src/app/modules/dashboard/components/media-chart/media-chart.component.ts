@@ -12,7 +12,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
   styleUrl: './media-chart.component.scss',
 })
 export class MediaChartComponent {
-  @Input() data!: any[];
+  @Input() data!: any;
   @Input() title!: string;
 
   options: any;

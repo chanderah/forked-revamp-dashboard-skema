@@ -3,8 +3,13 @@
 @import "./primeng-themes.scss";
 @import "./primeflex-themes.scss";
 
-@layer reset, primeng;
+:root {
+  --positive-color: #1B81E2;
+  --neutral-color: #05b9bf;
+  --negative-color: #FB3B52;
+}
 
+@layer reset, primeng;
 @layer reset {
   // RESET
   *,
@@ -84,7 +89,7 @@ button {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #F1F4FA;
+  background: #f1f4fa;
 }
 
 /* Handle */
