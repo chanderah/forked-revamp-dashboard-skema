@@ -13,8 +13,12 @@ import { selectOverviewState } from '../../../../core/store/overview/overview.se
 import { Article } from '../../../../core/models/article.model';
 import { getHighlights } from '../../../../core/store/overview/overview.actions';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
-import { FilterState, initialState } from '../../../../core/store/filter/filter.reducer';
+import {
+  FilterState,
+  initialState,
+} from '../../../../core/store/filter/filter.reducer';
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
+import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-top-article',
@@ -26,6 +30,7 @@ import { selectFilterState } from '../../../../core/store/filter/filter.selector
     IconInfoComponent,
     IconNewspaperComponent,
     RouterLink,
+    SpinnerComponent
   ],
   templateUrl: './top-article.component.html',
   styleUrl: './top-article.component.scss',
@@ -34,6 +39,7 @@ export class TopArticleComponent {
   overviewState: Observable<OverviewState>;
   filterState: Observable<FilterState>;
   articles: Article[] = [];
+  isLoading: boolean = false;
 
   constructor(private store: Store<AppState>) {
     this.overviewState = this.store.select(selectOverviewState);
@@ -41,9 +47,12 @@ export class TopArticleComponent {
   }
 
   ngOnInit() {
-    this.store.dispatch(getHighlights({filter: initialState as FilterRequestPayload}));
+    this.store.dispatch(
+      getHighlights({ filter: initialState as FilterRequestPayload })
+    );
     this.overviewState.subscribe(({ highlights }) => {
       this.articles = highlights.data;
+      this.isLoading = highlights.isLoading
     });
     this.filterState.subscribe(this.onFilterChange);
   }

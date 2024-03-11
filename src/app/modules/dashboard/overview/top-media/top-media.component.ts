@@ -20,6 +20,7 @@ import {
 } from '../../../../core/store/filter/filter.reducer';
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
+import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-top-media',
@@ -32,6 +33,7 @@ import { FilterRequestPayload } from '../../../../core/models/request.model';
     IconInfoComponent,
     MediaChartComponent,
     CommonModule,
+    SpinnerComponent
   ],
   templateUrl: './top-media.component.html',
   styleUrl: './top-media.component.scss',
@@ -42,6 +44,7 @@ export class TopMediaComponent implements OnInit {
   overviewState: Observable<OverviewState>;
   filterState: Observable<FilterState>;
   chartsData: any[] = [];
+  isLoading: boolean = false;
 
   constructor(private store: Store<AppState>) {
     this.overviewState = this.store.select(selectOverviewState);
@@ -54,6 +57,7 @@ export class TopMediaComponent implements OnInit {
     );
     this.overviewState.subscribe(({ toneByMedia }) => {
       this.chartsData = this.parseToChartData(toneByMedia.data);
+      this.isLoading = toneByMedia.isLoading
     });
     this.filterState.subscribe(this.onFilterChange);
   }

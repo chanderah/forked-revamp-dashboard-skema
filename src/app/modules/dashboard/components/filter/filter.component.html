@@ -17,6 +17,7 @@
       optionValue="value"
       placeholder="All Category"
       inputId="category"
+      [disabled]="isLoadingCategoryOptions"
     ></p-dropdown>
     <label for="category">Category</label>
   </span>
@@ -28,6 +29,7 @@
       optionValue="value"
       placeholder="All Sub Category"
       inputId="subCategory"
+      [disabled]="isLoadingSubCategoryOptions"
     ></p-dropdown>
     <label for="subCategory">Sub Category</label>
   </span>
@@ -39,6 +41,7 @@
       optionValue="value"
       placeholder="All Media"
       inputId="media"
+      [disabled]="isLoadingMediaOptions"
     ></p-dropdown>
     <label for="media">Media</label>
   </span>

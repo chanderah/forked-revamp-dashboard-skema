@@ -20,9 +20,18 @@ interface Option {
   value: string | number;
 }
 
-const DEFAULT_CATEGORY: Option = { name: 'All Category', value: initialState.category_set};
-const DEFAULT_SUB_CATEGORY: Option = { name: 'All Sub Category', value: initialState.category_id };
-const DEFAULT_MEDIA: Option = { name: 'All Media', value: initialState.user_media_type_id };
+const DEFAULT_CATEGORY: Option = {
+  name: 'All Category',
+  value: initialState.category_set,
+};
+const DEFAULT_SUB_CATEGORY: Option = {
+  name: 'All Sub Category',
+  value: initialState.category_id,
+};
+const DEFAULT_MEDIA: Option = {
+  name: 'All Media',
+  value: initialState.user_media_type_id,
+};
 
 @Component({
   selector: 'app-filter',
@@ -49,6 +58,10 @@ export class FilterComponent {
   subCategoryOptions: Option[] = [DEFAULT_SUB_CATEGORY];
   mediaOptions: Option[] = [DEFAULT_MEDIA];
 
+  isLoadingCategoryOptions: boolean = true;
+  isLoadingSubCategoryOptions: boolean = true;
+  isLoadingMediaOptions: boolean = true;
+
   constructor(
     private store: Store<AppState>,
     private filterService: FilterService
@@ -60,33 +73,60 @@ export class FilterComponent {
   }
 
   getCategoriesOptions = () => {
-    this.filterService.getCategories().subscribe((response) => {
-      const categoryOptions = response.results.map((category) => ({
-        name: category.descriptionz,
-        value: category.category_set,
-      }));
-      this.categoryOptions = [...this.categoryOptions, ...categoryOptions];
-    });
+    this.filterService.getCategories().subscribe(
+      (response) => {
+        const categoryOptions = response.results.map((category) => ({
+          name: category.descriptionz,
+          value: category.category_set,
+        }));
+        this.categoryOptions = [...this.categoryOptions, ...categoryOptions];
+      },
+      () => {
+        // on Error
+      },
+      () => {
+        this.isLoadingCategoryOptions = false;
+      }
+    );
   };
 
   getSubCategoriesOptions = () => {
-    this.filterService.getSubCategories().subscribe((response) => {
-      const subCategoryOptions = response.results.map((category) => ({
-        name: category.descriptionz,
-        value: category.category_set,
-      }));
-      this.subCategoryOptions = [...this.subCategoryOptions, ...subCategoryOptions];
-    });
+    this.filterService.getSubCategories().subscribe(
+      (response) => {
+        const subCategoryOptions = response.results.map((category) => ({
+          name: category.descriptionz,
+          value: category.category_set,
+        }));
+        this.subCategoryOptions = [
+          ...this.subCategoryOptions,
+          ...subCategoryOptions,
+        ];
+      },
+      () => {
+        // on Error
+      },
+      () => {
+        this.isLoadingSubCategoryOptions = false;
+      }
+    );
   };
 
   getMediaOptions = () => {
-    this.filterService.getMedias().subscribe((response) => {
-      const mediaOptions = response.results.map((category) => ({
-        name: category.user_media_type_name_def,
-        value: category.user_media_type_id,
-      }));
-      this.mediaOptions = [...this.mediaOptions, ...mediaOptions];
-    });
+    this.filterService.getMedias().subscribe(
+      (response) => {
+        const mediaOptions = response.results.map((category) => ({
+          name: category.user_media_type_name_def,
+          value: category.user_media_type_id,
+        }));
+        this.mediaOptions = [...this.mediaOptions, ...mediaOptions];
+      },
+      () => {
+        // on Error
+      },
+      () => {
+        this.isLoadingMediaOptions = false;
+      }
+    );
   };
 
   onSetFilter() {

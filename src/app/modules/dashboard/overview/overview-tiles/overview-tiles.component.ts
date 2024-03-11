@@ -13,6 +13,7 @@ import {
 } from '../../../../core/store/filter/filter.reducer';
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
+import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 
 interface MediaCountTiles {
   print: number;
@@ -23,13 +24,14 @@ interface MediaCountTiles {
 @Component({
   selector: 'app-overview-tiles',
   standalone: true,
-  imports: [CommonModule, TileComponent],
+  imports: [CommonModule, TileComponent, SpinnerComponent],
   templateUrl: './overview-tiles.component.html',
   styleUrl: './overview-tiles.component.scss',
 })
 export class OverviewTilesComponent {
   overviewState: Observable<OverviewState>;
   filterState: Observable<FilterState>;
+  isLoading: boolean = false
   mediaCount: MediaCountTiles = {
     online: 0,
     print: 0,
@@ -66,5 +68,6 @@ export class OverviewTilesComponent {
       mediaCountTmp.print + mediaCountTmp.online + mediaCountTmp.tv;
 
     this.mediaCount = mediaCountTmp;
+    this.isLoading = mediaCount.isLoading
   };
 }

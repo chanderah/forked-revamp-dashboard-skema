@@ -20,6 +20,7 @@ import {
   initialState,
 } from '../../../../core/store/filter/filter.reducer';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
+import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-top-city',
@@ -30,6 +31,7 @@ import { FilterRequestPayload } from '../../../../core/models/request.model';
     IconCarComponent,
     IconInfoComponent,
     CommonModule,
+    SpinnerComponent
   ],
   templateUrl: './top-city.component.html',
   styleUrl: './top-city.component.scss',
@@ -41,6 +43,8 @@ export class TopCityComponent {
   totalArticles: number = 0;
   wordCloud: { text: string; value: number }[] = [];
   largestWordValue: number = 0;
+  isAllCountLoading: boolean = false;
+  isWordCloudLoading: boolean = false;
 
   constructor(private store: Store<AppState>) {
     this.overviewState = this.store.select(selectOverviewState);
@@ -61,6 +65,8 @@ export class TopCityComponent {
         value: word.weight,
       }));
       this.largestWordValue = wordCloud.data?.[0]?.weight ?? 0;
+      this.isAllCountLoading = allCount.isLoading
+      this.isWordCloudLoading = wordCloud.isLoading
     });
 
     this.filterState.subscribe(this.onFilterChange);
