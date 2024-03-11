@@ -43,6 +43,7 @@ export class LoginComponent implements OnInit {
     username: new FormControl(null, Validators.required),
     password: new FormControl(null, Validators.required),
   });
+  isLoading: boolean = false;
 
   authState: Observable<AuthState>;
 
@@ -56,6 +57,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.authState.subscribe((state) => {
+      this.isLoading = state.isLoading;
       if (state.user || getUserFromLocalStorage()) {
         this.router.navigateByUrl('/');
       }

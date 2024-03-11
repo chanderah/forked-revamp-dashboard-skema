@@ -31,7 +31,7 @@ import { SpinnerComponent } from '../../../../core/components/spinner/spinner.co
     IconCarComponent,
     IconInfoComponent,
     CommonModule,
-    SpinnerComponent
+    SpinnerComponent,
   ],
   templateUrl: './top-city.component.html',
   styleUrl: './top-city.component.scss',
@@ -57,6 +57,8 @@ export class TopCityComponent {
     this.store.dispatch(getWordCloud({ filter: initialFilter }));
 
     this.overviewState.subscribe(({ allCount, wordCloud }) => {
+      this.isAllCountLoading = allCount.isLoading;
+      this.isWordCloudLoading = wordCloud.isLoading;
       this.cities = allCount.data?.top_location.location ?? [];
       this.totalArticles =
         allCount.data?.top_location.total_top_location_article ?? 0;
@@ -65,8 +67,6 @@ export class TopCityComponent {
         value: word.weight,
       }));
       this.largestWordValue = wordCloud.data?.[0]?.weight ?? 0;
-      this.isAllCountLoading = allCount.isLoading
-      this.isWordCloudLoading = wordCloud.isLoading
     });
 
     this.filterState.subscribe(this.onFilterChange);

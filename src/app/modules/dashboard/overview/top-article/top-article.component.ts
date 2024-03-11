@@ -51,8 +51,8 @@ export class TopArticleComponent {
       getHighlights({ filter: initialState as FilterRequestPayload })
     );
     this.overviewState.subscribe(({ highlights }) => {
-      this.articles = highlights.data;
       this.isLoading = highlights.isLoading
+      this.articles = highlights.data;
     });
     this.filterState.subscribe(this.onFilterChange);
   }

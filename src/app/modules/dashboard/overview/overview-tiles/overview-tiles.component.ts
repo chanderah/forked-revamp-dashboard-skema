@@ -31,7 +31,7 @@ interface MediaCountTiles {
 export class OverviewTilesComponent {
   overviewState: Observable<OverviewState>;
   filterState: Observable<FilterState>;
-  isLoading: boolean = false
+  isLoading: boolean = false;
   mediaCount: MediaCountTiles = {
     online: 0,
     print: 0,
@@ -59,6 +59,7 @@ export class OverviewTilesComponent {
 
   onOverviewStateChanges = ({ mediaCount }: OverviewState) => {
     const mediaCountTmp = { ...this.mediaCount };
+    this.isLoading = mediaCount.isLoading;
     mediaCount.data.forEach((media) => {
       if (media.label === 'Print') mediaCountTmp.print = media.total ?? 0;
       if (media.label === 'Online') mediaCountTmp.online = media.total ?? 0;
@@ -68,6 +69,5 @@ export class OverviewTilesComponent {
       mediaCountTmp.print + mediaCountTmp.online + mediaCountTmp.tv;
 
     this.mediaCount = mediaCountTmp;
-    this.isLoading = mediaCount.isLoading
   };
 }

@@ -5,7 +5,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (req.url.includes('login')) return next(req);
 
   const currentUser = getUserFromLocalStorage();
-  if (!currentUser) throw new Error('Unauthorized access');
+  if (!currentUser) window.location.href = '/login';
 
   if (currentUser && currentUser.token) {
     req = req.clone({

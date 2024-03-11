@@ -33,7 +33,7 @@ import { SpinnerComponent } from '../../../../core/components/spinner/spinner.co
     IconInfoComponent,
     MediaChartComponent,
     CommonModule,
-    SpinnerComponent
+    SpinnerComponent,
   ],
   templateUrl: './top-media.component.html',
   styleUrl: './top-media.component.scss',
@@ -56,8 +56,8 @@ export class TopMediaComponent implements OnInit {
       getToneByMedia({ filter: initialState as FilterRequestPayload })
     );
     this.overviewState.subscribe(({ toneByMedia }) => {
+      this.isLoading = toneByMedia.isLoading;
       this.chartsData = this.parseToChartData(toneByMedia.data);
-      this.isLoading = toneByMedia.isLoading
     });
     this.filterState.subscribe(this.onFilterChange);
   }
