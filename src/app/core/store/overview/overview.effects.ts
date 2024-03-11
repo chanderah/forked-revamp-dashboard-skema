@@ -3,7 +3,7 @@ import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import * as OverviewActions from './overview.actions';
-import { OverviewService } from './overview.service';
+import { OverviewService } from '../../services/overview.service';
 
 @Injectable()
 export class OverviewEffects {
@@ -14,8 +14,8 @@ export class OverviewEffects {
   getMediaCount = createEffect(() =>
     this.actions$.pipe(
       ofType(OverviewActions.getMediaCount),
-      switchMap(() => {
-        return this.overviewService.getMediaCount().pipe(
+      switchMap(({filter}) => {
+        return this.overviewService.getMediaCount(filter).pipe(
           map((response) => {
             if ((response as any).code === 401)
               throw new Error((response as any).message);

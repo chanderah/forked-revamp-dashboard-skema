@@ -34,12 +34,11 @@ export class TopArticleComponent {
   constructor(private store: Store<AppState>) {
     this.overviewState = this.store.select(selectOverviewState);
   }
-  
+
   ngOnInit() {
     this.store.dispatch(getHighlights());
-    this.overviewState.subscribe(({highlights}) => {
-      this.articles = highlights.data
-      console.log(this.articles.length)
-    })
+    this.overviewState.subscribe(({ highlights }) => {
+      this.articles = highlights.data;
+    });
   }
 }

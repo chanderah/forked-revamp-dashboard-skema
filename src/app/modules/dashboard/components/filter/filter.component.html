@@ -1,17 +1,20 @@
 <div class="flex flex-column gap-2">
   <span class="select-container">
     <p-dropdown
+      [(ngModel)]="selectedPeriodic"
+      [options]="periodicOptions"
       optionLabel="name"
-      [options]="options"
+      optionValue="value"
       placeholder="Yesterday"
-      inputId="periodic"
     ></p-dropdown>
-    <label for="periodic">Periodic</label>
+    <label>Periodic</label>
   </span>
   <span class="select-container">
     <p-dropdown
+      [(ngModel)]="selectedCategory"
+      [options]="periodicOptions"
       optionLabel="name"
-      [options]="options"
+      optionValue="value"
       placeholder="All Category"
       inputId="category"
     ></p-dropdown>
@@ -19,17 +22,21 @@
   </span>
   <span class="select-container">
     <p-dropdown
+      [(ngModel)]="selectedSubCategory"
+      [options]="periodicOptions"
       optionLabel="name"
-      [options]="options"
+      optionValue="value"
       placeholder="All Sub Category"
-      inputId="subcategory"
+      inputId="subCategory"
     ></p-dropdown>
-    <label for="subcategory">Sub Category</label>
+    <label for="subCategory">Sub Category</label>
   </span>
   <span class="select-container">
     <p-dropdown
+      [(ngModel)]="selectedMedia"
+      [options]="periodicOptions"
       optionLabel="name"
-      [options]="options"
+      optionValue="value"
       placeholder="All Media"
       inputId="media"
     ></p-dropdown>
@@ -37,10 +44,10 @@
   </span>
   <div class="grid">
     <div class="col-6">
-      <p-button label="Set Filter" type="submit"></p-button>
+      <p-button label="Set Filter" (onClick)="onSetFilter()"></p-button>
     </div>
     <div class="col-6">
-      <p-button label="Custom" type="submit" severity="secondary"></p-button>
+      <p-button label="Custom" severity="secondary"></p-button>
     </div>
   </div>
 </div>

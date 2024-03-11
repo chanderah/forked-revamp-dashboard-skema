@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { MediaCount } from '../../models/media-count.model';
-import { AllCount } from '../../models/all-count.model';
-import { WordCloudResponse } from '../../models/wordcloud.model';
-import { ToneByMediaResponse } from '../../models/tone-by-media.model';
-import { HighlightsResponse } from '../../models/highlights.model copy';
+import { MediaCount } from '../models/media-count.model';
+import { AllCount } from '../models/all-count.model';
+import { WordCloudResponse } from '../models/wordcloud.model';
+import { ToneByMediaResponse } from '../models/tone-by-media.model';
+import { HighlightsResponse } from '../models/highlights.model';
 
 @Injectable({
   providedIn: 'root',

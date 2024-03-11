@@ -4,8 +4,12 @@ import { AllCount } from '../../models/all-count.model';
 import { WordCloud } from '../../models/wordcloud.model';
 import { ToneByMedia } from '../../models/tone-by-media.model';
 import { Article } from '../../models/article.model';
+import { FilterRequestPayload } from '../../models/request.model';
 
-export const getMediaCount = createAction('[Overview] Get Media Count');
+export const getMediaCount = createAction(
+  '[Overview] Get Media Count',
+  props<{ filter: FilterRequestPayload }>()
+);
 export const getMediaCountSuccess = createAction(
   '[Overview] Get Media Count Success',
   props<{ data: MediaCount[] }>()

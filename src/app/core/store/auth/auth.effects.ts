@@ -3,7 +3,7 @@ import { Actions, ofType, createEffect } from '@ngrx/effects';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import * as AuthActions from './auth.actions';
-import { AuthService } from './auth.service';
+import { AuthService } from '../../services/auth.service';
 import { setUserToLocalStoage } from '../../../shared/utils/AuthUtils';
 
 @Injectable()
