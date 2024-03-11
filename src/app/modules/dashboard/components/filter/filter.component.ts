@@ -13,11 +13,16 @@ import { Observable } from 'rxjs';
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { setFilter } from '../../../../core/store/filter/filter.actions';
 import moment from 'moment';
+import { FilterService } from '../../../../core/services/filter.service';
 
 interface Option {
   name: string;
-  value: string;
+  value: string | number;
 }
+
+const DEFAULT_CATEGORY: Option = { name: 'All Category', value: initialState.category_set};
+const DEFAULT_SUB_CATEGORY: Option = { name: 'All Sub Category', value: initialState.category_id };
+const DEFAULT_MEDIA: Option = { name: 'All Media', value: initialState.user_media_type_id };
 
 @Component({
   selector: 'app-filter',
@@ -27,11 +32,12 @@ interface Option {
   styleUrl: './filter.component.scss',
 })
 export class FilterComponent {
-  selectedPeriodic: string = initialState.date_type;
-  selectedCategory: string = initialState.category_id;
-  selectedSubCategory: number = initialState.category_set;
-  selectedMedia: string = initialState.media_id;
   filterState: Observable<FilterState>;
+
+  selectedPeriodic: string = initialState.date_type;
+  selectedCategory: number = initialState.category_set;
+  selectedSubCategory: string = initialState.category_id;
+  selectedMedia: number = initialState.user_media_type_id;
 
   periodicOptions: Option[] = [
     { name: 'Yesterday', value: 'yesterday' },
@@ -39,17 +45,49 @@ export class FilterComponent {
     { name: 'Last Month', value: 'month' },
     { name: 'Last Year', value: 'year' },
   ];
+  categoryOptions: Option[] = [DEFAULT_CATEGORY];
+  subCategoryOptions: Option[] = [DEFAULT_SUB_CATEGORY];
+  mediaOptions: Option[] = [DEFAULT_MEDIA];
 
-  constructor(private store: Store<AppState>) {
+  constructor(
+    private store: Store<AppState>,
+    private filterService: FilterService
+  ) {
     this.filterState = this.store.select(selectFilterState);
+    this.getCategoriesOptions();
+    this.getSubCategoriesOptions();
+    this.getMediaOptions();
   }
 
-  ngOnInit() {
-    console.log('this.selectedPeriodic', this.selectedPeriodic);
-    console.log('this.selectedCategory', this.selectedCategory);
-    console.log('this.selectedSubCategory', this.selectedSubCategory);
-    console.log('this.selectedMedia', this.selectedMedia);
-  }
+  getCategoriesOptions = () => {
+    this.filterService.getCategories().subscribe((response) => {
+      const categoryOptions = response.results.map((category) => ({
+        name: category.descriptionz,
+        value: category.category_set,
+      }));
+      this.categoryOptions = [...this.categoryOptions, ...categoryOptions];
+    });
+  };
+
+  getSubCategoriesOptions = () => {
+    this.filterService.getSubCategories().subscribe((response) => {
+      const subCategoryOptions = response.results.map((category) => ({
+        name: category.descriptionz,
+        value: category.category_set,
+      }));
+      this.subCategoryOptions = [...this.subCategoryOptions, ...subCategoryOptions];
+    });
+  };
+
+  getMediaOptions = () => {
+    this.filterService.getMedias().subscribe((response) => {
+      const mediaOptions = response.results.map((category) => ({
+        name: category.user_media_type_name_def,
+        value: category.user_media_type_id,
+      }));
+      this.mediaOptions = [...this.mediaOptions, ...mediaOptions];
+    });
+  };
 
   onSetFilter() {
     const today = moment().format('YYYY-MM-DD');
@@ -58,15 +96,15 @@ export class FilterComponent {
       week: [moment().subtract(1, 'weeks').format('YYYY-MM-DD'), today],
       month: [moment().subtract(1, 'months').format('YYYY-MM-DD'), today],
       year: [moment().subtract(1, 'years').format('YYYY-MM-DD'), today],
-    } 
+    };
 
     const filter: FilterState = {
-      category_id: this.selectedCategory,
-      category_set: this.selectedSubCategory,
+      category_set: this.selectedCategory,
+      category_id: this.selectedSubCategory,
       date_type: this.selectedPeriodic,
-      media_id: this.selectedMedia,
+      user_media_type_id: this.selectedMedia,
       start_date: dateRange[this.selectedPeriodic][0],
-      end_date: dateRange[this.selectedPeriodic][1]
+      end_date: dateRange[this.selectedPeriodic][1],
     };
     this.store.dispatch(setFilter({ filter }));
   }

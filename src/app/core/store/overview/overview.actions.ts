@@ -19,7 +19,10 @@ export const getMediaCountError = createAction(
   props<{ error: string }>()
 );
 
-export const getAllCount = createAction('[Overview] Get All Count');
+export const getAllCount = createAction(
+  '[Overview] Get All Count',
+  props<{ filter: FilterRequestPayload }>()
+);
 export const getAllCountSuccess = createAction(
   '[Overview] Get All Count Success',
   props<{ data: AllCount }>()
@@ -29,7 +32,10 @@ export const getAllCountError = createAction(
   props<{ error: string }>()
 );
 
-export const getWordCloud = createAction('[Overview] Get Word Cloud');
+export const getWordCloud = createAction(
+  '[Overview] Get Word Cloud',
+  props<{ filter: FilterRequestPayload }>()
+);
 export const getWordCloudSuccess = createAction(
   '[Overview] Get Word Cloud Success',
   props<{ data: WordCloud[] }>()
@@ -39,7 +45,7 @@ export const getWordCloudError = createAction(
   props<{ error: string }>()
 );
 
-export const getToneByMedia = createAction('[Overview] Get Tone By Media');
+export const getToneByMedia = createAction('[Overview] Get Tone By Media', props<{ filter: FilterRequestPayload }>());
 export const getToneByMediaSuccess = createAction(
   '[Overview] Get Tone By Media Success',
   props<{ data: ToneByMedia[] }>()
@@ -49,7 +55,10 @@ export const getToneByMediaError = createAction(
   props<{ error: string }>()
 );
 
-export const getHighlights = createAction('[Overview] Get Highlights');
+export const getHighlights = createAction(
+  '[Overview] Get Highlights',
+  props<{ filter: FilterRequestPayload }>()
+);
 export const getHighlightsSuccess = createAction(
   '[Overview] Get Highlights Success',
   props<{ data: Article[] }>()

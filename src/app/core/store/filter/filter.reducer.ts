@@ -6,7 +6,7 @@ export interface FilterState {
   date_type: string;
   category_id: string;
   category_set: number;
-  media_id: string;
+  user_media_type_id: number;
   start_date?: string;
   end_date?: string;
 }
@@ -17,7 +17,7 @@ export const initialState: FilterState = {
   end_date: moment().format('YYYY-MM-DD'),
   category_id: 'all',
   category_set: 0,
-  media_id: '0',
+  user_media_type_id: 0,
 };
 
 export const filterReducer = createReducer(

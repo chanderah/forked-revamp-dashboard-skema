@@ -34,8 +34,8 @@ export class OverviewEffects {
   getAllCount = createEffect(() =>
     this.actions$.pipe(
       ofType(OverviewActions.getAllCount),
-      switchMap(() => {
-        return this.overviewService.getAllCount().pipe(
+      switchMap(({filter}) => {
+        return this.overviewService.getAllCount(filter).pipe(
           map((response) => {
             if ((response as any).code === 401)
               throw new Error((response as any).message);
@@ -52,8 +52,8 @@ export class OverviewEffects {
   getWordCloud = createEffect(() =>
     this.actions$.pipe(
       ofType(OverviewActions.getWordCloud),
-      switchMap(() => {
-        return this.overviewService.getWordCloud().pipe(
+      switchMap(({filter}) => {
+        return this.overviewService.getWordCloud(filter).pipe(
           map((response) => {
             if ((response as any).code === 401)
               throw new Error((response as any).message);
@@ -70,8 +70,8 @@ export class OverviewEffects {
   getToneByMedia = createEffect(() =>
     this.actions$.pipe(
       ofType(OverviewActions.getToneByMedia),
-      switchMap(() => {
-        return this.overviewService.getToneByMedia().pipe(
+      switchMap(({filter}) => {
+        return this.overviewService.getToneByMedia(filter).pipe(
           map((response) => {
             if ((response as any).code === 401)
               throw new Error((response as any).message);
@@ -90,8 +90,8 @@ export class OverviewEffects {
   getHighlights = createEffect(() =>
     this.actions$.pipe(
       ofType(OverviewActions.getHighlights),
-      switchMap(() => {
-        return this.overviewService.getHighlights().pipe(
+      switchMap(({filter}) => {
+        return this.overviewService.getHighlights(filter).pipe(
           map((response) => {
             if ((response as any).code === 401)
               throw new Error((response as any).message);

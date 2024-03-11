@@ -1,90 +1,31 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { MediaCount } from '../models/media-count.model';
-import { AllCount } from '../models/all-count.model';
-import { WordCloudResponse } from '../models/wordcloud.model';
-import { ToneByMediaResponse } from '../models/tone-by-media.model';
-import { HighlightsResponse } from '../models/highlights.model';
+import { CategoryResponse } from '../models/category.model';
+import { MediaResponse } from '../models/media.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class OverviewService {
+export class FilterService {
   private baseUrl = 'https://api.skema.co.id/api';
-  private geoBaseUrl = 'https://api-geo.skema.co.id/api';
   constructor(private http: HttpClient) {}
 
-  getMediaCount(): Observable<{ data: MediaCount[] }> {
-    return this.http.post<{ data: MediaCount[] }>(
-      `${this.baseUrl}/v1/dashboard/media-count`,
-      {
-        category_set: 0,
-        category_id: 'all',
-        user_media_type_id: 0,
-        media_id: '0',
-        start_date: '2023-12-22',
-        end_date: '2023-12-23',
-        date_type: 'yesterday',
-      }
+  getCategories(): Observable<CategoryResponse> {
+    return this.http.get<CategoryResponse>(
+      `${this.baseUrl}/v1/user/categories/`
     );
   }
 
-  getAllCount(): Observable<AllCount> {
-    return this.http.post<AllCount>(`${this.geoBaseUrl}/v2/all-count`, {
-      category_set: 0,
-      category_id: 'all',
-      user_media_type_id: 0,
-      media_id: '0',
-      start_date: '2023-12-22',
-      end_date: '2023-12-23',
-      date_type: 'yesterday',
-    });
-  }
-
-  getWordCloud(): Observable<WordCloudResponse> {
-    return this.http.post<WordCloudResponse>(
-      `${this.baseUrl}/v2/dashboard/wordcloud`,
-      {
-        category_set: 0,
-        category_id: 'all',
-        user_media_type_id: 0,
-        media_id: '0',
-        start_date: '2024-03-08',
-        end_date: '2024-03-09',
-        date_type: 'yesterday',
-        total_word: 40,
-      }
+  getSubCategories(): Observable<CategoryResponse> {
+    return this.http.get<CategoryResponse>(
+      `${this.baseUrl}/v1/user/subcategories/0`
     );
   }
 
-  getToneByMedia(): Observable<ToneByMediaResponse> {
-    return this.http.post<ToneByMediaResponse>(
-      `${this.baseUrl}/v1/dashboard/tone-by-media`,
-      {
-        category_set: 0,
-        category_id: 'all',
-        user_media_type_id: 0,
-        media_id: '0',
-        start_date: '2024-03-08',
-        end_date: '2024-03-09',
-        date_type: 'yesterday',
-      }
-    );
-  }
-
-  getHighlights(): Observable<HighlightsResponse> {
-    return this.http.post<HighlightsResponse>(
-      `${this.baseUrl}/v1/dashboard/high-lights`,
-      {
-        category_set: 0,
-        category_id: 'all',
-        user_media_type_id: 0,
-        media_id: '0',
-        start_date: '2024-03-08',
-        end_date: '2024-03-09',
-        date_type: 'yesterday',
-      }
+  getMedias(): Observable<MediaResponse> {
+    return this.http.get<MediaResponse>(
+      `${this.baseUrl}/v1/user/medias/`
     );
   }
 }

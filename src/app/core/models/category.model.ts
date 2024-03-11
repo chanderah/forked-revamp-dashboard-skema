@@ -6,3 +6,10 @@ export interface Category {
   pc_name: string;
   usere: string;
 }
+
+export interface CategoryResponse {
+  count: number;
+  next: string;
+  previous: string;
+  results: Category[];
+}

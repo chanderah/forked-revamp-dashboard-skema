@@ -14,6 +14,12 @@ import {
   getWordCloud,
 } from '../../../../core/store/overview/overview.actions';
 import { CommonModule } from '@angular/common';
+import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
+import {
+  FilterState,
+  initialState,
+} from '../../../../core/store/filter/filter.reducer';
+import { FilterRequestPayload } from '../../../../core/models/request.model';
 
 @Component({
   selector: 'app-top-city',
@@ -30,6 +36,7 @@ import { CommonModule } from '@angular/common';
 })
 export class TopCityComponent {
   overviewState: Observable<OverviewState>;
+  filterState: Observable<FilterState>;
   cities: Location[] = [];
   totalArticles: number = 0;
   wordCloud: { text: string; value: number }[] = [];
@@ -37,11 +44,14 @@ export class TopCityComponent {
 
   constructor(private store: Store<AppState>) {
     this.overviewState = this.store.select(selectOverviewState);
+    this.filterState = this.store.select(selectFilterState);
   }
 
   ngOnInit() {
-    this.store.dispatch(getAllCount());
-    this.store.dispatch(getWordCloud());
+    const initialFilter = initialState as FilterRequestPayload;
+    this.store.dispatch(getAllCount({ filter: initialFilter }));
+    this.store.dispatch(getWordCloud({ filter: initialFilter }));
+
     this.overviewState.subscribe(({ allCount, wordCloud }) => {
       this.cities = allCount.data?.top_location.location ?? [];
       this.totalArticles =
@@ -52,7 +62,15 @@ export class TopCityComponent {
       }));
       this.largestWordValue = wordCloud.data?.[0]?.weight ?? 0;
     });
+
+    this.filterState.subscribe(this.onFilterChange);
   }
+
+  onFilterChange = (filterState: FilterState) => {
+    const filter = { ...filterState } as FilterRequestPayload;
+    this.store.dispatch(getAllCount({ filter }));
+    this.store.dispatch(getWordCloud({ filter }));
+  };
 
   wordCloudFontSizeMapper = (word: any) => {
     const minInput = 0;
