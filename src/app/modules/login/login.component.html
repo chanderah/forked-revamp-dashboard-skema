@@ -49,6 +49,7 @@
         styleClass="submit-btn"
         type="submit"
         [disabled]="!loginForm.valid"
+        [loading]="isLoading"
       ></p-button>
     </form>
     <ng-template pTemplate="footer"

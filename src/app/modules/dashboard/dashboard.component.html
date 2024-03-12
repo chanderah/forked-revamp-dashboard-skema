@@ -1,8 +1,8 @@
 <header>
-  <p-toolbar>
+  <p-toolbar styleClass="flex-nowrap">
     <ng-template pTemplate="start">
       <img src="../../../assets/skema-logo.png" height="24" class="mr-2" />
-      <p-divider layout="vertical"></p-divider>
+      <p-divider layout="vertical" class="logo-divider"></p-divider>
       <img
         src="../../../assets/BPJS_Kesehatan_logo.png"
         height="24"
@@ -10,19 +10,42 @@
       />
     </ng-template>
     <ng-template pTemplate="center">
-      <p-tabMenu [model]="items">
+      <p-tabMenu
+        class="nav"
+        [model]="navItems"
+        (activeItemChange)="onActiveItemChange($event)"
+      >
         <ng-template pTemplate="item" let-item>
           <a
+            [routerLink]="item.routerLink"
             class="p-menuitem-link flex justify-content-between align-items-center"
           >
             <div class="flex align-items-center gap-2">
-              <span [class]="item.icon"></span>
-              <h6>{{ item.label }}</h6>
-            </div>
-            <div>
-              <span *ngIf="item.shortcut" [class]="item.shortcutClass">{{
-                item.shortcut
-              }}</span>
+              <icon-home
+                *ngIf="item.routerLink === 'overview'"
+                [class]="navActiveItem === 'overview' ? 'fill-primary' : ''"
+              ></icon-home>
+              <icon-chart
+                *ngIf="item.routerLink === 'analyze'"
+                [class]="navActiveItem === 'analyze' ? 'fill-primary' : ''"
+              ></icon-chart>
+              <icon-people
+                *ngIf="item.routerLink === 'spokesperson'"
+                [class]="navActiveItem === 'spokesperson' ? 'fill-primary' : ''"
+              ></icon-people>
+              <icon-notes
+                *ngIf="item.routerLink === 'newsindex'"
+                [class]="navActiveItem === 'newsindex' ? 'fill-primary' : ''"
+              ></icon-notes>
+              <icon-preference
+                *ngIf="item.routerLink === 'preference'"
+                [class]="navActiveItem === 'preference' ? 'fill-primary' : ''"
+              ></icon-preference>
+              <icon-cable
+                *ngIf="item.routerLink === 'share'"
+                [class]="navActiveItem === 'share' ? 'fill-primary' : ''"
+              ></icon-cable>
+              <div class="text-xs font-medium text-color">{{ item.label }}</div>
             </div>
           </a>
         </ng-template></p-tabMenu
@@ -30,30 +53,40 @@
     </ng-template>
     <ng-template pTemplate="end">
       <div class="flex align-items-center gap-4">
-        <p-inputSwitch formControlName="checked"></p-inputSwitch>
-        <i class="pi pi-search"></i>
+        <toggle-darkmode></toggle-darkmode>
+        <!-- <p-inputSwitch formControlName="checked"></p-inputSwitch> -->
+        <i class="pi pi-search font-bold"></i>
         <div class="flex">
           <p-avatar
-            image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
-            styleClass="mr-2"
             shape="circle"
+            image="../../../assets/default_avatar.png"
+            styleClass="mr-2"
           ></p-avatar>
-          <div>
-            <h6>Joh Doe</h6>
-            <small>admin</small>
+          <div class="flex flex-column">
+            <div class="m-0 text-sm white-space-nowrap">{{ user?.usr_comp_name ?? "-" }}</div>
+            <div class="m-0 text-gray-500 text-xs">Admin</div>
           </div>
         </div>
       </div>
     </ng-template>
   </p-toolbar>
 </header>
-<main class="container py-4 flex gap-4">
-  <aside>
-    <app-filter></app-filter>
-  </aside>
-  <section>
-    <router-outlet></router-outlet>
-  </section>
+<main class="container">
+  <p-breadcrumb class="breadcrumb" [model]="breadCrumbsItems">
+    <ng-template pTemplate="item" let-item>
+      <div [ngClass]="{ 'text-color-secondary': item.id === 'dashboard' }">
+        {{ item.label }}
+      </div>
+    </ng-template>
+  </p-breadcrumb>
+  <div class="pt-2 pb-4 flex flex-wrap xl:flex-nowrap xl:gap-4">
+    <aside class="w-full md:w-full lg:w-full xl:w-2 mb-4">
+      <app-filter></app-filter>
+    </aside>
+    <section class="w-full md:w-full lg:w-full xl:w-10">
+      <router-outlet></router-outlet>
+    </section>
+  </div>
 </main>
 <footer class="border-top-1 border-bluegray-100">
   <div class="flex justify-content-between py-2 px-4">

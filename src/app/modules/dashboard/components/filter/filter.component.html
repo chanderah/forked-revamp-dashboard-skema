@@ -1,42 +1,56 @@
-<div class="flex flex-column gap-3">
-  <span class="p-float-label">
+<div class="flex flex-column gap-2">
+  <span class="select-container">
     <p-dropdown
+      [(ngModel)]="selectedPeriodic"
+      [options]="periodicOptions"
       optionLabel="name"
-      [showClear]="true"
-      placeholder="Select a City"
-      inputId="float-label"
+      optionValue="value"
+      placeholder="Yesterday"
     ></p-dropdown>
-    <label for="float-label">Select a City</label>
+    <label>Periodic</label>
   </span>
-  <span class="p-float-label">
+  <span class="select-container">
     <p-dropdown
+      [(ngModel)]="selectedCategory"
+      [options]="categoryOptions"
       optionLabel="name"
-      [showClear]="true"
-      placeholder="Select a City"
-      inputId="float-label"
+      optionValue="value"
+      placeholder="All Category"
+      inputId="category"
+      [disabled]="isLoadingCategoryOptions"
     ></p-dropdown>
-    <label for="float-label">Select a City</label>
+    <label for="category">Category</label>
   </span>
-  <span class="p-float-label">
+  <span class="select-container">
     <p-dropdown
+      [(ngModel)]="selectedSubCategory"
+      [options]="subCategoryOptions"
       optionLabel="name"
-      [showClear]="true"
-      placeholder="Select a City"
-      inputId="float-label"
+      optionValue="value"
+      placeholder="All Sub Category"
+      inputId="subCategory"
+      [disabled]="isLoadingSubCategoryOptions"
     ></p-dropdown>
-    <label for="float-label">Select a City</label>
+    <label for="subCategory">Sub Category</label>
   </span>
-  <span class="p-float-label">
+  <span class="select-container">
     <p-dropdown
+      [(ngModel)]="selectedMedia"
+      [options]="mediaOptions"
       optionLabel="name"
-      [showClear]="true"
-      placeholder="Select a City"
-      inputId="float-label"
+      optionValue="value"
+      placeholder="All Media"
+      inputId="media"
+      [disabled]="isLoadingMediaOptions"
     ></p-dropdown>
-    <label for="float-label">Select a City</label>
+    <label for="media">Media</label>
   </span>
-  <div class="flex gap-3">
-    <p-button label="Sign in" type="submit"></p-button>
-    <p-button label="Custom" type="submit" severity="secondary"></p-button>
+  <div class="grid">
+    <div class="col-6">
+      <p-button label="Set Filter" (onClick)="onSetFilter()"></p-button>
+    </div>
+    <div class="col-6">
+      <p-button label="Custom" severity="secondary"></p-button>
+    </div>
   </div>
 </div>

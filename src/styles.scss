@@ -1,9 +1,15 @@
-@import "primeng/resources/themes/lara-light-blue/theme.css";
 @import "primeng/resources/primeng.css";
 @import "primeicons/primeicons.css";
+@import "./primeng-themes.scss";
+@import "./primeflex-themes.scss";
+
+:root {
+  --positive-color: #1B81E2;
+  --neutral-color: #05b9bf;
+  --negative-color: #FB3B52;
+}
 
 @layer reset, primeng;
-
 @layer reset {
   // RESET
   *,
@@ -50,15 +56,6 @@ button {
   font-size: 12px;
 }
 
-// DEFAULT BUTTON
-.p-button {
-  background-color: #1999dc;
-}
-
-.p-button-secondary {
-  background-color: #000000;
-}
-
 .container {
   padding-right: 15px;
   padding-left: 15px;
@@ -79,4 +76,28 @@ button {
   .container {
     width: 1366px;
   }
+}
+
+.fill-primary {
+  fill: var(--primary-color) !important;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f4fa;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--text-color-secondary);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-color);
 }

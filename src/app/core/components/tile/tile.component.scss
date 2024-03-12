@@ -1,0 +1,18 @@
+:host {
+  ::ng-deep .p-card .p-card-body,
+  ::ng-deep .p-card-content {
+    padding: 0;
+  }
+
+  .right-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+  }
+
+  ::ng-deep .p-divider-vertical {
+    margin: 0;
+    padding: 0;
+  }
+}

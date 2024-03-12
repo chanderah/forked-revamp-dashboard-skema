@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MenubarModule } from 'primeng/menubar';
 import { TabMenuModule } from 'primeng/tabmenu';
-import { RouterModule } from '@angular/router';
+import { RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { AvatarModule } from 'primeng/avatar';
@@ -12,6 +12,15 @@ import { CommonModule } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FilterComponent } from './components/filter/filter.component';
+import { IconHomeComponent } from '../../core/components/icons/home/home.component';
+import { IconCableComponent } from '../../core/components/icons/cable/cable.component';
+import { IconChartComponent } from '../../core/components/icons/chart/chart.component';
+import { IconNotesComponent } from '../../core/components/icons/notes/notes.component';
+import { IconPeopleComponent } from '../../core/components/icons/people/people.component';
+import { IconPreferenceComponent } from '../../core/components/icons/preference/preference.component';
+import { User } from '../../core/models/user.model';
+import { getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
+import { ToggleDarkmodeComponent } from './components/toggle-darkmode/toggle-darkmode.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -29,24 +38,69 @@ import { FilterComponent } from './components/filter/filter.component';
     DropdownModule,
     FloatLabelModule,
     FilterComponent,
+    RouterOutlet,
+    RouterLink,
+    IconHomeComponent,
+    IconCableComponent,
+    IconChartComponent,
+    IconNotesComponent,
+    IconPeopleComponent,
+    IconPreferenceComponent,
+    ToggleDarkmodeComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent implements OnInit {
-  items: MenuItem[] | undefined;
-  breadCrumbs: MenuItem[] | undefined;
+  navItems: MenuItem[] | undefined;
+  navActiveItem: string | undefined;
+  breadCrumbsItems: MenuItem[] | undefined;
+
+  user: User | null = getUserFromLocalStorage();
 
   ngOnInit() {
-    this.breadCrumbs = [{ label: 'Dashboard' }, { label: 'Overview' }];
-
-    this.items = [
-      { label: 'Overview', icon: 'pi pi-fw pi-home' },
-      { label: 'Analyze', icon: 'pi pi-fw pi-chart-bar' },
-      { label: 'Spokesperson', icon: 'pi pi-fw pi-users' },
-      { label: 'News Index', icon: 'pi pi-fw pi-book' },
-      { label: 'Preference', icon: 'pi pi-fw pi-cog' },
-      { label: 'Share', icon: 'pi pi-fw pi-mobile' },
+    const currentLocation = window.location.href.split('/').pop();
+    this.navActiveItem = currentLocation;
+    this.navItems = [
+      {
+        label: 'Overview',
+        routerLink: 'overview',
+      },
+      {
+        label: 'Analyze',
+        routerLink: 'analyze',
+      },
+      {
+        label: 'Spokesperson',
+        routerLink: 'spokesperson',
+      },
+      {
+        label: 'News Index',
+        routerLink: 'newsindex',
+      },
+      {
+        label: 'Preference',
+        routerLink: 'preference',
+      },
+      {
+        label: 'Share',
+        routerLink: 'share',
+      },
     ];
+
+    this.breadCrumbsItems = [
+      {
+        id: 'dashboard',
+        label: 'Dashboard',
+      },
+      {
+        id: 'overview',
+        label: 'Overview',
+      },
+    ];
+  }
+
+  onActiveItemChange(event: MenuItem) {
+    this.navActiveItem = event.routerLink;
   }
 }
