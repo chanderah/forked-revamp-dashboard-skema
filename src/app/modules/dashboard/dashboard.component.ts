@@ -20,6 +20,7 @@ import { IconPeopleComponent } from '../../core/components/icons/people/people.c
 import { IconPreferenceComponent } from '../../core/components/icons/preference/preference.component';
 import { User } from '../../core/models/user.model';
 import { getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
+import { ToggleDarkmodeComponent } from './components/toggle-darkmode/toggle-darkmode.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -45,6 +46,7 @@ import { getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
     IconNotesComponent,
     IconPeopleComponent,
     IconPreferenceComponent,
+    ToggleDarkmodeComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',

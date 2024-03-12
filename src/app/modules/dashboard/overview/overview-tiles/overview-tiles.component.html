@@ -1,32 +1,40 @@
 <spinner [spinning]="isLoading">
-  <div class="flex justify-content-between">
-    <app-tile
-      title="Print"
-      [content]="mediaCount.print"
-      icon="globe"
-      bgColor="#D4DCEB"
-      color="#464255"
-    ></app-tile>
-    <app-tile
-      title="Online"
-      [content]="mediaCount.online"
-      icon="globe"
-      color="#FB3B52"
-      bgColor="#ffebee"
-    ></app-tile>
-    <app-tile
-      title="TV"
-      [content]="mediaCount.tv"
-      icon="screen"
-      color="#05B9BF"
-      bgColor="#e6f8f9"
-    ></app-tile>
-    <app-tile
-      title="Total Article"
-      [content]="mediaCount.total"
-      icon="newspaper"
-      color="#1B81E2"
-      bgColor="#e8f2fc"
-    ></app-tile>
+  <div class="grid">
+    <div class="col-12 xl:col-3 lg:col-6 md:col-6 sm:col-6">
+      <app-tile
+        title="Print"
+        [content]="mediaCount.print"
+        icon="globe"
+        bgColor="#D4DCEB"
+        color="#464255"
+      ></app-tile>
+    </div>
+    <div class="col-12 xl:col-3 lg:col-6 md:col-6 sm:col-6">
+      <app-tile
+        title="Online"
+        [content]="mediaCount.online"
+        icon="globe"
+        color="#FB3B52"
+        bgColor="#ffebee"
+      ></app-tile>
+    </div>
+    <div class="col-12 xl:col-3 lg:col-6 md:col-6 sm:col-6">
+      <app-tile
+        title="TV"
+        [content]="mediaCount.tv"
+        icon="screen"
+        color="#05B9BF"
+        bgColor="#e6f8f9"
+      ></app-tile>
+    </div>
+    <div class="col-12 xl:col-3 lg:col-6 md:col-6 sm:col-6">
+      <app-tile
+        title="Total Article"
+        [content]="mediaCount.total"
+        icon="newspaper"
+        color="#1B81E2"
+        bgColor="#e8f2fc"
+      ></app-tile>
+    </div>
   </div>
 </spinner>

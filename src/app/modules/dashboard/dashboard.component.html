@@ -1,5 +1,5 @@
 <header>
-  <p-toolbar>
+  <p-toolbar styleClass="flex-nowrap">
     <ng-template pTemplate="start">
       <img src="../../../assets/skema-logo.png" height="24" class="mr-2" />
       <p-divider layout="vertical" class="logo-divider"></p-divider>
@@ -53,7 +53,8 @@
     </ng-template>
     <ng-template pTemplate="end">
       <div class="flex align-items-center gap-4">
-        <p-inputSwitch formControlName="checked"></p-inputSwitch>
+        <toggle-darkmode></toggle-darkmode>
+        <!-- <p-inputSwitch formControlName="checked"></p-inputSwitch> -->
         <i class="pi pi-search font-bold"></i>
         <div class="flex">
           <p-avatar
@@ -62,7 +63,7 @@
             styleClass="mr-2"
           ></p-avatar>
           <div class="flex flex-column">
-            <div class="m-0 text-sm">{{ user?.usr_comp_name ?? "-" }}</div>
+            <div class="m-0 text-sm white-space-nowrap">{{ user?.usr_comp_name ?? "-" }}</div>
             <div class="m-0 text-gray-500 text-xs">Admin</div>
           </div>
         </div>
@@ -78,11 +79,11 @@
       </div>
     </ng-template>
   </p-breadcrumb>
-  <div class="pt-2 pb-4 flex gap-4">
-    <aside class="w-2">
+  <div class="pt-2 pb-4 flex flex-wrap xl:flex-nowrap xl:gap-4">
+    <aside class="w-full md:w-full lg:w-full xl:w-2 mb-4">
       <app-filter></app-filter>
     </aside>
-    <section class="w-10">
+    <section class="w-full md:w-full lg:w-full xl:w-10">
       <router-outlet></router-outlet>
     </section>
   </div>
