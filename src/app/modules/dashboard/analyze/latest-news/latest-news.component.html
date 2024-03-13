@@ -1,0 +1,58 @@
+<section>
+  <div class="flex align-items-center gap-2 mb-4">
+    <icon-newspaper fill="var(--primary-color)"></icon-newspaper>
+    <div class="text-sm font-semibold">Latest News</div>
+    <icon-info></icon-info>
+  </div>
+  <p-carousel
+    [value]="products"
+    [numVisible]="4"
+    [numScroll]="1"
+    [responsiveOptions]="responsiveOptions"
+  >
+    <ng-template let-product pTemplate="item">
+      <div>
+        <div class="mb-3">
+          <div
+            style="
+              background-image: url('https://primefaces.org/cdn/primeng/images/demo/product/green-earbuds.jpg');
+            "
+            class="w-full h-10rem bg-cover bg-center border-round-lg"
+          ></div>
+        </div>
+        <div>
+          <div
+            class="mb-1 font-semibold text-sm text-color white-space-nowrap text-overflow-ellipsis overflow-hidden"
+            style="width: 250px"
+          >
+            {{ product.name }}
+          </div>
+          <div
+            class="mt-0 mb-3 text-xs text-color-secondary white-space-nowrap text-overflow-ellipsis overflow-hidden"
+            style="width: 250px"
+          >
+            {{ product.price }}
+          </div>
+          <div class="flex justify-content-between">
+            <div class="flex gap-1">
+              <div>
+                <p-avatar label="U" pBadge shape="circle"></p-avatar>
+              </div>
+              <div>
+                <div class="font-light" style="font-size: 0.6rem">
+                  Tofan Aditya
+                </div>
+                <div class="text-color-secondary" style="font-size: 0.6rem">
+                  Okezone
+                </div>
+              </div>
+            </div>
+            <div class="text-color-secondary" style="font-size: 0.6rem">
+              Apr 14, 2021
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </p-carousel>
+</section>
