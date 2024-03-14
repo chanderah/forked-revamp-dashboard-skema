@@ -3,11 +3,12 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { ChartModule } from 'primeng/chart';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { ChartCardComponent } from '../../../../core/components/chart-card/chart-card.component';
 
 @Component({
   selector: 'app-media-chart',
   standalone: true,
-  imports: [ButtonModule, ChartModule, CardModule],
+  imports: [ButtonModule, ChartModule, CardModule, ChartCardComponent],
   templateUrl: './media-chart.component.html',
   styleUrl: './media-chart.component.scss',
 })
