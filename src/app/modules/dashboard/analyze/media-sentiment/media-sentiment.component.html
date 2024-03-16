@@ -1,10 +1,10 @@
 <p-card styleClass="shadow-none border-1 border-200">
   <ng-template pTemplate="header">
     <div class="flex align-items-center gap-2 pl-4 pt-4">
-      <icon-newspaper fill="var(--primary-color)"></icon-newspaper>
+      <icon-radio fill="var(--primary-color)"></icon-radio>
       <div class="text-sm font-semibold">Media Sentiment Breakdown</div>
       <icon-info></icon-info>
     </div>
   </ng-template>
-  <p-chart type="line" [data]="data" [options]="options"></p-chart>
+  <p-chart type="line" [data]="chartData" [options]="options"></p-chart>
 </p-card>

@@ -4,6 +4,20 @@ import { IconNewspaperComponent } from '../../../../core/components/icons/newspa
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import { AvatarModule } from 'primeng/avatar';
 import { CommonModule } from '@angular/common';
+import { selectAnalyzeState } from '../../../../core/store/analyze/analyze.selectors';
+import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
+import { AppState } from '../../../../core/store';
+import { Store } from '@ngrx/store';
+import { AnalyzeState } from '../../../../core/store/analyze/analyze.reducer';
+import { Observable } from 'rxjs';
+import {
+  FilterState,
+  initialState,
+} from '../../../../core/store/filter/filter.reducer';
+import { getHighlights } from '../../../../core/store/analyze/analyze.actions';
+import { FilterRequestPayload } from '../../../../core/models/request.model';
+import { Article } from '../../../../core/models/article.model';
+import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-latest-news',
@@ -14,41 +28,24 @@ import { CommonModule } from '@angular/common';
     IconInfoComponent,
     AvatarModule,
     CommonModule,
+    SpinnerComponent
   ],
   templateUrl: './latest-news.component.html',
   styleUrl: './latest-news.component.scss',
 })
 export class LatestNewsComponent {
-  products: any[] = [
-    {
-      id: 1,
-      name: 'Development in Indonesia is very rapid',
-      price:
-        'Augue interdum velit euismod in pellentesque. Dolor sed viverra ipsum nunc. Eros donec ac odio tempor orci dapibus ultrices in iaculis. Vulputate eu scelerisque felis imperdiet proin fermentum. Leo vel orci porta non pulvinar neque laoreet suspendisse.',
-    },
-    {
-      id: 2,
-      name: 'Development in Indonesia is very rapid',
-      price:
-        'Augue interdum velit euismod in pellentesque. Dolor sed viverra ipsum nunc. Eros donec ac odio tempor orci dapibus ultrices in iaculis. Vulputate eu scelerisque felis imperdiet proin fermentum. Leo vel orci porta non pulvinar neque laoreet suspendisse.',
-    },
-    {
-      id: 3,
-      name: 'Development in Indonesia is very rapid',
-      price:
-        'Augue interdum velit euismod in pellentesque. Dolor sed viverra ipsum nunc. Eros donec ac odio tempor orci dapibus ultrices in iaculis. Vulputate eu scelerisque felis imperdiet proin fermentum. Leo vel orci porta non pulvinar neque laoreet suspendisse.',
-    },
-    {
-      id: 4,
-      name: 'Development in Indonesia is very rapid',
-      price:
-        'Augue interdum velit euismod in pellentesque. Dolor sed viverra ipsum nunc. Eros donec ac odio tempor orci dapibus ultrices in iaculis. Vulputate eu scelerisque felis imperdiet proin fermentum. Leo vel orci porta non pulvinar neque laoreet suspendisse.',
-    },
-  ];
+  analyzeState: Observable<AnalyzeState>;
+  filterState: Observable<FilterState>;
+  articles: Article[] = [];
+  isLoading: boolean = false;
+  responsiveOptions:
+    | { breakpoint: string; numVisible: number; numScroll: number }[]
+    | undefined;
 
-  responsiveOptions: any[] | undefined;
+  constructor(private store: Store<AppState>) {
+    this.analyzeState = this.store.select(selectAnalyzeState);
+    this.filterState = this.store.select(selectFilterState);
 
-  ngOnInit() {
     this.responsiveOptions = [
       {
         breakpoint: '1199px',
@@ -67,4 +64,20 @@ export class LatestNewsComponent {
       },
     ];
   }
+
+  ngOnInit() {
+    this.store.dispatch(
+      getHighlights({ filter: initialState as FilterRequestPayload })
+    );
+    this.analyzeState.subscribe(({ highlights }) => {
+      this.isLoading = highlights.isLoading;
+      this.articles = highlights.data;
+    });
+    this.filterState.subscribe(this.onFilterChange);
+  }
+
+  onFilterChange = (filterState: FilterState) => {
+    const filter = { ...filterState } as FilterRequestPayload;
+    this.store.dispatch(getHighlights({ filter }));
+  };
 }

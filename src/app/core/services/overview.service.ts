@@ -58,14 +58,4 @@ export class OverviewService {
       }
     );
   }
-
-  getHighlights(filter: FilterRequestPayload): Observable<HighlightsResponse> {
-    return this.http.post<HighlightsResponse>(
-      `${this.baseUrl}/v1/dashboard/high-lights`,
-      {
-        ...filter,
-        media_id: 0,
-      }
-    );
-  }
 }
