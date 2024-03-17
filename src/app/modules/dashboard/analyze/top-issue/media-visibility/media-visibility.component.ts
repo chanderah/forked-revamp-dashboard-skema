@@ -1,6 +1,21 @@
 import { Component } from '@angular/core';
 import { ChartCardComponent } from '../../../../../core/components/chart-card/chart-card.component';
 import { ChartModule } from 'primeng/chart';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { AppState } from '../../../../../core/store';
+import { AnalyzeState } from '../../../../../core/store/analyze/analyze.reducer';
+import { selectAnalyzeState } from '../../../../../core/store/analyze/analyze.selectors';
+import {
+  FilterState,
+  initialState,
+} from '../../../../../core/store/filter/filter.reducer';
+import { selectFilterState } from '../../../../../core/store/filter/filter.selectors';
+import { getMediaVisibility } from '../../../../../core/store/analyze/analyze.actions';
+import { FilterRequestPayload } from '../../../../../core/models/request.model';
+import moment from 'moment';
+import { MediaVisibility } from '../../../../../core/models/media-visibility.model';
+import { htmlLegendPlugin } from '../../../../../shared/utils/ChartUtils';
 
 @Component({
   selector: 'app-media-visibility',
@@ -14,8 +29,44 @@ export class MediaVisibilityComponent {
   visibilityChartOpts: any;
   visibilityPieData: any;
   visibilityPieOpts: any;
+  visibilityPiePlugins = [htmlLegendPlugin];
+
+  analyzeState: Observable<AnalyzeState>;
+  filterState: Observable<FilterState>;
+  isLoading: boolean = false;
+
+  constructor(private store: Store<AppState>) {
+    this.analyzeState = this.store.select(selectAnalyzeState);
+    this.filterState = this.store.select(selectFilterState);
+  }
 
   ngOnInit() {
+    this.initChartOpts();
+
+    this.store.dispatch(
+      getMediaVisibility({ filter: initialState as FilterRequestPayload })
+    );
+
+    this.analyzeState.subscribe(({ mediaVisibility }) => {
+      this.isLoading = mediaVisibility.isLoading;
+      this.initChartData(mediaVisibility.data);
+    });
+    this.filterState.subscribe(this.onFilterChange);
+  }
+
+  initChartData = (mediaVisibility: MediaVisibility[]) => {
+    if (mediaVisibility.length) {
+      const { lineDatasets, lineLabels, pieLabels, pieDatasets } =
+        this.getChartData(mediaVisibility);
+      this.visibilityChartData = {
+        labels: lineLabels,
+        datasets: lineDatasets,
+      };
+      this.visibilityPieData = { labels: pieLabels, datasets: pieDatasets };
+    }
+  };
+
+  initChartOpts = () => {
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
     const textColorSecondary = documentStyle.getPropertyValue(
@@ -23,25 +74,15 @@ export class MediaVisibilityComponent {
     );
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
-    this.visibilityChartData = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [
-        {
-          label: 'Negative',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          tension: 0.4,
+    this.visibilityPieOpts = {
+      plugins: {
+        legend: {
+          display: false,
         },
-        {
-          label: 'Neutral',
-          data: [28, 48, 40, 19, 86, 27, 90],
-          tension: 0.4,
+        htmlLegend: {
+          containerID: 'legend-container',
         },
-        {
-          label: 'Positive',
-          data: [22, 45, 23, 55, 18, 2, 12],
-          tension: 0.4,
-        },
-      ],
+      },
     };
 
     this.visibilityChartOpts = {
@@ -50,55 +91,69 @@ export class MediaVisibilityComponent {
       plugins: {
         legend: {
           position: 'bottom',
-          align: 'start',
+          align: 'center',
           labels: {
+            font: { size: 10 },
             color: textColor,
+            boxWidth: 10,
+            boxHeight: 5,
+            filter: function (legendItem: any, chartData: any) {
+              const datasetIndex = legendItem.datasetIndex;
+              const dataset = chartData.datasets[datasetIndex];
+              const color = dataset.borderColor; // Get the border color of the dataset
+              legendItem.fillStyle = color; // Set legend item background color
+              return true;
+            },
           },
         },
+      },
+      elements: {
+        point: { radius: 0, hitRadius: 20 },
       },
       scales: {
         x: {
-          ticks: {
-            color: textColorSecondary,
-          },
-          grid: {
-            color: surfaceBorder,
-            drawBorder: false,
-          },
+          ticks: { color: textColorSecondary },
+          grid: { color: surfaceBorder, drawBorder: false },
         },
         y: {
-          ticks: {
-            color: textColorSecondary,
-          },
-          grid: {
-            color: surfaceBorder,
-            drawBorder: false,
-          },
+          ticks: { color: textColorSecondary },
+          grid: { color: surfaceBorder, drawBorder: false },
         },
       },
     };
+  };
 
-    this.visibilityPieData = {
-      labels: ['A', 'B', 'C', 'D'],
-      datasets: [
-        {
-          data: [540, 325, 702, 82],
-          backgroundColor: [
-            '#1B81E2',
-            '#C9E806',
-            '#FB3B52',
-            '#05B9BF',
-          ],
-        },
-      ],
-    };
+  getChartData = (mediaVisibility: MediaVisibility[]) => {
+    const lineDatasets: any[] = [];
+    const pieDatasets: any = [{ data: [], percentages: [] }];
+    const pieLabels: string[] = [];
+    const totalTones = mediaVisibility.reduce((prev, chart) => {
+      return prev + chart.doc_count;
+    }, 0);
+    
+    mediaVisibility.forEach((media) => {
+      pieLabels.push(media.key);
+      const tmpData: { label: string; data: number[]; tension: number } = {
+        label: media.key,
+        data: [],
+        tension: 0.4,
+      };
+      media.category_id_per_day.buckets.forEach((bucket) => {
+        tmpData.data.push(bucket.doc_count);
+      });
+      pieDatasets[0].percentages.push(((media.doc_count / totalTones) * 100).toFixed(0));
+      pieDatasets[0].data.push(media.doc_count);
+      lineDatasets.push(tmpData);
+    });
 
-    this.visibilityPieOpts = {
-      plugins: {
-        legend: {
-          display: false,
-        },
-      },
-    };
-  }
+    const lineLabels = mediaVisibility[0].category_id_per_day.buckets.map(
+      (bucket) => moment(bucket.key_as_string).format('DD MMM')
+    );
+    return { lineLabels, lineDatasets, pieLabels, pieDatasets };
+  };
+
+  onFilterChange = (filterState: FilterState) => {
+    const filter = { ...filterState } as FilterRequestPayload;
+    this.store.dispatch(getMediaVisibility({ filter }));
+  };
 }

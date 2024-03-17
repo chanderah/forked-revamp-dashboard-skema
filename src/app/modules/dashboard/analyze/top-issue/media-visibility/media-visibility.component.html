@@ -12,60 +12,13 @@
     <div class="col-6">
       <chart-card title="Visibility Pie">
         <div class="flex align-items-center gap-6">
-          <p-chart
-            type="pie"
-            [data]="visibilityPieData"
-            [options]="visibilityPieOpts"
-          ></p-chart>
-          <div class="flex flex-column gap-3">
-            <div>
-              <div class="flex align-items-center gap-2 mb-2">
-                <div
-                  style="background-color: #1B81E2; width: 6px; height: 14px"
-                ></div>
-                <div class="text-xs font-bold">Faskes Kesehatan</div>
-              </div>
-              <div class="flex align-items-baseline gap-2">
-                <div class="font-bold text-3xl">35</div>
-                <div class="text-xs text-400">%</div>
-              </div>
-            </div>
-            <div>
-              <div class="flex align-items-center gap-2 mb-2">
-                <div
-                  style="background-color: #05b9bf; width: 6px; height: 14px"
-                ></div>
-                <div class="text-xs font-bold">1. BPJS Kesehatan</div>
-              </div>
-              <div class="flex align-items-baseline gap-2">
-                <div class="font-bold text-3xl">35</div>
-                <div class="text-xs text-400">%</div>
-              </div>
-            </div>
-            <div>
-              <div class="flex align-items-center gap-2 mb-2">
-                <div
-                  style="background-color: #C9E806; width: 6px; height: 14px"
-                ></div>
-                <div class="text-xs font-bold">Mobile JKN</div>
-              </div>
-              <div class="flex align-items-baseline gap-2">
-                <div class="font-bold text-3xl">30</div>
-                <div class="text-xs text-400">%</div>
-              </div>
-            </div>
-            <div>
-              <div class="flex align-items-center gap-2 mb-2">
-                <div
-                  style="background-color: #FB3B52; width: 6px; height: 14px"
-                ></div>
-                <div class="text-xs font-bold">3. Ali Ghufron Mukti</div>
-              </div>
-              <div class="flex align-items-baseline gap-2">
-                <div class="font-bold text-3xl">30</div>
-                <div class="text-xs text-400">%</div>
-              </div>
-            </div>
+          <div id="legend-container" class="flex align-items-center gap-6">
+            <p-chart
+              type="pie"
+              [data]="visibilityPieData"
+              [options]="visibilityPieOpts"
+              [plugins]="visibilityPiePlugins"
+            ></p-chart>
           </div>
         </div>
       </chart-card>

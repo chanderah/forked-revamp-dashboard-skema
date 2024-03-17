@@ -1,6 +1,20 @@
 import { Component } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { ChartCardComponent } from '../../../../../core/components/chart-card/chart-card.component';
+import { htmlLegendPlugin } from '../../../../../shared/utils/ChartUtils';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../../../core/store';
+import { selectAnalyzeState } from '../../../../../core/store/analyze/analyze.selectors';
+import { selectFilterState } from '../../../../../core/store/filter/filter.selectors';
+import { Observable } from 'rxjs';
+import { AnalyzeState } from '../../../../../core/store/analyze/analyze.reducer';
+import {
+  FilterState,
+  initialState,
+} from '../../../../../core/store/filter/filter.reducer';
+import { FilterRequestPayload } from '../../../../../core/models/request.model';
+import { getTones } from '../../../../../core/store/analyze/analyze.actions';
+import { Tones } from '../../../../../core/models/tone.model';
 
 @Component({
   selector: 'app-coverage-tone',
@@ -10,12 +24,36 @@ import { ChartCardComponent } from '../../../../../core/components/chart-card/ch
   styleUrl: './coverage-tone.component.scss',
 })
 export class CoverageToneComponent {
+  analyzeState: Observable<AnalyzeState>;
+  filterState: Observable<FilterState>;
+  isLoading: boolean = false;
+
   visibilityChartData: any;
   visibilityChartOpts: any;
-  visibilityPieData: any;
-  visibilityPieOpts: any;
+  coveragePieData: any;
+  coveragePieOpts: any;
+  coveragePiePlugins = [htmlLegendPlugin];
+
+  constructor(private store: Store<AppState>) {
+    this.analyzeState = this.store.select(selectAnalyzeState);
+    this.filterState = this.store.select(selectFilterState);
+  }
 
   ngOnInit() {
+    this.store.dispatch(
+      getTones({ filter: initialState as FilterRequestPayload })
+    );
+    this.analyzeState.subscribe(({ tones }) => {
+      if (tones.data) {
+        const { datasets, labels } = this.getPieData(tones.data);
+        this.coveragePieData = {
+          labels,
+          datasets,
+        };
+      }
+    });
+    this.filterState.subscribe(this.onFilterChange);
+
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
     const textColorSecondary = documentStyle.getPropertyValue(
@@ -78,22 +116,47 @@ export class CoverageToneComponent {
       },
     };
 
-    this.visibilityPieData = {
-      labels: ['A', 'B', 'C', 'D'],
-      datasets: [
-        {
-          data: [540, 325, 702, 82],
-          backgroundColor: ['#1B81E2', '#C9E806', '#FB3B52', '#05B9BF'],
-        },
-      ],
-    };
-
-    this.visibilityPieOpts = {
+    this.coveragePieOpts = {
       plugins: {
         legend: {
           display: false,
         },
+        htmlLegend: {
+          containerID: 'coverage-legend-container',
+        },
       },
     };
   }
+
+  getPieData = (tones: Tones) => {
+    const documentStyle = getComputedStyle(document.documentElement);
+    const positiveColor = documentStyle.getPropertyValue('--positive-color');
+    const negativeColor = documentStyle.getPropertyValue('--negative-color');
+    const neutralColor = documentStyle.getPropertyValue('--neutral-color');
+
+    const datasets: any = [
+      {
+        data: [],
+        percentages: [],
+        backgroundColor: [positiveColor, negativeColor, neutralColor],
+      },
+    ];
+    const labels: string[] = ['Posivie', 'Negative', 'Neutral'];
+
+    const totalTones = tones.chart_bar.reduce((prev, chart) => {
+      return prev + chart.doc_count;
+    }, 0);
+
+    tones.chart_bar.forEach((chart) => {
+      datasets[0].data.push(chart.doc_count);
+      datasets[0].percentages.push(((chart.doc_count / totalTones) * 100).toFixed(0));
+    });
+
+    return { labels, datasets };
+  };
+
+  onFilterChange = (filterState: FilterState) => {
+    const filter = { ...filterState } as FilterRequestPayload;
+    this.store.dispatch(getTones({ filter }));
+  };
 }

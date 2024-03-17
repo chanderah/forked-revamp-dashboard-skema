@@ -16,8 +16,9 @@ import {
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { getTones } from '../../../../core/store/analyze/analyze.actions';
-import { ChartBar } from '../../../../core/models/tone.model';
+import { ChartBar, Tones } from '../../../../core/models/tone.model';
 import moment from 'moment';
+import { Tone } from '../../../../core/models/tone-by-media.model';
 
 @Component({
   selector: 'app-media-sentiment',
@@ -39,46 +40,55 @@ export class MediaSentimentComponent {
   }
 
   ngOnInit() {
-    const documentStyle = getComputedStyle(document.documentElement);
-
     this.store.dispatch(
       getTones({ filter: initialState as FilterRequestPayload })
     );
     this.analyzeState.subscribe(({ tones }) => {
-      const { labels, negativeValues, neutralValues, positiveValues } =
-        this.getChartData(tones.data?.chart_bar ?? []);
-
-      this.chartData = {
-        labels,
-        datasets: [
-          {
-            label: 'Negative',
-            data: negativeValues,
-            tension: 0.4,
-            borderColor: '#FB3B52',
-            backgroundColor: '#FB3B52',
-          },
-          {
-            label: 'Neutral',
-            data: neutralValues,
-            tension: 0.4,
-            borderColor: '#05B9BF',
-            backgroundColor: '#05B9BF',
-          },
-          {
-            label: 'Positive',
-            data: positiveValues,
-            tension: 0.4,
-            borderColor: '#1B81E2',
-            backgroundColor: '#1B81E2',
-          },
-        ],
-      };
-
+      if (tones.data) this.initChartData(tones.data);
       this.isLoading = tones.isLoading;
     });
     this.filterState.subscribe(this.onFilterChange);
+  }
 
+  initChartData = (tones: Tones) => {
+    const documentStyle = getComputedStyle(document.documentElement);
+    const negativeColor = documentStyle.getPropertyValue('--negative-color');
+    const positiveColor = documentStyle.getPropertyValue('--positive-color');
+    const neutralColor = documentStyle.getPropertyValue('--neutral-color');
+
+    const { labels, negativeValues, neutralValues, positiveValues } =
+      this.getChartData(tones.chart_bar ?? []);
+
+    this.chartData = {
+      labels,
+      datasets: [
+        {
+          label: 'Negative',
+          data: negativeValues,
+          tension: 0.4,
+          borderColor: negativeColor,
+          backgroundColor: negativeColor,
+        },
+        {
+          label: 'Neutral',
+          data: neutralValues,
+          tension: 0.4,
+          borderColor: neutralColor,
+          backgroundColor: neutralColor,
+        },
+        {
+          label: 'Positive',
+          data: positiveValues,
+          tension: 0.4,
+          borderColor: positiveColor,
+          backgroundColor: positiveColor,
+        },
+      ],
+    };
+  };
+
+  initChartOpts = () => {
+    const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
     const textColorSecondary = documentStyle.getPropertyValue(
       '--text-color-secondary'
@@ -93,6 +103,9 @@ export class MediaSentimentComponent {
           position: 'bottom',
           align: 'start',
           labels: {
+            padding: 32,
+            boxWidth: 14,
+            boxHeight: 5,
             color: textColor,
           },
         },
@@ -124,7 +137,7 @@ export class MediaSentimentComponent {
         },
       },
     };
-  }
+  };
 
   getChartData = (chartBar: ChartBar[]) => {
     const negativeValues: number[] = [];

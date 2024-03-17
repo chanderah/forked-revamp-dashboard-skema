@@ -2,15 +2,18 @@ import { createReducer, on } from '@ngrx/store';
 import * as AnalyzeActions from './analyze.actions';
 import { Article } from '../../models/article.model';
 import { Tones } from '../../models/tone.model';
+import { MediaVisibility } from '../../models/media-visibility.model';
 
 export interface AnalyzeState {
   highlights: { data: Article[]; error: string | null; isLoading: boolean };
   tones: { data: Tones | null; error: string | null; isLoading: boolean };
+  mediaVisibility: { data: MediaVisibility[]; error: string | null; isLoading: boolean };
 }
 
 export const initialState: AnalyzeState = {
   highlights: { data: [], error: null, isLoading: false },
   tones: { data: null, error: null, isLoading: false },
+  mediaVisibility: { data: [], error: null, isLoading: false },
 };
 
 export const analyzeReducer = createReducer(
@@ -39,5 +42,18 @@ export const analyzeReducer = createReducer(
   on(AnalyzeActions.getTonesError, (state, { error }) => ({
     ...state,
     tones: { data: null, error, isLoading: false },
+  })),
+
+  on(AnalyzeActions.getMediaVisibility, (state) => ({
+    ...state,
+    mediaVisibility: { ...state.mediaVisibility, isLoading: true },
+  })),
+  on(AnalyzeActions.getMediaVisibilitySuccess, (state, { data }) => ({
+    ...state,
+    mediaVisibility: { data, error: null, isLoading: false },
+  })),
+  on(AnalyzeActions.getMediaVisibilityError, (state, { error }) => ({
+    ...state,
+    mediaVisibility: { data: [], error, isLoading: false },
   }))
 );
