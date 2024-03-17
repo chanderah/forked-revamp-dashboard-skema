@@ -19,8 +19,9 @@ import { IconNotesComponent } from '../../core/components/icons/notes/notes.comp
 import { IconPeopleComponent } from '../../core/components/icons/people/people.component';
 import { IconPreferenceComponent } from '../../core/components/icons/preference/preference.component';
 import { User } from '../../core/models/user.model';
-import { getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
+import { getUserFromLocalStorage, logout } from '../../shared/utils/AuthUtils';
 import { ToggleDarkmodeComponent } from './components/toggle-darkmode/toggle-darkmode.component';
+import { TieredMenuModule } from 'primeng/tieredmenu';
 
 @Component({
   selector: 'app-dashboard',
@@ -46,7 +47,8 @@ import { ToggleDarkmodeComponent } from './components/toggle-darkmode/toggle-dar
     IconNotesComponent,
     IconPeopleComponent,
     IconPreferenceComponent,
-    ToggleDarkmodeComponent
+    ToggleDarkmodeComponent,
+    TieredMenuModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -55,6 +57,7 @@ export class DashboardComponent implements OnInit {
   navItems: MenuItem[] | undefined;
   navActiveItem: string | undefined;
   breadCrumbsItems: MenuItem[] | undefined;
+  profileItems: MenuItem[] | undefined;
 
   user: User | null = getUserFromLocalStorage();
 
@@ -96,6 +99,14 @@ export class DashboardComponent implements OnInit {
       {
         id: 'overview',
         label: 'Overview',
+      },
+    ];
+
+    this.profileItems = [
+      {
+        label: 'Logout',
+        icon: 'pi pi-power-off',
+        command: () => logout(),
       },
     ];
   }
