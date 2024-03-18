@@ -14,6 +14,8 @@ import { selectFilterState } from '../../../../core/store/filter/filter.selector
 import { setFilter } from '../../../../core/store/filter/filter.actions';
 import moment from 'moment';
 import { FilterService } from '../../../../core/services/filter.service';
+import { CommonModule } from '@angular/common';
+import { CalendarModule } from 'primeng/calendar';
 
 interface Option {
   name: string;
@@ -36,17 +38,27 @@ const DEFAULT_MEDIA: Option = {
 @Component({
   selector: 'app-filter',
   standalone: true,
-  imports: [DropdownModule, ButtonModule, FloatLabelModule, FormsModule],
+  imports: [
+    DropdownModule,
+    ButtonModule,
+    FloatLabelModule,
+    FormsModule,
+    CommonModule,
+    CalendarModule,
+  ],
   templateUrl: './filter.component.html',
   styleUrl: './filter.component.scss',
 })
 export class FilterComponent {
   filterState: Observable<FilterState>;
 
+  isCustom: boolean = false;
   selectedPeriodic: string = initialState.date_type;
   selectedCategory: number = initialState.category_set;
   selectedSubCategory: string = initialState.category_id;
   selectedMedia: number = initialState.user_media_type_id;
+  startDate: Date = moment(initialState.start_date).toDate();
+  endDate: Date = moment(initialState.end_date).toDate();
 
   periodicOptions: Option[] = [
     { name: 'Yesterday', value: 'yesterday' },
@@ -137,15 +149,28 @@ export class FilterComponent {
       month: [moment().subtract(1, 'months').format('YYYY-MM-DD'), today],
       year: [moment().subtract(1, 'years').format('YYYY-MM-DD'), today],
     };
+    const defaultStartDate = dateRange[this.selectedPeriodic][0];
+    const defaultEndDate = dateRange[this.selectedPeriodic][0];
+
+    const startDate = this.isCustom
+      ? moment(this.startDate).format('YYYY-MM-DD')
+      : defaultStartDate;
+    const endDate = this.isCustom
+      ? moment(this.endDate).format('YYYY-MM-DD')
+      : defaultEndDate;
 
     const filter: FilterState = {
       category_set: this.selectedCategory,
       category_id: this.selectedSubCategory,
-      date_type: this.selectedPeriodic,
+      date_type: this.isCustom ? 'Custom' : this.selectedPeriodic,
       user_media_type_id: this.selectedMedia,
-      start_date: dateRange[this.selectedPeriodic][0],
-      end_date: dateRange[this.selectedPeriodic][1],
+      start_date: startDate,
+      end_date: endDate,
     };
     this.store.dispatch(setFilter({ filter }));
   }
+
+  onClickCustom = () => {
+    this.isCustom = !this.isCustom;
+  };
 }

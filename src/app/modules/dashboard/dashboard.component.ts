@@ -1,7 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { MenubarModule } from 'primeng/menubar';
 import { TabMenuModule } from 'primeng/tabmenu';
-import { RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterModule,
+  RouterOutlet,
+} from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { AvatarModule } from 'primeng/avatar';
@@ -61,6 +68,8 @@ export class DashboardComponent implements OnInit {
 
   user: User | null = getUserFromLocalStorage();
 
+  constructor(private router: Router) {}
+
   ngOnInit() {
     const currentLocation = window.location.href.split('/').pop();
     this.navActiveItem = currentLocation;
@@ -91,15 +100,27 @@ export class DashboardComponent implements OnInit {
       },
     ];
 
+    const breadCrumbLabelMap: { [x: string]: string } = {
+      overview: 'Overview',
+      analyze: 'Analyze',
+    };
+
+    this.router.events.subscribe((route) => {
+      if (route instanceof NavigationEnd) {
+        const nav = route as NavigationEnd;
+
+        this.breadCrumbsItems = [
+          { label: 'Dashboard' },
+          {
+            label: breadCrumbLabelMap[nav.url.split('/')?.pop?.() ?? ''] ?? '-',
+          },
+        ];
+      }
+    });
+
     this.breadCrumbsItems = [
-      {
-        id: 'dashboard',
-        label: 'Dashboard',
-      },
-      {
-        id: 'overview',
-        label: 'Overview',
-      },
+      { label: 'Dashboard' },
+      { label: breadCrumbLabelMap[currentLocation ?? ''] },
     ];
 
     this.profileItems = [

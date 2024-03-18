@@ -1,15 +1,15 @@
 <section>
-  <div class="flex align-items-center gap-2 pl-2">
+  <div class="flex align-items-center gap-2 pl-2 mb-2">
     <icon-newspaper fill="var(--primary-color)"></icon-newspaper>
     <div class="text-sm font-semibold">Featured News</div>
     <icon-info></icon-info>
   </div>
-  <p-scroller [items]="articles" [itemSize]="100" scrollHeight="524px">
+  <p-scroller [items]="articles" [itemSize]="100" scrollHeight="595px">
     <ng-template pTemplate="item" let-item let-options="options">
       <div class="grid grid-nogutter">
         <div class="col-12">
           <div
-            class="flex flex-column xl:flex-row xl:align-items-start py-3 gap-4"
+            class="flex py-3 gap-4"
             [ngClass]="{ 'border-top-1 surface-border': !options.first }"
           >
             <div
