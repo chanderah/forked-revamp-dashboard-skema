@@ -3,6 +3,8 @@ import { Article } from '../../models/article.model';
 import { FilterRequestPayload } from '../../models/request.model';
 import { Tones } from '../../models/tone.model';
 import { MediaVisibility } from '../../models/media-visibility.model';
+import { ToneByCategory } from '../../models/tone-by-category.model';
+import { ToneByMedia } from '../../models/tone-by-media.model';
 
 export const getHighlights = createAction(
   '[Analyze] Get Highlights',
@@ -40,5 +42,31 @@ export const getMediaVisibilitySuccess = createAction(
 );
 export const getMediaVisibilityError = createAction(
   '[Analyze] Get Media Visibility Failure',
+  props<{ error: string }>()
+);
+
+export const getToneByCategory = createAction(
+  '[Analyze] Get Tone By Category',
+  props<{ filter: FilterRequestPayload }>()
+);
+export const getToneByCategorySuccess = createAction(
+  '[Analyze] Get Tone By Category Success',
+  props<{ data: ToneByCategory[] }>()
+);
+export const getToneByCategoryError = createAction(
+  '[Analyze] Get Tone By Category Failure',
+  props<{ error: string }>()
+);
+
+export const getToneByMedia = createAction(
+  '[Analyze] Get Tone By Media',
+  props<{ filter: FilterRequestPayload }>()
+);
+export const getToneByMediaSuccess = createAction(
+  '[Analyze] Get Tone By Media Success',
+  props<{ data: ToneByMedia[] }>()
+);
+export const getToneByMediaError = createAction(
+  '[Analyze] Get Tone By Media Failure',
   props<{ error: string }>()
 );

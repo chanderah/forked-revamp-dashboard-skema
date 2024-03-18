@@ -74,4 +74,44 @@ export class AnalyzeEffects {
       })
     )
   );
+
+  getToneByCategory = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AnalyzeActions.getToneByCategory),
+      switchMap(({ filter }) => {
+        return this.toneService.getToneByCategory(filter).pipe(
+          map((response) => {
+            if ((response as any).code === 401)
+              throw new Error((response as any).message);
+            return AnalyzeActions.getToneByCategorySuccess({
+              data: response.data,
+            });
+          }),
+          catchError((error) =>
+            of(AnalyzeActions.getToneByCategoryError({ error: error.message }))
+          )
+        );
+      })
+    )
+  );
+
+  getToneByMedia = createEffect(() =>
+  this.actions$.pipe(
+    ofType(AnalyzeActions.getToneByMedia),
+    switchMap(({ filter }) => {
+      return this.toneService.getToneByMedia(filter).pipe(
+        map((response) => {
+          if ((response as any).code === 401)
+            throw new Error((response as any).message);
+          return AnalyzeActions.getToneByMediaSuccess({
+            data: response.data,
+          });
+        }),
+        catchError((error) =>
+          of(AnalyzeActions.getToneByMediaError({ error: error.message }))
+        )
+      );
+    })
+  )
+);
 }

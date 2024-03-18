@@ -3,17 +3,35 @@ import * as AnalyzeActions from './analyze.actions';
 import { Article } from '../../models/article.model';
 import { Tones } from '../../models/tone.model';
 import { MediaVisibility } from '../../models/media-visibility.model';
+import { ToneByCategory } from '../../models/tone-by-category.model';
+import { ToneByMedia } from '../../models/tone-by-media.model';
 
 export interface AnalyzeState {
   highlights: { data: Article[]; error: string | null; isLoading: boolean };
   tones: { data: Tones | null; error: string | null; isLoading: boolean };
-  mediaVisibility: { data: MediaVisibility[]; error: string | null; isLoading: boolean };
+  mediaVisibility: {
+    data: MediaVisibility[];
+    error: string | null;
+    isLoading: boolean;
+  };
+  toneByCategory: {
+    data: ToneByCategory[];
+    error: string | null;
+    isLoading: boolean;
+  };
+  toneByMedia: {
+    data: ToneByMedia[];
+    error: string | null;
+    isLoading: boolean;
+  };
 }
 
 export const initialState: AnalyzeState = {
   highlights: { data: [], error: null, isLoading: false },
   tones: { data: null, error: null, isLoading: false },
   mediaVisibility: { data: [], error: null, isLoading: false },
+  toneByCategory: { data: [], error: null, isLoading: false },
+  toneByMedia: { data: [], error: null, isLoading: false },
 };
 
 export const analyzeReducer = createReducer(
@@ -55,5 +73,31 @@ export const analyzeReducer = createReducer(
   on(AnalyzeActions.getMediaVisibilityError, (state, { error }) => ({
     ...state,
     mediaVisibility: { data: [], error, isLoading: false },
+  })),
+
+  on(AnalyzeActions.getToneByCategory, (state) => ({
+    ...state,
+    toneByCategory: { ...state.toneByCategory, isLoading: true },
+  })),
+  on(AnalyzeActions.getToneByCategorySuccess, (state, { data }) => ({
+    ...state,
+    toneByCategory: { data, error: null, isLoading: false },
+  })),
+  on(AnalyzeActions.getToneByCategoryError, (state, { error }) => ({
+    ...state,
+    toneByCategory: { data: [], error, isLoading: false },
+  })),
+
+  on(AnalyzeActions.getToneByMedia, (state) => ({
+    ...state,
+    toneByMedia: { ...state.toneByMedia, isLoading: true },
+  })),
+  on(AnalyzeActions.getToneByMediaSuccess, (state, { data }) => ({
+    ...state,
+    toneByMedia: { data, error: null, isLoading: false },
+  })),
+  on(AnalyzeActions.getToneByMediaError, (state, { error }) => ({
+    ...state,
+    toneByMedia: { data: [], error, isLoading: false },
   }))
 );

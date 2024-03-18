@@ -5,7 +5,6 @@ import { ChartModule } from 'primeng/chart';
 import { IconRadioComponent } from '../../../../core/components/icons/radio/radio.component';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Article } from '../../../../core/models/article.model';
 import { AppState } from '../../../../core/store';
 import { AnalyzeState } from '../../../../core/store/analyze/analyze.reducer';
 import { selectAnalyzeState } from '../../../../core/store/analyze/analyze.selectors';
@@ -40,6 +39,7 @@ export class MediaSentimentComponent {
   }
 
   ngOnInit() {
+    this.initChartOpts()
     this.store.dispatch(
       getTones({ filter: initialState as FilterRequestPayload })
     );

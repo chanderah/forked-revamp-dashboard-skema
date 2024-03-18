@@ -5,13 +5,15 @@ import { of } from 'rxjs';
 import * as OverviewActions from './overview.actions';
 import { OverviewService } from '../../services/overview.service';
 import { ArticleService } from '../../services/article.service';
+import { ToneService } from '../../services/tone.service';
 
 @Injectable()
 export class OverviewEffects {
   constructor(
     private actions$: Actions,
     private overviewService: OverviewService,
-    private articleService: ArticleService
+    private articleService: ArticleService,
+    private toneService: ToneService,
   ) {}
   getMediaCount = createEffect(() =>
     this.actions$.pipe(
@@ -73,7 +75,7 @@ export class OverviewEffects {
     this.actions$.pipe(
       ofType(OverviewActions.getToneByMedia),
       switchMap(({filter}) => {
-        return this.overviewService.getToneByMedia(filter).pipe(
+        return this.toneService.getToneByMedia(filter).pipe(
           map((response) => {
             if ((response as any).code === 401)
               throw new Error((response as any).message);
