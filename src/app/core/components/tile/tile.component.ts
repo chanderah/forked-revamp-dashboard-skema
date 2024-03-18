@@ -5,11 +5,20 @@ import { IconGlobeComponent } from '../icons/globe/globe.component';
 import { CommonModule } from '@angular/common';
 import { IconScreenComponent } from '../icons/screen/screen.component';
 import { IconNewspaperComponent } from '../icons/newspaper/newspaper.component';
+import { IconStackComponent } from '../icons/stack/stack.component';
 
 @Component({
   selector: 'app-tile',
   standalone: true,
-  imports: [CommonModule, CardModule, DividerModule, IconGlobeComponent, IconScreenComponent, IconNewspaperComponent],
+  imports: [
+    CommonModule,
+    CardModule,
+    DividerModule,
+    IconGlobeComponent,
+    IconScreenComponent,
+    IconNewspaperComponent,
+    IconStackComponent,
+  ],
   templateUrl: './tile.component.html',
   styleUrl: './tile.component.scss',
 })
