@@ -16,6 +16,19 @@ import { IconPencilComponent } from '../../../../core/components/icons/pencil/pe
 import { ButtonModule } from 'primeng/button';
 import { ButtonSecondaryComponent } from '../../../../core/components/button-secondary/button-secondary.component';
 import { TieredMenuModule } from 'primeng/tieredmenu';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { AppState } from '../../../../core/store';
+import { AnalyzeState } from '../../../../core/store/analyze/analyze.reducer';
+import { selectAnalyzeState } from '../../../../core/store/analyze/analyze.selectors';
+import {
+  FilterState,
+  initialState,
+} from '../../../../core/store/filter/filter.reducer';
+import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
+import { getTopIssue } from '../../../../core/store/analyze/analyze.actions';
+import { FilterRequestPayload } from '../../../../core/models/request.model';
+import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 
 Chart.register(TreemapController, TreemapElement);
 
@@ -34,6 +47,7 @@ Chart.register(TreemapController, TreemapElement);
     CoverageToneComponent,
     ButtonSecondaryComponent,
     TieredMenuModule,
+    SpinnerComponent,
   ],
   templateUrl: './top-issue.component.html',
   styleUrl: './top-issue.component.scss',
@@ -48,7 +62,14 @@ export class TopIssueComponent {
   downloadItems: MenuItem[] | undefined;
   downloadActive: boolean = false;
 
-  constructor() {
+  analyzeState: Observable<AnalyzeState>;
+  filterState: Observable<FilterState>;
+  isLoading: boolean = false;
+  isDataExist: boolean = false;
+
+  constructor(private store: Store<AppState>) {
+    this.analyzeState = this.store.select(selectAnalyzeState);
+    this.filterState = this.store.select(selectFilterState);
     this.tabItems = [
       {
         label: 'Media Visibility',
@@ -89,13 +110,34 @@ export class TopIssueComponent {
 
   ngAfterViewInit() {
     const ctx = this.chartArea?.nativeElement.getContext('2d');
-    new Chart(ctx as CanvasRenderingContext2D, {
+    const chart = new Chart(ctx as CanvasRenderingContext2D, {
       type: 'treemap',
-      data: {
+      data: { datasets: [] },
+      options: {
+        plugins: {
+          legend: { display: false },
+        },
+      },
+    });
+
+    this.store.dispatch(
+      getTopIssue({ filter: initialState as FilterRequestPayload })
+    );
+
+    this.analyzeState.subscribe(({ topIssue }) => {
+      this.isLoading = topIssue.isLoading;
+      this.isDataExist = Object.keys(topIssue.data?.top_issue ?? {}).length > 0;
+      const transformedData =
+        Object.entries(topIssue.data?.top_issue ?? {})
+          .sort((a, b) => b[1] - a[1])
+          .map(([key, value]) => ({ key, value })) ?? [];
+
+      chart.data = {
         datasets: [
           // @ts-ignore
           {
-            tree: [100, 80, 60, 40, 20, 10, 5, 3, 1],
+            tree: transformedData,
+            key: 'value',
             borderWidth: 1,
             spacing: 0.4,
             borderColor: (ctx) => this.colorFromRaw(ctx, true),
@@ -107,19 +149,25 @@ export class TopIssueComponent {
               padding: 5,
               font: { size: 16 },
               hoverFont: { size: 16, weight: 'bold' },
+              formatter(ctx) {
+                // @ts-ignore
+                return `${ctx.raw._data.key}`;
+              },
             },
           },
         ],
-      },
-      options: {
-        plugins: {
-          legend: { display: false },
-        },
-      },
+      };
+      chart.update();
     });
+    this.filterState.subscribe(this.onFilterChange);
   }
 
   onActiveItemChange(event: MenuItem) {
     this.activeTab = event;
   }
+
+  onFilterChange = (filterState: FilterState) => {
+    const filter = { ...filterState } as FilterRequestPayload;
+    this.store.dispatch(getTopIssue({ filter }));
+  };
 }

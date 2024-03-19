@@ -150,7 +150,7 @@ export class FilterComponent {
       year: [moment().subtract(1, 'years').format('YYYY-MM-DD'), today],
     };
     const defaultStartDate = dateRange[this.selectedPeriodic][0];
-    const defaultEndDate = dateRange[this.selectedPeriodic][0];
+    const defaultEndDate = dateRange[this.selectedPeriodic][1];
 
     const startDate = this.isCustom
       ? moment(this.startDate).format('YYYY-MM-DD')

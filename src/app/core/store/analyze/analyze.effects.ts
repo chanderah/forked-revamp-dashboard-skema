@@ -96,22 +96,42 @@ export class AnalyzeEffects {
   );
 
   getToneByMedia = createEffect(() =>
-  this.actions$.pipe(
-    ofType(AnalyzeActions.getToneByMedia),
-    switchMap(({ filter }) => {
-      return this.toneService.getToneByMedia(filter).pipe(
-        map((response) => {
-          if ((response as any).code === 401)
-            throw new Error((response as any).message);
-          return AnalyzeActions.getToneByMediaSuccess({
-            data: response.data,
-          });
-        }),
-        catchError((error) =>
-          of(AnalyzeActions.getToneByMediaError({ error: error.message }))
-        )
-      );
-    })
-  )
-);
+    this.actions$.pipe(
+      ofType(AnalyzeActions.getToneByMedia),
+      switchMap(({ filter }) => {
+        return this.toneService.getToneByMedia(filter).pipe(
+          map((response) => {
+            if ((response as any).code === 401)
+              throw new Error((response as any).message);
+            return AnalyzeActions.getToneByMediaSuccess({
+              data: response.data,
+            });
+          }),
+          catchError((error) =>
+            of(AnalyzeActions.getToneByMediaError({ error: error.message }))
+          )
+        );
+      })
+    )
+  );
+
+  getTopIssue = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AnalyzeActions.getTopIssue),
+      switchMap(({ filter }) => {
+        return this.analyzeService.getTopIssue(filter).pipe(
+          map((response) => {
+            if ((response as any).code === 401)
+              throw new Error((response as any).message);
+            return AnalyzeActions.getTopIssueSuccess({
+              data: response.data,
+            });
+          }),
+          catchError((error) =>
+            of(AnalyzeActions.getTopIssueError({ error: error.message }))
+          )
+        );
+      })
+    )
+  );
 }

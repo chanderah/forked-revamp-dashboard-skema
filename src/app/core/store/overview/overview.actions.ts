@@ -45,7 +45,10 @@ export const getWordCloudError = createAction(
   props<{ error: string }>()
 );
 
-export const getToneByMedia = createAction('[Overview] Get Tone By Media', props<{ filter: FilterRequestPayload }>());
+export const getToneByMedia = createAction(
+  '[Overview] Get Tone By Media',
+  props<{ filter: FilterRequestPayload }>()
+);
 export const getToneByMediaSuccess = createAction(
   '[Overview] Get Tone By Media Success',
   props<{ data: ToneByMedia[] }>()
@@ -55,15 +58,15 @@ export const getToneByMediaError = createAction(
   props<{ error: string }>()
 );
 
-export const getHighlights = createAction(
-  '[Overview] Get Highlights',
+export const getUserEditingPlus = createAction(
+  '[Overview] Get User Editing Plus',
   props<{ filter: FilterRequestPayload }>()
 );
-export const getHighlightsSuccess = createAction(
-  '[Overview] Get Highlights Success',
+export const getUserEditingPlusSuccess = createAction(
+  '[Overview] Get User Editing Plus Success',
   props<{ data: Article[] }>()
 );
-export const getHighlightsError = createAction(
-  '[Overview] Get Highlights Failure',
+export const getUserEditingPlusError = createAction(
+  '[Overview] Get User Editing Plus Failure',
   props<{ error: string }>()
 );

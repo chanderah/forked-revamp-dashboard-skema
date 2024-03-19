@@ -16,11 +16,12 @@ import { FilterRequestPayload } from '../../../../../core/models/request.model';
 import moment from 'moment';
 import { MediaVisibility } from '../../../../../core/models/media-visibility.model';
 import { htmlLegendPlugin } from '../../../../../shared/utils/ChartUtils';
+import { SpinnerComponent } from '../../../../../core/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-media-visibility',
   standalone: true,
-  imports: [ChartCardComponent, ChartModule],
+  imports: [ChartCardComponent, ChartModule, SpinnerComponent],
   templateUrl: './media-visibility.component.html',
   styleUrl: './media-visibility.component.scss',
 })

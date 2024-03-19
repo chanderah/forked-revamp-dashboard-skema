@@ -91,20 +91,20 @@ export class OverviewEffects {
     )
   );
 
-  getHighlights = createEffect(() =>
+  getUserEditingPlus = createEffect(() =>
     this.actions$.pipe(
-      ofType(OverviewActions.getHighlights),
+      ofType(OverviewActions.getUserEditingPlus),
       switchMap(({filter}) => {
-        return this.articleService.getHighlights(filter).pipe(
+        return this.articleService.getUserEditingPlus(filter).pipe(
           map((response) => {
             if ((response as any).code === 401)
               throw new Error((response as any).message);
-            return OverviewActions.getHighlightsSuccess({
+            return OverviewActions.getUserEditingPlusSuccess({
               data: response.data,
             });
           }),
           catchError((error) =>
-            of(OverviewActions.getHighlightsError({ error: error.message }))
+            of(OverviewActions.getUserEditingPlusError({ error: error.message }))
           )
         );
       })

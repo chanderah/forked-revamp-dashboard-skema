@@ -5,6 +5,7 @@ import { Tones } from '../../models/tone.model';
 import { MediaVisibility } from '../../models/media-visibility.model';
 import { ToneByCategory } from '../../models/tone-by-category.model';
 import { ToneByMedia } from '../../models/tone-by-media.model';
+import { TopIssueResponseData } from '../../models/issue.model';
 
 export interface AnalyzeState {
   highlights: { data: Article[]; error: string | null; isLoading: boolean };
@@ -24,6 +25,11 @@ export interface AnalyzeState {
     error: string | null;
     isLoading: boolean;
   };
+  topIssue: {
+    data: TopIssueResponseData | null;
+    error: string | null;
+    isLoading: boolean;
+  };
 }
 
 export const initialState: AnalyzeState = {
@@ -32,6 +38,7 @@ export const initialState: AnalyzeState = {
   mediaVisibility: { data: [], error: null, isLoading: false },
   toneByCategory: { data: [], error: null, isLoading: false },
   toneByMedia: { data: [], error: null, isLoading: false },
+  topIssue: { data: null, error: null, isLoading: false },
 };
 
 export const analyzeReducer = createReducer(
@@ -98,6 +105,19 @@ export const analyzeReducer = createReducer(
   })),
   on(AnalyzeActions.getToneByMediaError, (state, { error }) => ({
     ...state,
-    toneByMedia: { data: [], error, isLoading: false },
+    topIssue: { data: null, error, isLoading: false },
+  })),
+
+  on(AnalyzeActions.getTopIssue, (state) => ({
+    ...state,
+    topIssue: { ...state.topIssue, isLoading: true },
+  })),
+  on(AnalyzeActions.getTopIssueSuccess, (state, { data }) => ({
+    ...state,
+    topIssue: { data, error: null, isLoading: false },
+  })),
+  on(AnalyzeActions.getTopIssueError, (state, { error }) => ({
+    ...state,
+    topIssue: { data: null, error, isLoading: false },
   }))
 );

@@ -5,6 +5,7 @@ import { Tones } from '../../models/tone.model';
 import { MediaVisibility } from '../../models/media-visibility.model';
 import { ToneByCategory } from '../../models/tone-by-category.model';
 import { ToneByMedia } from '../../models/tone-by-media.model';
+import { TopIssueResponseData } from '../../models/issue.model';
 
 export const getHighlights = createAction(
   '[Analyze] Get Highlights',
@@ -68,5 +69,18 @@ export const getToneByMediaSuccess = createAction(
 );
 export const getToneByMediaError = createAction(
   '[Analyze] Get Tone By Media Failure',
+  props<{ error: string }>()
+);
+
+export const getTopIssue = createAction(
+  '[Analyze] Get Top Issue',
+  props<{ filter: FilterRequestPayload }>()
+);
+export const getTopIssueSuccess = createAction(
+  '[Analyze] Get Top Issue Success',
+  props<{ data: TopIssueResponseData }>()
+);
+export const getTopIssueError = createAction(
+  '[Analyze] Get Top Issue Failure',
   props<{ error: string }>()
 );

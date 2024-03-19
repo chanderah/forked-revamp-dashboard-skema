@@ -17,12 +17,12 @@ import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { getTones } from '../../../../core/store/analyze/analyze.actions';
 import { ChartBar, Tones } from '../../../../core/models/tone.model';
 import moment from 'moment';
-import { Tone } from '../../../../core/models/tone-by-media.model';
+import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-media-sentiment',
   standalone: true,
-  imports: [CardModule, IconInfoComponent, IconRadioComponent, ChartModule],
+  imports: [CardModule, IconInfoComponent, IconRadioComponent, ChartModule, SpinnerComponent],
   templateUrl: './media-sentiment.component.html',
   styleUrl: './media-sentiment.component.scss',
 })

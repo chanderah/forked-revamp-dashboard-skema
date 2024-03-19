@@ -77,8 +77,8 @@ export class CoverageToneComponent {
     const negativeValues: number[] = [];
     const neutralValues: number[] = [];
     const positiveValues: number[] = [];
-    toneByMedia.forEach((category) => {
-      category.tones.forEach((tone) => {
+    toneByMedia.forEach((media) => {
+      media.tones.forEach((tone) => {
         const key = Object.keys(tone)[0];
         const toneVal = Object.values(tone)[0];
         if (key === 'negative') negativeValues.push(toneVal);

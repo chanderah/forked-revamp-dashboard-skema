@@ -6,5 +6,7 @@
       <icon-info></icon-info>
     </div>
   </ng-template>
-  <p-chart type="line" [data]="chartData" [options]="options"></p-chart>
+  <spinner [spinning]="isLoading">
+    <p-chart type="line" [data]="chartData" [options]="options"></p-chart>
+  </spinner>
 </p-card>

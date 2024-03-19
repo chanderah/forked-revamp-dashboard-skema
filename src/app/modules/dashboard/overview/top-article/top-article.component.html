@@ -25,9 +25,7 @@
               [ngClass]="{ 'border-top-1 surface-border': !options.first }"
             >
               <div
-                style="
-                  background-image: url('https://primefaces.org/cdn/primeng/images/demo/product/green-earbuds.jpg');
-                "
+                [style.backgroundImage]="'url(' + item.image_url + ')'"
                 class="w-6rem h-6rem bg-cover bg-center border-round-lg"
               ></div>
               <div
