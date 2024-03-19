@@ -6,8 +6,8 @@ import { Component, Input } from '@angular/core';
   imports: [],
   template: `
     <svg
-      width="25"
-      height="22"
+      [attr.width]="width"
+      [attr.height]="height"
       viewBox="0 0 25 22"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -24,4 +24,6 @@ import { Component, Input } from '@angular/core';
 export class IconNewspaperComponent {
   @Input() class = '';
   @Input() fill = '#8A90AB';
+  @Input() width = 25
+  @Input() height = 22
 }

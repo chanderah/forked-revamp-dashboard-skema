@@ -8,23 +8,47 @@
     <canvas #chartArea width="800" height="400"></canvas>
   </div>
   <div>
-    <p-tabMenu
-      [model]="tabItems"
-      [activeItem]="activeTab"
-      (activeItemChange)="onActiveItemChange($event)"
-    >
-      <ng-template pTemplate="item" let-item>
-        <div
-          class="p-menuitem-link flex justify-content-between align-items-center cursor-pointer"
-        >
-          <div class="flex align-items-center gap-2">
-            <icon-home *ngIf="item.key === 'media'"></icon-home>
-            <icon-chart *ngIf="item.key === 'coverage'"></icon-chart>
-            <div class="text-xs font-medium text-color">{{ item.label }}</div>
+    <div class="relative">
+      <p-tabMenu
+        [model]="tabItems"
+        [activeItem]="activeTab"
+        (activeItemChange)="onActiveItemChange($event)"
+      >
+        <ng-template pTemplate="item" let-item>
+          <div
+            class="p-menuitem-link flex justify-content-between align-items-center cursor-pointer"
+          >
+            <div class="flex align-items-center gap-2">
+              <icon-newspaper
+                [width]="20"
+                [height]="20"
+                *ngIf="item.key === 'media'"
+                [class]="activeTab?.['key'] === 'media' ? 'fill-primary' : ''"
+              ></icon-newspaper>
+              <icon-pencil
+                *ngIf="item.key === 'coverage'"
+                [class]="activeTab?.['key'] === 'coverage' ? 'fill-primary' : ''"
+              ></icon-pencil>
+              <div class="text-xs font-medium">{{ item.label }}</div>
+            </div>
           </div>
-        </div>
-      </ng-template>
-    </p-tabMenu>
+        </ng-template>
+      </p-tabMenu>
+      <div class="absolute top-0 right-0 mb-2">
+        <button-secondary
+          label="Download"
+          icon="pi pi-chevron-down"
+          (click)="this.downloadActive = !this.downloadActive"
+          (blur)="this.downloadActive = !this.downloadActive"
+        ></button-secondary>
+        <p-tieredMenu
+          *ngIf="this.downloadActive"
+          [model]="downloadItems"
+          styleClass="text-sm absolute z-5"
+          [style]="{ right: '8px' }"
+        ></p-tieredMenu>
+      </div>
+    </div>
     <div class="py-4">
       <app-media-visibility
         *ngIf="activeTab && activeTab['key'] === 'media'"

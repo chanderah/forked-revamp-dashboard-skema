@@ -1,0 +1,17 @@
+:host ::ng-deep {
+  .p-button {
+    padding: 12px 14px;
+    background-color: #f5f8fa;
+    border-color: #f5f8fa;
+  }
+
+  .p-button-label {
+    color: var(--text-color);
+    font-weight: 500;
+  }
+
+  .p-button-icon {
+    color: var(--primary-color);
+    margin-left: 12px;
+  }
+}

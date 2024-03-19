@@ -12,6 +12,10 @@ import { MenuItem } from 'primeng/api';
 import { CommonModule } from '@angular/common';
 import { MediaVisibilityComponent } from './media-visibility/media-visibility.component';
 import { CoverageToneComponent } from './coverage-tone/coverage-tone.component';
+import { IconPencilComponent } from '../../../../core/components/icons/pencil/pencil.component';
+import { ButtonModule } from 'primeng/button';
+import { ButtonSecondaryComponent } from '../../../../core/components/button-secondary/button-secondary.component';
+import { TieredMenuModule } from 'primeng/tieredmenu';
 
 Chart.register(TreemapController, TreemapElement);
 
@@ -24,10 +28,12 @@ Chart.register(TreemapController, TreemapElement);
     ChartModule,
     TabMenuModule,
     IconHomeComponent,
-    IconChartComponent,
+    IconPencilComponent,
     CommonModule,
     MediaVisibilityComponent,
-    CoverageToneComponent
+    CoverageToneComponent,
+    ButtonSecondaryComponent,
+    TieredMenuModule,
   ],
   templateUrl: './top-issue.component.html',
   styleUrl: './top-issue.component.scss',
@@ -39,13 +45,37 @@ export class TopIssueComponent {
 
   tabItems: MenuItem[] | undefined;
   activeTab: MenuItem | undefined;
+  downloadItems: MenuItem[] | undefined;
+  downloadActive: boolean = false;
 
   constructor() {
     this.tabItems = [
-      { label: 'Media Visibility', key: 'media' },
-      { label: 'Coverage Tone', key: 'coverage' },
+      {
+        label: 'Media Visibility',
+        key: 'media',
+        customIcon: IconNewspaperComponent,
+      },
+      {
+        label: 'Coverage Tone',
+        key: 'coverage',
+        customIcon: IconChartComponent,
+      },
     ];
     this.activeTab = this.tabItems[0];
+    this.downloadItems = [
+      {
+        label: 'Powerpoint',
+        command: () => {
+          this.downloadActive = false;
+        },
+      },
+      {
+        label: 'Excel',
+        command: () => {
+          this.downloadActive = false;
+        },
+      },
+    ];
   }
 
   colorFromRaw(ctx: any, border: boolean) {
