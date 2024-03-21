@@ -19,6 +19,7 @@ import {
 } from '../../../../core/store/filter/filter.reducer';
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
+import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
 
 @Component({
   selector: 'app-top-article',
@@ -31,6 +32,7 @@ import { SpinnerComponent } from '../../../../core/components/spinner/spinner.co
     IconNewspaperComponent,
     RouterLink,
     SpinnerComponent,
+    ImgFallbackDirective,
   ],
   templateUrl: './top-article.component.html',
   styleUrl: './top-article.component.scss',

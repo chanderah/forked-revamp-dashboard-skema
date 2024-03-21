@@ -57,8 +57,9 @@
         <p-tieredMenu
           *ngIf="this.downloadActive"
           [model]="downloadItems"
-          styleClass="text-sm absolute z-5"
-          [style]="{ right: '8px' }"
+          styleClass="text-sm absolute"
+          (blur)="this.downloadActive = !this.downloadActive"
+          [style]="{ right: '8px', zIndex: 99 }"
         ></p-tieredMenu>
       </div>
     </div>

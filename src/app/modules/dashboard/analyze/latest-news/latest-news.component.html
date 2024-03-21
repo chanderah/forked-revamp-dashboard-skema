@@ -14,12 +14,13 @@
       <ng-template let-article pTemplate="item">
         <div>
           <div class="mb-3">
-            <div
-              style="
-                background-image: url('https://primefaces.org/cdn/primeng/images/demo/product/green-earbuds.jpg');
-              "
-              class="w-full h-10rem bg-cover bg-center border-round-lg"
-            ></div>
+            <img
+              [src]="article.image_url"
+              [alt]="article.title"
+              class="h-10rem w-full"
+              style="object-fit: cover"
+              imgFallback="https://placehold.co/600x400?text=No+Image+Available"
+            />
           </div>
           <div>
             <div

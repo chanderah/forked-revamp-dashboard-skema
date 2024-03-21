@@ -18,6 +18,7 @@ import { getHighlights } from '../../../../core/store/analyze/analyze.actions';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { Article } from '../../../../core/models/article.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
+import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
 
 @Component({
   selector: 'app-latest-news',
@@ -28,7 +29,8 @@ import { SpinnerComponent } from '../../../../core/components/spinner/spinner.co
     IconInfoComponent,
     AvatarModule,
     CommonModule,
-    SpinnerComponent
+    SpinnerComponent,
+    ImgFallbackDirective,
   ],
   templateUrl: './latest-news.component.html',
   styleUrl: './latest-news.component.scss',
@@ -49,7 +51,7 @@ export class LatestNewsComponent {
     this.responsiveOptions = [
       {
         breakpoint: '1199px',
-        numVisible: 3,
+        numVisible: 4,
         numScroll: 1,
       },
       {
