@@ -1,0 +1,57 @@
+<div>
+  <div class="flex align-items-center gap-2 mb-4">
+    <icon-newspaper fill="var(--primary-color)"></icon-newspaper>
+    <div class="text-sm font-semibold">Spokeperson</div>
+    <icon-info></icon-info>
+  </div>
+  <spinner [spinning]="isLoading">
+    <p-scroller
+      [items]="influencerCount"
+      [itemSize]="influencerCount.length + 1"
+      scrollHeight="740px"
+    >
+      <ng-template pTemplate="item" let-item let-options="options">
+        <div class="grid grid-nogutter">
+          <div class="col-12">
+            <div class="flex align-items-center py-1 gap-3">
+              <div class="w-4rem">
+                <img
+                  [src]="item.image"
+                  [alt]="item.influencer_name"
+                  class="h-4rem w-full border-round"
+                  style="object-fit: cover"
+                  imgFallback="https://placehold.co/600x400?text=No+Image+Available"
+                />
+              </div>
+              <div
+                class="flex flex-columnjustify-content-between align-items-centerflex-1"
+              >
+                <div class="flex flex-column">
+                  <div
+                    class="text-sm font-semibold white-space-nowrap text-overflow-ellipsis overflow-hidden"
+                    style="width: 140px"
+                  >
+                    {{ item.influencer_name }}
+                  </div>
+                  <p
+                    class="white-space-nowrap overflow-hidden text-overflow-ellipsis p-0 mt-1"
+                    style="width: 140px"
+                  >
+                    {{ item.count.all }}
+                    <span class="text-color-secondary">Statement</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-scroller>
+    <div>
+      <p class="p-0 mt-5">
+        {{ influencerCount.length }}
+        <span class="text-color-secondary">Spokeperson</span>
+      </p>
+    </div>
+  </spinner>
+</div>
