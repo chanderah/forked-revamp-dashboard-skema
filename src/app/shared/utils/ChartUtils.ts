@@ -21,7 +21,6 @@ const getOrCreateLegendList = ({ containerID, flexDirection }) => {
 export const htmlLegendPlugin = {
   id: 'htmlLegend',
   afterUpdate(chart, _, options) {
-    console.log('options', options)
     const ul = getOrCreateLegendList(options);
     const { flexDirection, percentagesValueFontSize, fontWeight } = options;
 
@@ -94,7 +93,6 @@ export const htmlLegendPlugin = {
 
       const value = document.createElement('div');
       value.style.textDecoration = item.hidden ? 'line-through' : '';
-      console.log('percentagesValueFontSize', percentagesValueFontSize);
       if (percentagesValueFontSize) {
         value.style.fontSize = percentagesValueFontSize;
         value.style.fontWeight = fontWeight;
