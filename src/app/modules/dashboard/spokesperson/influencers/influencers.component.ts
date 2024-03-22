@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { IconNewspaperComponent } from '../../../../core/components/icons/newspaper/newspaper.component';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import { selectSpokespersonState } from '../../../../core/store/spokesperson/spokesperson.selectors';
 import { AppState } from '../../../../core/store';
@@ -18,12 +17,13 @@ import { ScrollerModule } from 'primeng/scroller';
 import { CommonModule } from '@angular/common';
 import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
+import { IconMicComponent } from '../../../../core/components/icons/mic/mic.component';
 
 @Component({
   selector: 'app-influencers',
   standalone: true,
   imports: [
-    IconNewspaperComponent,
+    IconMicComponent,
     IconInfoComponent,
     ScrollerModule,
     CommonModule,

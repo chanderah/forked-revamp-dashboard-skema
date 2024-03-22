@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
-import { IconNewspaperComponent } from '../../../../core/components/icons/newspaper/newspaper.component';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Influencer } from '../../../../core/models/influencer.model';
@@ -18,12 +17,13 @@ import { ScrollerModule } from 'primeng/scroller';
 import { CommonModule } from '@angular/common';
 import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
+import { IconDialogueComponent } from '../../../../core/components/icons/dialogue/dialogue.component';
 
 @Component({
   selector: 'app-statements',
   standalone: true,
   imports: [
-    IconNewspaperComponent,
+    IconDialogueComponent,
     IconInfoComponent,
     ScrollerModule,
     CommonModule,
