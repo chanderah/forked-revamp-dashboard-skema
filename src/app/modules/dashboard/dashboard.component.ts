@@ -1,7 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { MenubarModule } from 'primeng/menubar';
 import { TabMenuModule } from 'primeng/tabmenu';
-import { RouterLink, RouterModule, RouterOutlet } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterModule,
+  RouterOutlet,
+} from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { AvatarModule } from 'primeng/avatar';
@@ -19,8 +26,9 @@ import { IconNotesComponent } from '../../core/components/icons/notes/notes.comp
 import { IconPeopleComponent } from '../../core/components/icons/people/people.component';
 import { IconPreferenceComponent } from '../../core/components/icons/preference/preference.component';
 import { User } from '../../core/models/user.model';
-import { getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
+import { getUserFromLocalStorage, logout } from '../../shared/utils/AuthUtils';
 import { ToggleDarkmodeComponent } from './components/toggle-darkmode/toggle-darkmode.component';
+import { TieredMenuModule } from 'primeng/tieredmenu';
 
 @Component({
   selector: 'app-dashboard',
@@ -46,7 +54,8 @@ import { ToggleDarkmodeComponent } from './components/toggle-darkmode/toggle-dar
     IconNotesComponent,
     IconPeopleComponent,
     IconPreferenceComponent,
-    ToggleDarkmodeComponent
+    ToggleDarkmodeComponent,
+    TieredMenuModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -55,8 +64,11 @@ export class DashboardComponent implements OnInit {
   navItems: MenuItem[] | undefined;
   navActiveItem: string | undefined;
   breadCrumbsItems: MenuItem[] | undefined;
+  profileItems: MenuItem[] | undefined;
 
   user: User | null = getUserFromLocalStorage();
+
+  constructor(private router: Router) {}
 
   ngOnInit() {
     const currentLocation = window.location.href.split('/').pop();
@@ -88,14 +100,34 @@ export class DashboardComponent implements OnInit {
       },
     ];
 
+    const breadCrumbLabelMap: { [x: string]: string } = {
+      overview: 'Overview',
+      analyze: 'Analyze',
+    };
+
+    this.router.events.subscribe((route) => {
+      if (route instanceof NavigationEnd) {
+        const nav = route as NavigationEnd;
+
+        this.breadCrumbsItems = [
+          { label: 'Dashboard' },
+          {
+            label: breadCrumbLabelMap[nav.url.split('/')?.pop?.() ?? ''] ?? '-',
+          },
+        ];
+      }
+    });
+
     this.breadCrumbsItems = [
+      { label: 'Dashboard' },
+      { label: breadCrumbLabelMap[currentLocation ?? ''] },
+    ];
+
+    this.profileItems = [
       {
-        id: 'dashboard',
-        label: 'Dashboard',
-      },
-      {
-        id: 'overview',
-        label: 'Overview',
+        label: 'Logout',
+        icon: 'pi pi-power-off',
+        command: () => logout(),
       },
     ];
   }

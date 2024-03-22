@@ -22,6 +22,7 @@
     "@ngrx/store": "^17.1.1",
     "angular-d3-cloud": "^2.0.3",
     "chart.js": "^4.4.2",
+    "chartjs-chart-treemap": "^2.3.0",
     "chartjs-plugin-datalabels": "^2.2.0",
     "moment": "^2.30.1",
     "primeflex": "^3.3.1",

@@ -15,7 +15,7 @@ export interface OverviewState {
     error: string | null;
     isLoading: boolean;
   };
-  highlights: { data: Article[]; error: string | null; isLoading: boolean };
+  topArticles: { data: Article[]; error: string | null; isLoading: boolean };
 }
 
 export const initialState: OverviewState = {
@@ -23,7 +23,7 @@ export const initialState: OverviewState = {
   allCount: { data: null, error: null, isLoading: false },
   wordCloud: { data: [], error: null, isLoading: false },
   toneByMedia: { data: [], error: null, isLoading: false },
-  highlights: { data: [], error: null, isLoading: false },
+  topArticles: { data: [], error: null, isLoading: false },
 };
 
 export const overviewReducer = createReducer(
@@ -76,16 +76,16 @@ export const overviewReducer = createReducer(
     ...state,
     toneByMedia: { data: [], error, isLoading: false },
   })),
-  on(OverviewActions.getHighlights, (state) => ({
+  on(OverviewActions.getUserEditingPlus, (state) => ({
     ...state,
-    highlights: { ...state.highlights, isLoading: true },
+    topArticles: { ...state.topArticles, isLoading: true },
   })),
-  on(OverviewActions.getHighlightsSuccess, (state, { data }) => ({
+  on(OverviewActions.getUserEditingPlusSuccess, (state, { data }) => ({
     ...state,
-    highlights: { data, error: null, isLoading: false },
+    topArticles: { data, error: null, isLoading: false },
   })),
-  on(OverviewActions.getHighlightsError, (state, { error }) => ({
+  on(OverviewActions.getUserEditingPlusError, (state, { error }) => ({
     ...state,
-    highlights: { data: [], error, isLoading: false },
+    topArticles: { data: [], error, isLoading: false },
   }))
 );

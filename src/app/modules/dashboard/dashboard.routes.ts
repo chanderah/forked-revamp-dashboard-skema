@@ -16,10 +16,12 @@ export const DashboardRoutes: Routes = [
       },
       {
         path: 'overview',
+        title: 'Overview',
         component: OverviewComponent,
       },
       {
         path: 'analyze',
+        title: 'Analyze',
         component: AnalyzeComponent,
       },
     ],

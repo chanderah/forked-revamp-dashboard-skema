@@ -6,6 +6,7 @@
       optionLabel="name"
       optionValue="value"
       placeholder="Yesterday"
+      [disabled]="isCustom"
     ></p-dropdown>
     <label>Periodic</label>
   </span>
@@ -45,12 +46,38 @@
     ></p-dropdown>
     <label for="media">Media</label>
   </span>
+  <ng-container *ngIf="isCustom">
+    <span class="select-container">
+      <p-calendar
+        [(ngModel)]="startDate"
+        inputId="startDate"
+        class="datepicker"
+        styleClass="w-full"
+        [showButtonBar]="true"
+      ></p-calendar>
+      <label for="startDate">Start Date</label>
+    </span>
+    <span class="select-container">
+      <p-calendar
+        [(ngModel)]="endDate"
+        inputId="endDate"
+        class="datepicker"
+        styleClass="w-full"
+        [showButtonBar]="true"
+      ></p-calendar>
+      <label for="endDate">End Date</label>
+    </span>
+  </ng-container>
   <div class="grid">
     <div class="col-6">
       <p-button label="Set Filter" (onClick)="onSetFilter()"></p-button>
     </div>
     <div class="col-6">
-      <p-button label="Custom" severity="secondary"></p-button>
+      <p-button
+        [label]="isCustom ? 'Close' : 'Custom'"
+        severity="secondary"
+        (onClick)="onClickCustom()"
+      ></p-button>
     </div>
   </div>
 </div>

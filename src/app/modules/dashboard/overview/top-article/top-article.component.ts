@@ -11,7 +11,7 @@ import { AppState } from '../../../../core/store';
 import { OverviewState } from '../../../../core/store/overview/overview.reducer';
 import { selectOverviewState } from '../../../../core/store/overview/overview.selectors';
 import { Article } from '../../../../core/models/article.model';
-import { getHighlights } from '../../../../core/store/overview/overview.actions';
+import { getUserEditingPlus } from '../../../../core/store/overview/overview.actions';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import {
   FilterState,
@@ -19,6 +19,7 @@ import {
 } from '../../../../core/store/filter/filter.reducer';
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
+import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
 
 @Component({
   selector: 'app-top-article',
@@ -30,7 +31,8 @@ import { SpinnerComponent } from '../../../../core/components/spinner/spinner.co
     IconInfoComponent,
     IconNewspaperComponent,
     RouterLink,
-    SpinnerComponent
+    SpinnerComponent,
+    ImgFallbackDirective,
   ],
   templateUrl: './top-article.component.html',
   styleUrl: './top-article.component.scss',
@@ -48,17 +50,17 @@ export class TopArticleComponent {
 
   ngOnInit() {
     this.store.dispatch(
-      getHighlights({ filter: initialState as FilterRequestPayload })
+      getUserEditingPlus({ filter: initialState as FilterRequestPayload })
     );
-    this.overviewState.subscribe(({ highlights }) => {
-      this.isLoading = highlights.isLoading
-      this.articles = highlights.data;
+    this.overviewState.subscribe(({ topArticles }) => {
+      this.isLoading = topArticles.isLoading;
+      this.articles = topArticles.data;
     });
     this.filterState.subscribe(this.onFilterChange);
   }
 
   onFilterChange = (filterState: FilterState) => {
     const filter = { ...filterState } as FilterRequestPayload;
-    this.store.dispatch(getHighlights({ filter }));
+    this.store.dispatch(getUserEditingPlus({ filter }));
   };
 }

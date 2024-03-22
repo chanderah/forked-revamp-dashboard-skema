@@ -18,4 +18,6 @@ export interface Article {
   is_colour: string;
   categories: string[];
   media_name: string;
+  image_url?: string;
+  preview_link?: string;
 }

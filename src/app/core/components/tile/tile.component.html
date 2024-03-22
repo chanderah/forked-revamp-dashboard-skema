@@ -13,8 +13,12 @@
         }"
       >
         <icon-globe *ngIf="icon === 'globe'" [fill]="color"></icon-globe>
-        <icon-newspaper *ngIf="icon === 'newspaper'" [fill]="color"></icon-newspaper>
+        <icon-newspaper
+          *ngIf="icon === 'newspaper'"
+          [fill]="color"
+        ></icon-newspaper>
         <icon-screen *ngIf="icon === 'screen'" [fill]="color"></icon-screen>
+        <icon-stack *ngIf="icon === 'stack'" [fill]="color"></icon-stack>
       </div>
       <div>
         <p class="m-0">{{ title }}</p>

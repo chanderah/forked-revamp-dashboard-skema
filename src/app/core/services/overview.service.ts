@@ -46,26 +46,4 @@ export class OverviewService {
       }
     );
   }
-
-  getToneByMedia(
-    filter: FilterRequestPayload
-  ): Observable<ToneByMediaResponse> {
-    return this.http.post<ToneByMediaResponse>(
-      `${this.baseUrl}/v1/dashboard/tone-by-media`,
-      {
-        ...filter,
-        media_id: 0,
-      }
-    );
-  }
-
-  getHighlights(filter: FilterRequestPayload): Observable<HighlightsResponse> {
-    return this.http.post<HighlightsResponse>(
-      `${this.baseUrl}/v1/dashboard/high-lights`,
-      {
-        ...filter,
-        media_id: 0,
-      }
-    );
-  }
 }

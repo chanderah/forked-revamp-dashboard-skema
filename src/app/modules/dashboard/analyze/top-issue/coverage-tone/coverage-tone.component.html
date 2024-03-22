@@ -1,0 +1,48 @@
+<section>
+  <div class="grid">
+    <div class="xl:col-6 lg:col-6 col-12">
+      <chart-card title="Visibility Chart">
+        <p-chart
+          type="bar"
+          [data]="coverageChartData"
+          [options]="coverageChartOpts"
+        ></p-chart>
+      </chart-card>
+    </div>
+    <div class="xl:col-6 lg:col-6 col-12">
+      <chart-card title="Coverage Pie">
+        <div class="flex align-items-center gap-6">
+          <div
+            id="coverage-legend-container"
+            class="flex align-items-center justify-content-center gap-6 w-full"
+          >
+            <p-chart
+              type="pie"
+              [data]="coveragePieData"
+              [options]="coveragePieOpts"
+              [plugins]="coveragePiePlugins"
+            ></p-chart>
+          </div>
+        </div>
+      </chart-card>
+    </div>
+    <div class="xl:col-6 lg:col-6 col-12">
+      <chart-card title="Tone by Media Selection">
+        <p-chart
+          type="bar"
+          [data]="toneByMediaChartData"
+          [options]="toneByMediaChartOpts"
+        ></p-chart>
+      </chart-card>
+    </div>
+    <div class="xl:col-6 lg:col-6 col-12">
+      <chart-card title="Tone by Category">
+        <p-chart
+          type="bar"
+          [data]="toneByCategChartData"
+          [options]="toneByCategChartOpts"
+        ></p-chart>
+      </chart-card>
+    </div>
+  </div>
+</section>
