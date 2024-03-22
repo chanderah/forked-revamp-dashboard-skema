@@ -1,12 +1,13 @@
 // @ts-nocheck
-const getOrCreateLegendList = (chart, id) => {
-  const legendContainer = document.getElementById(id);
+const getOrCreateLegendList = ({ containerID, flexDirection }) => {
+  const legendContainer = document.getElementById(containerID);
   let listContainer = legendContainer.querySelector('ul');
 
   if (!listContainer) {
     listContainer = document.createElement('ul');
     listContainer.style.display = 'flex';
-    listContainer.style.flexDirection = 'column';
+    listContainer.style.flexDirection = flexDirection ?? 'column';
+    listContainer.style.flexWrap = 'wrap';
     listContainer.style.gap = '12px';
     listContainer.style.marginLeft = 0;
     listContainer.style.padding = 0;
@@ -20,17 +21,17 @@ const getOrCreateLegendList = (chart, id) => {
 export const htmlLegendPlugin = {
   id: 'htmlLegend',
   afterUpdate(chart, _, options) {
-    const ul = getOrCreateLegendList(chart, options.containerID);
+    const ul = getOrCreateLegendList(options);
+    const { flexDirection, percentagesValueFontSize, fontWeight } = options;
 
     // Remove old legend items
     while (ul.firstChild) {
       ul.firstChild.remove();
     }
 
-    let data = [];
-    let percentages = []
-    if (chart.data.datasets.length) data = chart.data.datasets[0].data;
-    if (chart.data.datasets.length) percentages = chart.data.datasets[0].percentages;
+    let percentages = [];
+    if (chart.data.datasets.length)
+      percentages = chart.data.datasets[0].percentages;
 
     // Reuse the built-in legendItems generator
     const items = chart.options.plugins.legend.labels.generateLabels(chart);
@@ -39,7 +40,7 @@ export const htmlLegendPlugin = {
       const li = document.createElement('li');
       li.style.cursor = 'pointer';
       li.style.display = 'flex';
-      li.style.flexDirection = 'column';
+      li.style.flexDirection = flexDirection ?? 'column';
       li.style.marginLeft = '10px';
       li.style.gap = '2px';
 
@@ -71,7 +72,7 @@ export const htmlLegendPlugin = {
       // Text
       const textContainer = document.createElement('p');
       textContainer.style.color = item.fontColor;
-      textContainer.style.fontWeight = '500';
+      textContainer.style.fontWeight = fontWeight ?? '500';
       textContainer.style.margin = 0;
       textContainer.style.padding = 0;
       textContainer.style.textDecoration = item.hidden ? 'line-through' : '';
@@ -88,18 +89,28 @@ export const htmlLegendPlugin = {
       const valueContainer = document.createElement('div');
       valueContainer.style.display = 'flex';
       valueContainer.style.alignItems = 'baseline';
-      valueContainer.classList.add('gap-2');
+      valueContainer.classList.add('gap-1');
 
       const value = document.createElement('div');
       value.style.textDecoration = item.hidden ? 'line-through' : '';
-      value.classList.add('text-3xl');
-      value.classList.add('font-bold');
-      value.appendChild(document.createTextNode(percentages[index] ?? '-'));
+      if (percentagesValueFontSize) {
+        value.style.fontSize = percentagesValueFontSize;
+        value.style.fontWeight = fontWeight;
+      } else {
+        value.classList.add('text-3xl');
+        value.classList.add('font-bold');
+      }
+      value.appendChild(document.createTextNode(percentages?.[index] ?? '-'));
 
       const percent = document.createElement('div');
-      percent.classList.add('text-xs');
-      percent.classList.add('text-400');
-      percent.appendChild(document.createTextNode('%'))
+      if (percentagesValueFontSize) {
+        percent.style.fontSize = percentagesValueFontSize;
+        value.style.fontWeight = fontWeight;
+      } else {
+        percent.classList.add('text-xs');
+        percent.classList.add('text-400');
+      }
+      percent.appendChild(document.createTextNode('%'));
 
       valueContainer.appendChild(value);
       valueContainer.appendChild(percent);

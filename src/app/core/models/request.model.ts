@@ -6,5 +6,7 @@ export interface FilterRequestPayload {
   category_set?: number;
   media_id?: string;
   user_media_type_id?: number;
+  limit?: number;
+  maxSize?: number;
 }
  
