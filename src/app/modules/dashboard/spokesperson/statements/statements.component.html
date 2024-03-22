@@ -1,0 +1,72 @@
+<div>
+  <div class="flex align-items-center gap-2 mb-4">
+    <icon-dialogue
+      fill="var(--primary-color)"
+      [width]="20"
+      [height]="16"
+    ></icon-dialogue>
+    <div class="text-sm font-semibold">Statements</div>
+    <icon-info></icon-info>
+  </div>
+  <spinner [spinning]="isLoading">
+    <p-scroller
+      [items]="influencer"
+      [itemSize]="influencer.length + 1"
+      scrollHeight="500px"
+    >
+      <ng-template pTemplate="item" let-item let-options="options">
+        <div class="grid grid-nogutter">
+          <div class="col-12">
+            <div
+              class="flex flex-column xl:flex-row xl:align-items-start py-1 gap-3"
+            >
+              <div class="w-4rem">
+                <img
+                  [src]="item.image_url"
+                  [alt]="item.influencer_name"
+                  class="h-4rem w-full border-round"
+                  style="object-fit: cover"
+                  imgFallback="https://placehold.co/600x400?text=No+Image+Available"
+                />
+              </div>
+              <div
+                class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1"
+              >
+                <div class="flex flex-column gap-1">
+                  <div
+                    class="text-xs font-semibold white-space-nowrap text-overflow-ellipsis overflow-hidden"
+                    style="width: 220px"
+                  >
+                    {{ item.influencer_name }}
+                  </div>
+                  <p
+                    class="white-space-nowrap overflow-hidden text-overflow-ellipsis p-0 mt-0 mb-0"
+                    style="width: 220px"
+                  >
+                    {{ item.quotes }}
+                  </p>
+                  <div class="flex gap-3 align-items-center">
+                    <div class="flex align-items-center gap-2">
+                      <i class="pi pi-globe text-500 text-xs"></i>
+                      <span
+                        class="text-xs text-500 p-0 mt-0 white-space-nowrap overflow-hidden text-overflow-ellipsis"
+                        style="width: 80px"
+                        >{{ item.media }}</span
+                      >
+                    </div>
+                    <div class="flex align-items-center gap-2">
+                      <i class="pi pi-clock text-500 text-xs"></i>
+                      <span class="text-xs text-500 p-0 mt-0">{{
+                        item.date
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-scroller>
+  </spinner>
+</div>

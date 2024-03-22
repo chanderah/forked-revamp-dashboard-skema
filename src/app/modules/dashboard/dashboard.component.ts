@@ -103,6 +103,10 @@ export class DashboardComponent implements OnInit {
     const breadCrumbLabelMap: { [x: string]: string } = {
       overview: 'Overview',
       analyze: 'Analyze',
+      spokesperson: 'Spokesperson',
+      newsindex: 'News Index',
+      preference: 'Preference',
+      share: 'Share',
     };
 
     this.router.events.subscribe((route) => {
