@@ -87,16 +87,16 @@ export class DashboardComponent implements OnInit {
         routerLink: 'analyze',
       },
       {
-        label: 'Spokesperson',
-        routerLink: 'spokesperson',
-      },
-      {
         label: 'Media SOV',
-        routerLink: 'mediasov',
+        routerLink: 'media-sov',
       },
       {
         label: 'Map',
         routerLink: 'map',
+      },
+      {
+        label: 'Spokesperson',
+        routerLink: 'spokesperson',
       },
       {
         label: 'Preference',
@@ -112,6 +112,7 @@ export class DashboardComponent implements OnInit {
       overview: 'Overview',
       analyze: 'Analyze',
       spokesperson: 'Spokesperson',
+      'media-sov': 'Media SOV',
       newsindex: 'News Index',
       preference: 'Preference',
       share: 'Share',

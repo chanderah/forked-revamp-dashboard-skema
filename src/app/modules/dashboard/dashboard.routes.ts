@@ -7,6 +7,8 @@ import { NewsindexComponent } from './newsindex/newsindex.component';
 import { PreferenceComponent } from './preference/preference.component';
 import { ShareComponent } from './share/share.component';
 import { NewsIndexRoutes } from './newsindex/newsindex.routes';
+import { MediaSOVComponent } from './media-sov/media-sov.component';
+import { MapComponent } from './map/map.component';
 
 export const DashboardRoutes: Routes = [
   {
@@ -33,6 +35,16 @@ export const DashboardRoutes: Routes = [
         path: 'spokesperson',
         title: 'Spokesperson',
         component: SpokespersonComponent,
+      },
+      {
+        path: 'media-sov',
+        title: 'Media SOV',
+        component: MediaSOVComponent,
+      },
+      {
+        path: 'map',
+        title: 'Map',
+        component: MapComponent,
       },
       {
         path: 'newsindex',
