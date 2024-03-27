@@ -29,6 +29,8 @@ import { User } from '../../core/models/user.model';
 import { getUserFromLocalStorage, logout } from '../../shared/utils/AuthUtils';
 import { ToggleDarkmodeComponent } from './components/toggle-darkmode/toggle-darkmode.component';
 import { TieredMenuModule } from 'primeng/tieredmenu';
+import { IconGlobeComponent } from '../../core/components/icons/globe/globe.component';
+import { IconNewspaperComponent } from '../../core/components/icons/newspaper/newspaper.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -56,6 +58,8 @@ import { TieredMenuModule } from 'primeng/tieredmenu';
     IconPreferenceComponent,
     ToggleDarkmodeComponent,
     TieredMenuModule,
+    IconGlobeComponent,
+    IconNewspaperComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -87,8 +91,12 @@ export class DashboardComponent implements OnInit {
         routerLink: 'spokesperson',
       },
       {
-        label: 'News Index',
-        routerLink: 'newsindex',
+        label: 'Media SOV',
+        routerLink: 'mediasov',
+      },
+      {
+        label: 'Map',
+        routerLink: 'map',
       },
       {
         label: 'Preference',

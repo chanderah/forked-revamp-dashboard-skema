@@ -4,9 +4,9 @@
 @import "./primeflex-themes.scss";
 
 :root {
-  --positive-color: #1B81E2;
+  --positive-color: #1b81e2;
   --neutral-color: #05b9bf;
-  --negative-color: #FB3B52;
+  --negative-color: #fb3b52;
 }
 
 @layer reset, primeng;
@@ -82,6 +82,10 @@ button {
   fill: var(--primary-color) !important;
 }
 
+.fill-text-color {
+  fill: var(--text-color) !important;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
@@ -100,4 +104,14 @@ button {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-color);
+}
+
+// PRIMENG OVERRIDES
+.p-checkbox {
+  width: 18px;
+  height: 18px;
+}
+.p-checkbox .p-checkbox-box {
+  width: 18px;
+  height: 18px;
 }

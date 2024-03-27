@@ -1,16 +1,37 @@
 <section>
   <spinner [spinning]="isLoading">
     <div class="grid">
-      <div class="xl:col-6 col-12">
-        <chart-card title="Visibility Chart">
+      <div class="col-12">
+        <chart-card
+          [title]="
+            !visibilityChartActionButton.toggle.value
+              ? 'Visibility Chart'
+              : 'Visibility Pie'
+          "
+          [actionButton]="visibilityChartActionButton"
+        >
           <p-chart
+            *ngIf="!visibilityChartActionButton.toggle.value"
             type="line"
-            [data]="visibilityChartData"
-            [options]="visibilityChartOpts"
+            [data]="visibilityChartLineData"
+            [options]="visibilityChartLineOpts"
           ></p-chart>
+          <div
+            *ngIf="visibilityChartActionButton.toggle.value"
+            class="flex align-items-center justify-content-center gap-6"
+          >
+            <div id="legend-container" class="flex align-items-center gap-6">
+              <p-chart
+                type="pie"
+                [data]="visibilityPieData"
+                [options]="visibilityPieOpts"
+                [plugins]="visibilityPiePlugins"
+              ></p-chart>
+            </div>
+          </div>
         </chart-card>
       </div>
-      <div class="xl:col-6 col-12">
+      <!-- <div class="col-12">
         <chart-card title="Visibility Pie">
           <div class="flex align-items-center justify-content-center gap-6">
             <div id="legend-container" class="flex align-items-center gap-6">
@@ -23,7 +44,7 @@
             </div>
           </div>
         </chart-card>
-      </div>
+      </div> -->
     </div>
   </spinner>
 </section>

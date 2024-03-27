@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { ChartCardComponent } from '../../../../../core/components/chart-card/chart-card.component';
+import {
+  ActionButtonProps,
+  ChartCardComponent,
+} from '../../../../../core/components/chart-card/chart-card.component';
 import { ChartModule } from 'primeng/chart';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -17,17 +20,22 @@ import moment from 'moment';
 import { MediaVisibility } from '../../../../../core/models/media-visibility.model';
 import { htmlLegendPlugin } from '../../../../../shared/utils/ChartUtils';
 import { SpinnerComponent } from '../../../../../core/components/spinner/spinner.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-media-visibility',
   standalone: true,
-  imports: [ChartCardComponent, ChartModule, SpinnerComponent],
+  imports: [ChartCardComponent, ChartModule, SpinnerComponent, CommonModule],
   templateUrl: './media-visibility.component.html',
   styleUrl: './media-visibility.component.scss',
 })
 export class MediaVisibilityComponent {
-  visibilityChartData: any;
-  visibilityChartOpts: any;
+  visibilityChartLineData: any;
+  visibilityChartLineOpts: any;
+  visibilityChartBarData: any;
+  visibilityChartBarOpts: any;
+  visibilityChartActionButton!: ActionButtonProps;
+
   visibilityPieData: any;
   visibilityPieOpts: any;
   visibilityPiePlugins = [htmlLegendPlugin];
@@ -39,6 +47,16 @@ export class MediaVisibilityComponent {
   constructor(private store: Store<AppState>) {
     this.analyzeState = this.store.select(selectAnalyzeState);
     this.filterState = this.store.select(selectFilterState);
+
+    this.visibilityChartActionButton = {
+      icon: 'pi-chart-pie',
+      type: 'toggle',
+      toggle: {
+        value: false,
+        offIcon: 'pi-chart-pie',
+        onIcon: 'pi-chart-line'
+      },
+    };
   }
 
   ngOnInit() {
@@ -59,7 +77,7 @@ export class MediaVisibilityComponent {
     if (mediaVisibility.length) {
       const { lineDatasets, lineLabels, pieLabels, pieDatasets } =
         this.getChartData(mediaVisibility);
-      this.visibilityChartData = {
+      this.visibilityChartLineData = {
         labels: lineLabels,
         datasets: lineDatasets,
       };
@@ -86,7 +104,7 @@ export class MediaVisibilityComponent {
       },
     };
 
-    this.visibilityChartOpts = {
+    this.visibilityChartLineOpts = {
       maintainAspectRatio: false,
       aspectRatio: 0.93,
       plugins: {
@@ -131,7 +149,7 @@ export class MediaVisibilityComponent {
     const totalTones = mediaVisibility.reduce((prev, chart) => {
       return prev + chart.doc_count;
     }, 0);
-    
+
     mediaVisibility.forEach((media) => {
       pieLabels.push(media.key);
       const tmpData: { label: string; data: number[]; tension: number } = {
@@ -142,7 +160,9 @@ export class MediaVisibilityComponent {
       media.category_id_per_day.buckets.forEach((bucket) => {
         tmpData.data.push(bucket.doc_count);
       });
-      pieDatasets[0].percentages.push(((media.doc_count / totalTones) * 100).toFixed(0));
+      pieDatasets[0].percentages.push(
+        ((media.doc_count / totalTones) * 100).toFixed(0)
+      );
       pieDatasets[0].data.push(media.doc_count);
       lineDatasets.push(tmpData);
     });

@@ -29,6 +29,16 @@
                 *ngIf="item.routerLink === 'analyze'"
                 [class]="navActiveItem === 'analyze' ? 'fill-primary' : ''"
               ></icon-chart>
+              <icon-newspaper
+                [width]="20"
+                *ngIf="item.routerLink === 'mediasov'"
+                [class]="navActiveItem === 'mediasov' ? 'fill-primary' : ''"
+              ></icon-newspaper>
+              <icon-globe
+                [width]="20"
+                *ngIf="item.routerLink === 'map'"
+                [class]="navActiveItem === 'map' ? 'fill-primary' : ''"
+              ></icon-globe>
               <icon-people
                 *ngIf="item.routerLink === 'spokesperson'"
                 [class]="navActiveItem === 'spokesperson' ? 'fill-primary' : ''"

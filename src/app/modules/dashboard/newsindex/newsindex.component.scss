@@ -1,0 +1,5 @@
+:host ::ng-deep {
+  .links .active svg {
+    fill: var(--primary-color);
+  }
+}

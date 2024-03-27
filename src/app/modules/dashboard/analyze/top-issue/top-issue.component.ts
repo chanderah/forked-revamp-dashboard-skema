@@ -29,6 +29,7 @@ import { selectFilterState } from '../../../../core/store/filter/filter.selector
 import { getTopIssue } from '../../../../core/store/analyze/analyze.actions';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
+import { TabViewModule } from 'primeng/tabview';
 
 Chart.register(TreemapController, TreemapElement);
 
@@ -48,6 +49,7 @@ Chart.register(TreemapController, TreemapElement);
     ButtonSecondaryComponent,
     TieredMenuModule,
     SpinnerComponent,
+    TabViewModule,
   ],
   templateUrl: './top-issue.component.html',
   styleUrl: './top-issue.component.scss',

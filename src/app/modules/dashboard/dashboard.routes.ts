@@ -6,6 +6,7 @@ import { SpokespersonComponent } from './spokesperson/spokesperson.component';
 import { NewsindexComponent } from './newsindex/newsindex.component';
 import { PreferenceComponent } from './preference/preference.component';
 import { ShareComponent } from './share/share.component';
+import { NewsIndexRoutes } from './newsindex/newsindex.routes';
 
 export const DashboardRoutes: Routes = [
   {
@@ -36,7 +37,7 @@ export const DashboardRoutes: Routes = [
       {
         path: 'newsindex',
         title: 'News Index',
-        component: NewsindexComponent,
+        children: NewsIndexRoutes,
       },
       {
         path: 'preference',
