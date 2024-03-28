@@ -4,57 +4,60 @@
     <div class="text-sm font-semibold">Featured News</div>
     <icon-info></icon-info>
   </div>
-  <p-scroller [items]="articles" [itemSize]="100" scrollHeight="595px">
-    <ng-template pTemplate="item" let-item let-options="options">
-      <div class="grid grid-nogutter">
-        <div class="col-12">
-          <div
-            class="flex py-3 gap-4"
-            [ngClass]="{ 'border-top-1 surface-border': !options.first }"
-          >
+  <spinner [spinning]="isLoading">
+    <p-scroller [items]="articles" [itemSize]="100" scrollHeight="595px">
+      <ng-template pTemplate="item" let-item let-options="options">
+        <div class="grid grid-nogutter">
+          <div class="col-12">
             <div
-              style="
-                background-image: url('https://primefaces.org/cdn/primeng/images/demo/product/green-earbuds.jpg');
-              "
-              class="w-6rem h-6rem bg-cover bg-center border-round-lg"
-            ></div>
-            <div
-              class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1"
+              class="flex py-3 gap-4"
+              [ngClass]="{ 'border-top-1 surface-border': !options.first }"
             >
-              <div class="flex flex-column">
-                <div
-                  class="text-sm font-semibold white-space-nowrap text-overflow-ellipsis overflow-hidden"
-                  style="width: 200px"
-                >
-                  {{ item.title }}
-                </div>
-                <p
-                  class="white-space-nowrap overflow-hidden text-overflow-ellipsis p-0 mt-2"
-                  style="width: 200px"
-                >
-                  {{ item.content }}
-                </p>
-                <div class="flex gap-3 align-items-center">
-                  <div class="flex align-items-center gap-2">
-                    <i class="pi pi-globe text-500 text-xs"></i>
-                    <span
-                      class="text-xs text-500 p-0 mt-0 white-space-nowrap overflow-hidden text-overflow-ellipsis"
-                      style="width: 80px"
-                      >{{ item.journalist }}</span
-                    >
+              <img
+                [src]="item.image_url"
+                [alt]="item.title"
+                class="h-5rem w-5rem"
+                style="object-fit: cover"
+                imgFallback="https://placehold.co/600x400?text=No+Image+Available"
+              />
+              <div
+                class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1"
+              >
+                <div class="flex flex-column">
+                  <div
+                    class="text-sm font-semibold white-space-nowrap text-overflow-ellipsis overflow-hidden"
+                    style="width: 200px"
+                  >
+                    {{ item.title }}
                   </div>
-                  <div class="flex align-items-center gap-2">
-                    <i class="pi pi-clock text-500 text-xs"></i>
-                    <span class="text-xs text-500 p-0 mt-0">{{
-                      item.datee.split(" ")[0]
-                    }}</span>
+                  <p
+                    class="white-space-nowrap overflow-hidden text-overflow-ellipsis p-0 mt-2"
+                    style="width: 200px"
+                  >
+                    {{ item.content }}
+                  </p>
+                  <div class="flex gap-3 align-items-center">
+                    <div class="flex align-items-center gap-2">
+                      <i class="pi pi-globe text-500 text-xs"></i>
+                      <span
+                        class="text-xs text-500 p-0 mt-0 white-space-nowrap overflow-hidden text-overflow-ellipsis"
+                        style="width: 80px"
+                        >{{ item.journalist }}</span
+                      >
+                    </div>
+                    <div class="flex align-items-center gap-2">
+                      <i class="pi pi-clock text-500 text-xs"></i>
+                      <span class="text-xs text-500 p-0 mt-0">{{
+                        item.datee.split(" ")[0]
+                      }}</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </ng-template>
-  </p-scroller>
+      </ng-template>
+    </p-scroller>
+  </spinner>
 </section>

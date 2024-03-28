@@ -7,6 +7,6 @@
     </div>
   </ng-template>
   <spinner [spinning]="isLoading">
-    <p-chart type="line" [data]="chartData" [options]="options"></p-chart>
+    <p-chart type="line" [data]="chartData" [options]="options" (onDataSelect)="onDataSelect($event)"></p-chart>
   </spinner>
 </p-card>

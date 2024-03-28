@@ -18,7 +18,10 @@ import { getMediaVisibility } from '../../../../../core/store/analyze/analyze.ac
 import { FilterRequestPayload } from '../../../../../core/models/request.model';
 import moment from 'moment';
 import { MediaVisibility } from '../../../../../core/models/media-visibility.model';
-import { htmlLegendPlugin } from '../../../../../shared/utils/ChartUtils';
+import {
+  htmlLegendPlugin,
+  barOpacityPlugin,
+} from '../../../../../shared/utils/ChartUtils';
 import { SpinnerComponent } from '../../../../../core/components/spinner/spinner.component';
 import { CommonModule } from '@angular/common';
 
@@ -32,9 +35,13 @@ import { CommonModule } from '@angular/common';
 export class MediaVisibilityComponent {
   visibilityChartLineData: any;
   visibilityChartLineOpts: any;
+
   visibilityChartBarData: any;
   visibilityChartBarOpts: any;
+  visibilityChartBarPlugins = [barOpacityPlugin];
+
   visibilityChartActionButton!: ActionButtonProps;
+  visibilityPieActionButton!: ActionButtonProps;
 
   visibilityPieData: any;
   visibilityPieOpts: any;
@@ -49,12 +56,22 @@ export class MediaVisibilityComponent {
     this.filterState = this.store.select(selectFilterState);
 
     this.visibilityChartActionButton = {
-      icon: 'pi-chart-pie',
+      icon: 'pi-ellipsis-h',
       type: 'toggle',
       toggle: {
         value: false,
-        offIcon: 'pi-chart-pie',
-        onIcon: 'pi-chart-line'
+        offIcon: 'pi-ellipsis-h',
+        onIcon: 'pi-ellipsis-h',
+      },
+    };
+
+    this.visibilityPieActionButton = {
+      icon: 'pi-ellipsis-h',
+      type: 'toggle',
+      toggle: {
+        value: false,
+        offIcon: 'pi-ellipsis-h',
+        onIcon: 'pi-ellipsis-h',
       },
     };
   }
@@ -75,13 +92,25 @@ export class MediaVisibilityComponent {
 
   initChartData = (mediaVisibility: MediaVisibility[]) => {
     if (mediaVisibility.length) {
-      const { lineDatasets, lineLabels, pieLabels, pieDatasets } =
-        this.getChartData(mediaVisibility);
+      const {
+        lineDatasets,
+        lineLabels,
+        pieLabels,
+        pieDatasets,
+        visibilityBarDatasets,
+        barLabels,
+      } = this.getChartData(mediaVisibility);
       this.visibilityChartLineData = {
         labels: lineLabels,
         datasets: lineDatasets,
       };
       this.visibilityPieData = { labels: pieLabels, datasets: pieDatasets };
+
+      const documentStyle = getComputedStyle(document.documentElement);
+      this.visibilityChartBarData = {
+        labels: barLabels,
+        datasets: visibilityBarDatasets,
+      };
     }
   };
 
@@ -100,6 +129,49 @@ export class MediaVisibilityComponent {
         },
         htmlLegend: {
           containerID: 'legend-container',
+        },
+      },
+    };
+
+    this.visibilityChartBarOpts = {
+      maintainAspectRatio: false,
+      aspectRatio: 0.8,
+      plugins: {
+        tooltip: { mode: 'index', intersect: false },
+        barOpacityPlugin: {
+          opacity: 1,
+        },
+        legend: {
+          position: 'bottom',
+          align: 'start',
+          labels: {
+            padding: 32,
+            boxWidth: 14,
+            boxHeight: 5,
+            color: documentStyle.getPropertyValue('--text-color'),
+          },
+        },
+      },
+      scales: {
+        x: {
+          stacked: true,
+          ticks: {
+            color: documentStyle.getPropertyValue('--text-color-secondary'),
+          },
+          grid: {
+            color: documentStyle.getPropertyValue('--surface-border'),
+            drawBorder: false,
+          },
+        },
+        y: {
+          stacked: true,
+          ticks: {
+            color: documentStyle.getPropertyValue('--text-color-secondary'),
+          },
+          grid: {
+            color: documentStyle.getPropertyValue('--surface-border'),
+            drawBorder: false,
+          },
         },
       },
     };
@@ -167,10 +239,28 @@ export class MediaVisibilityComponent {
       lineDatasets.push(tmpData);
     });
 
+    const visibilityBarDatasets = mediaVisibility.map((visibility) => {
+      const data = visibility.category_id_per_day.buckets.map(
+        (val) => val.doc_count
+      );
+      return {
+        type: 'bar',
+        data,
+        label: visibility.key,
+      };
+    });
+
     const lineLabels = mediaVisibility[0].category_id_per_day.buckets.map(
       (bucket) => moment(bucket.key_as_string).format('DD MMM')
     );
-    return { lineLabels, lineDatasets, pieLabels, pieDatasets };
+    return {
+      lineLabels,
+      lineDatasets,
+      pieLabels,
+      pieDatasets,
+      barLabels: lineLabels,
+      visibilityBarDatasets,
+    };
   };
 
   onFilterChange = (filterState: FilterState) => {

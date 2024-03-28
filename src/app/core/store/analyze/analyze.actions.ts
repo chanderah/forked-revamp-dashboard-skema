@@ -84,3 +84,16 @@ export const getTopIssueError = createAction(
   '[Analyze] Get Top Issue Failure',
   props<{ error: string }>()
 );
+
+export const getArticlesByTone = createAction(
+  '[Analyze] Get Article By Tone',
+  props<{ filter: FilterRequestPayload }>()
+);
+export const getArticlesByToneSuccess = createAction(
+  '[Analyze] Get Article By Tone Success',
+  props<{ data: Article[] }>()
+);
+export const getArticlesByToneError = createAction(
+  '[Analyze] Get Article By Tone Failure',
+  props<{ error: string }>()
+);

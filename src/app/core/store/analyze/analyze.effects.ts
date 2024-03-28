@@ -134,4 +134,24 @@ export class AnalyzeEffects {
       })
     )
   );
+
+  getArticlesByTone = createEffect(() =>
+  this.actions$.pipe(
+    ofType(AnalyzeActions.getArticlesByTone),
+    switchMap(({ filter }) => {
+      return this.articleService.getArticlesByTone(filter).pipe(
+        map((response) => {
+          if ((response as any).code === 401)
+            throw new Error((response as any).message);
+          return AnalyzeActions.getArticlesByToneSuccess({
+            data: response.data,
+          });
+        }),
+        catchError((error) =>
+          of(AnalyzeActions.getArticlesByToneError({ error: error.message }))
+        )
+      );
+    })
+  )
+);
 }

@@ -35,4 +35,18 @@ export class ArticleService {
       }
     );
   }
+
+  getArticlesByTone(
+    filter: FilterRequestPayload
+  ): Observable<{ data: Article[] }> {
+    return this.http.post<{ data: Article[] }>(
+      `${this.baseUrl}/v1/dashboard/article-by-tone`,
+      {
+        ...filter,
+        media_id: 0,
+        maxSize: 20,
+        page: 0,
+      }
+    );
+  }
 }

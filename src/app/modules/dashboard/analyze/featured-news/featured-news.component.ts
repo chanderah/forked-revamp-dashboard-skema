@@ -3,51 +3,51 @@ import { IconInfoComponent } from '../../../../core/components/icons/info/info.c
 import { IconNewspaperComponent } from '../../../../core/components/icons/newspaper/newspaper.component';
 import { ScrollerModule } from 'primeng/scroller';
 import { CommonModule } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { FilterRequestPayload } from '../../../../core/models/request.model';
+import { AppState } from '../../../../core/store';
+import { getArticlesByTone, getTones } from '../../../../core/store/analyze/analyze.actions';
+import { AnalyzeState } from '../../../../core/store/analyze/analyze.reducer';
+import { selectAnalyzeState } from '../../../../core/store/analyze/analyze.selectors';
+import { Article } from '../../../../core/models/article.model';
+import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
+import { initialState } from '../../../../core/store/filter/filter.reducer';
+import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
 
 @Component({
   selector: 'app-featured-news',
   standalone: true,
-  imports: [IconInfoComponent, IconNewspaperComponent, ScrollerModule, CommonModule],
+  imports: [
+    IconInfoComponent,
+    IconNewspaperComponent,
+    ScrollerModule,
+    CommonModule,
+    SpinnerComponent,
+    ImgFallbackDirective
+  ],
   templateUrl: './featured-news.component.html',
-  styleUrl: './featured-news.component.scss'
+  styleUrl: './featured-news.component.scss',
 })
 export class FeaturedNewsComponent {
-  articles: any[] = [
-    {
-      title: 'test title',
-      content: 'test contentel jkasjdkjav',
-      journalist: 'journalis',
-      datee: '2021-23-01 09'
-    },
-    {
-      title: 'test title',
-      content: 'test contentel jkasjdkjav',
-      journalist: 'journalis',
-      datee: '2021-23-01 09'
-    },
-    {
-      title: 'test title',
-      content: 'test contentel jkasjdkjav',
-      journalist: 'journalis',
-      datee: '2021-23-01 09'
-    },
-    {
-      title: 'test title',
-      content: 'test contentel jkasjdkjav',
-      journalist: 'journalis',
-      datee: '2021-23-01 09'
-    },
-    {
-      title: 'test title',
-      content: 'test contentel jkasjdkjav',
-      journalist: 'journalis',
-      datee: '2021-23-01 09'
-    },
-    {
-      title: 'test title',
-      content: 'test contentel jkasjdkjav',
-      journalist: 'journalis',
-      datee: '2021-23-01 09'
-    },
-  ]
+  analyzeState: Observable<AnalyzeState>;
+  isLoading: boolean = false;
+
+  articles: Article[] = [];
+
+  constructor(private store: Store<AppState>) {
+    this.analyzeState = this.store.select(selectAnalyzeState);
+  }
+
+  ngOnInit() {
+    this.store.dispatch(
+      getArticlesByTone({ filter: {...initialState, tone: 0} as FilterRequestPayload })
+    );
+    this.analyzeState.subscribe(({ articlesByTone }) => {
+      this.articles = articlesByTone.data;
+      this.isLoading = articlesByTone.isLoading;
+    });
+  }
 }
+
+

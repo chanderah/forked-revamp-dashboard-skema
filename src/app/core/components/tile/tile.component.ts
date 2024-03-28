@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { IconScreenComponent } from '../icons/screen/screen.component';
 import { IconNewspaperComponent } from '../icons/newspaper/newspaper.component';
 import { IconStackComponent } from '../icons/stack/stack.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-tile',
@@ -18,6 +19,7 @@ import { IconStackComponent } from '../icons/stack/stack.component';
     IconScreenComponent,
     IconNewspaperComponent,
     IconStackComponent,
+    RouterModule
   ],
   templateUrl: './tile.component.html',
   styleUrl: './tile.component.scss',
@@ -28,4 +30,6 @@ export class TileComponent {
   @Input() icon!: string;
   @Input() bgColor!: string;
   @Input() color!: string;
+  @Input() link!: string;
+  @Input() queryParams!: any;
 }

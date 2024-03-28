@@ -120,3 +120,15 @@ export const htmlLegendPlugin = {
     });
   },
 };
+
+export const barOpacityPlugin = {
+  id: 'barOpacityPlugin',
+  beforeDraw: function (chart, _, options) {
+    chart.data.datasets.forEach((dataset) => {
+      dataset.backgroundColor = dataset.backgroundColor.replace(
+        '0.5',
+        `${options.opacity}`
+      );
+    });
+  },
+};
