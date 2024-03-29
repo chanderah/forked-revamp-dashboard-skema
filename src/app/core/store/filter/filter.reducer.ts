@@ -9,6 +9,7 @@ export interface FilterState {
   user_media_type_id: number;
   start_date?: string;
   end_date?: string;
+  maxSize?: number;
 }
 
 export const initialState: FilterState = {
@@ -18,6 +19,7 @@ export const initialState: FilterState = {
   category_id: 'all',
   category_set: 0,
   user_media_type_id: 0,
+  maxSize: 20,
 };
 
 export const filterReducer = createReducer(

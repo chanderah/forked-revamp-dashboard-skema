@@ -44,7 +44,6 @@ export class ArticleService {
       {
         ...filter,
         media_id: 0,
-        maxSize: 20,
         page: 0,
       }
     );

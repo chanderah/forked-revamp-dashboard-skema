@@ -69,10 +69,21 @@ export class DashboardComponent implements OnInit {
   navActiveItem: string | undefined;
   breadCrumbsItems: MenuItem[] | undefined;
   profileItems: MenuItem[] | undefined;
+  showFilter: boolean = true;
 
   user: User | null = getUserFromLocalStorage();
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    this.router.events.subscribe(() => {
+      let currentRoute = this.router.routerState.root;
+      while (currentRoute.firstChild) {
+        currentRoute = currentRoute.firstChild;
+      }
+      if ((currentRoute.routeConfig as any).withFilter !== undefined) {
+        this.showFilter = (currentRoute.routeConfig as any).withFilter;
+      }
+    });
+  }
 
   ngOnInit() {
     const currentLocation = window.location.href.split('/').pop();
@@ -99,6 +110,10 @@ export class DashboardComponent implements OnInit {
         routerLink: 'spokesperson',
       },
       {
+        label: 'News Index',
+        routerLink: 'newsindex',
+      },
+      {
         label: 'Preference',
         routerLink: 'preference',
       },
@@ -115,17 +130,19 @@ export class DashboardComponent implements OnInit {
       'media-sov': 'Media SOV',
       newsindex: 'News Index',
       preference: 'Preference',
+      articles: 'Articles',
       share: 'Share',
     };
 
     this.router.events.subscribe((route) => {
       if (route instanceof NavigationEnd) {
         const nav = route as NavigationEnd;
+        const location = nav.url.split('/')?.pop?.() ?? '';
 
         this.breadCrumbsItems = [
           { label: 'Dashboard' },
           {
-            label: breadCrumbLabelMap[nav.url.split('/')?.pop?.() ?? ''] ?? '-',
+            label: breadCrumbLabelMap[location.split('?')[0]] ?? '-',
           },
         ];
       }
@@ -133,7 +150,7 @@ export class DashboardComponent implements OnInit {
 
     this.breadCrumbsItems = [
       { label: 'Dashboard' },
-      { label: breadCrumbLabelMap[currentLocation ?? ''] },
+      { label: breadCrumbLabelMap[currentLocation?.split('?')[0] ?? ''] },
     ];
 
     this.profileItems = [

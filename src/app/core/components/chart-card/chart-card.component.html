@@ -9,7 +9,7 @@
           [text]="true"
           severity="secondary"
           styleClass="bg-white border-1 border-200"
-          (onClick)="actionButton?.onClick?.()"
+          (onClick)="actionButton.onClick?.()"
         ></p-button>
       </ng-container>
       <ng-container *ngIf="actionButton && actionButton.type === 'toggle'">

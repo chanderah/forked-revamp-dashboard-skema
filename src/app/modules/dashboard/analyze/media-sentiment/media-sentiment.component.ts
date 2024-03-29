@@ -14,11 +14,13 @@ import {
 } from '../../../../core/store/filter/filter.reducer';
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
-import { getArticlesByTone, getTones } from '../../../../core/store/analyze/analyze.actions';
+import {
+  getArticlesByTone,
+  getTones,
+} from '../../../../core/store/analyze/analyze.actions';
 import { ChartBar, Tones } from '../../../../core/models/tone.model';
 import moment from 'moment';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
-import { getRelativePosition } from 'chart.js/helpers';
 
 @Component({
   selector: 'app-media-sentiment',
@@ -154,7 +156,14 @@ export class MediaSentimentComponent {
     const currentData = this.chartData.datasets[value.element.datasetIndex];
     const date = this.chartData.dates[value.element.index];
     this.store.dispatch(
-      getArticlesByTone({ filter: {...initialState, tone: currentData.tone, start_date: date, end_date: date} as FilterRequestPayload })
+      getArticlesByTone({
+        filter: {
+          ...initialState,
+          tone: currentData.tone,
+          start_date: date,
+          end_date: date,
+        } as FilterRequestPayload,
+      })
     );
   };
 

@@ -55,7 +55,9 @@
                 *ngIf="item.routerLink === 'share'"
                 [class]="navActiveItem === 'share' ? 'fill-primary' : ''"
               ></icon-cable>
-              <div class="text-xs font-medium text-color">{{ item.label }}</div>
+              <div class="text-xs font-medium text-color white-space-nowrap">
+                {{ item.label }}
+              </div>
             </div>
           </a>
         </ng-template></p-tabMenu
@@ -98,6 +100,7 @@
   </p-breadcrumb>
   <div class="pt-2 pb-4 flex flex-wrap xl:flex-nowrap xl:gap-5">
     <aside
+      *ngIf="showFilter"
       class="w-full md:w-full lg:w-full xl:w-2 xl:min-w-2 mb-4"
       style="min-width: 16.66667%"
     >
