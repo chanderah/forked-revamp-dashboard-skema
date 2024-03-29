@@ -130,7 +130,7 @@ export class DashboardComponent implements OnInit {
       'media-sov': 'Media SOV',
       newsindex: 'News Index',
       preference: 'Preference',
-      articles: 'Articles',
+      'overview-articles': 'Articles',
       share: 'Share',
     };
 

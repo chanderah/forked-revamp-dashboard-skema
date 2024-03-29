@@ -48,4 +48,23 @@ export class ArticleService {
       }
     );
   }
+
+  getMediaCountArticles({
+    article_ids,
+    page,
+    size,
+  }: {
+    article_ids: number[];
+    page: number;
+    size: number;
+  }): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}/v1/dashboard/media-count/articles`,
+      {
+        article_ids,
+        page,
+        size,
+      }
+    );
+  }
 }

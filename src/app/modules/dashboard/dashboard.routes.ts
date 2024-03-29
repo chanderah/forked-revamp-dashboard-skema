@@ -8,7 +8,7 @@ import { ShareComponent } from './share/share.component';
 import { NewsIndexRoutes } from './newsindex/newsindex.routes';
 import { MediaSOVComponent } from './media-sov/media-sov.component';
 import { MapComponent } from './map/map.component';
-import { ArticlesComponent } from './articles/articles.component';
+import { OverviewArticlesComponent } from './overview-articles/overview-articles.component';
 
 interface ChildrenRoute extends Route {
   withFilter?: boolean;
@@ -70,9 +70,9 @@ export const DashboardRoutes: DashboardRoutesProps[] = [
         component: ShareComponent,
       },
       {
-        path: 'articles',
-        title: 'Articles',
-        component: ArticlesComponent,
+        path: 'overview-articles',
+        title: 'Overview Articles',
+        component: OverviewArticlesComponent,
         withFilter: true,
       },
     ],
