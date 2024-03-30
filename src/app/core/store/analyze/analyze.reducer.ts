@@ -30,6 +30,11 @@ export interface AnalyzeState {
     error: string | null;
     isLoading: boolean;
   };
+  articlesByTone: {
+    data: Article[];
+    error: string | null;
+    isLoading: boolean;
+  };
 }
 
 export const initialState: AnalyzeState = {
@@ -39,6 +44,7 @@ export const initialState: AnalyzeState = {
   toneByCategory: { data: [], error: null, isLoading: false },
   toneByMedia: { data: [], error: null, isLoading: false },
   topIssue: { data: null, error: null, isLoading: false },
+  articlesByTone: { data: [], error: null, isLoading: false },
 };
 
 export const analyzeReducer = createReducer(
@@ -119,5 +125,18 @@ export const analyzeReducer = createReducer(
   on(AnalyzeActions.getTopIssueError, (state, { error }) => ({
     ...state,
     topIssue: { data: null, error, isLoading: false },
+  })),
+
+  on(AnalyzeActions.getArticlesByTone, (state) => ({
+    ...state,
+    articlesByTone: { ...state.articlesByTone, isLoading: true },
+  })),
+  on(AnalyzeActions.getArticlesByToneSuccess, (state, { data }) => ({
+    ...state,
+    articlesByTone: { data, error: null, isLoading: false },
+  })),
+  on(AnalyzeActions.getArticlesByToneError, (state, { error }) => ({
+    ...state,
+    articlesByTone: { data: [], error, isLoading: false },
   }))
 );

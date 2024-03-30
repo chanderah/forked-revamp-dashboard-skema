@@ -4,6 +4,7 @@ import { IconInfoComponent } from '../../../../core/components/icons/info/info.c
 import { ScrollerModule } from 'primeng/scroller';
 import { CommonModule } from '@angular/common';
 import { TagComponent } from '../../../../core/components/tag/tag.component';
+import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
 
 @Component({
   selector: 'app-headline-news',
@@ -14,6 +15,7 @@ import { TagComponent } from '../../../../core/components/tag/tag.component';
     ScrollerModule,
     CommonModule,
     TagComponent,
+    ImgFallbackDirective
   ],
   templateUrl: './headline-news.component.html',
   styleUrl: './headline-news.component.scss',

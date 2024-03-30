@@ -1,1 +1,26 @@
-<p>newsindex works!</p>
+<section>
+  <div class="links flex gap-6">
+    <a
+      routerLink="/dashboard/newsindex/clipping"
+      class="flex align-items-center gap-2 no-underline text-sm"
+      style="color: var(--text-color)"
+      routerLinkActive="text-primary active"
+    >
+      <icon-newspaper [width]="20" [height]="20"></icon-newspaper>
+      <span>News Clipping</span>
+    </a>
+    <a
+      routerLink="/dashboard/newsindex/editing"
+      class="flex align-items-center gap-2 no-underline text-sm"
+      style="color: var(--text-color)"
+      routerLinkActive="text-primary active"
+    >
+      <icon-pencil></icon-pencil>
+      <span>News Editing</span>
+    </a>
+  </div>
+  <p-divider></p-divider>
+  <div class="py-2">
+    <router-outlet></router-outlet>
+  </div>
+</section>

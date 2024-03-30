@@ -29,6 +29,8 @@ import { User } from '../../core/models/user.model';
 import { getUserFromLocalStorage, logout } from '../../shared/utils/AuthUtils';
 import { ToggleDarkmodeComponent } from './components/toggle-darkmode/toggle-darkmode.component';
 import { TieredMenuModule } from 'primeng/tieredmenu';
+import { IconGlobeComponent } from '../../core/components/icons/globe/globe.component';
+import { IconNewspaperComponent } from '../../core/components/icons/newspaper/newspaper.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -56,6 +58,8 @@ import { TieredMenuModule } from 'primeng/tieredmenu';
     IconPreferenceComponent,
     ToggleDarkmodeComponent,
     TieredMenuModule,
+    IconGlobeComponent,
+    IconNewspaperComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -65,10 +69,21 @@ export class DashboardComponent implements OnInit {
   navActiveItem: string | undefined;
   breadCrumbsItems: MenuItem[] | undefined;
   profileItems: MenuItem[] | undefined;
+  showFilter: boolean = true;
 
   user: User | null = getUserFromLocalStorage();
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    this.router.events.subscribe(() => {
+      let currentRoute = this.router.routerState.root;
+      while (currentRoute.firstChild) {
+        currentRoute = currentRoute.firstChild;
+      }
+      if ((currentRoute.routeConfig as any).withFilter !== undefined) {
+        this.showFilter = (currentRoute.routeConfig as any).withFilter;
+      }
+    });
+  }
 
   ngOnInit() {
     const currentLocation = window.location.href.split('/').pop();
@@ -81,6 +96,14 @@ export class DashboardComponent implements OnInit {
       {
         label: 'Analyze',
         routerLink: 'analyze',
+      },
+      {
+        label: 'Media SOV',
+        routerLink: 'media-sov',
+      },
+      {
+        label: 'Map',
+        routerLink: 'map',
       },
       {
         label: 'Spokesperson',
@@ -104,19 +127,22 @@ export class DashboardComponent implements OnInit {
       overview: 'Overview',
       analyze: 'Analyze',
       spokesperson: 'Spokesperson',
+      'media-sov': 'Media SOV',
       newsindex: 'News Index',
       preference: 'Preference',
+      'overview-articles': 'Articles',
       share: 'Share',
     };
 
     this.router.events.subscribe((route) => {
       if (route instanceof NavigationEnd) {
         const nav = route as NavigationEnd;
+        const location = nav.url.split('/')?.pop?.() ?? '';
 
         this.breadCrumbsItems = [
           { label: 'Dashboard' },
           {
-            label: breadCrumbLabelMap[nav.url.split('/')?.pop?.() ?? ''] ?? '-',
+            label: breadCrumbLabelMap[location.split('?')[0]] ?? '-',
           },
         ];
       }
@@ -124,7 +150,7 @@ export class DashboardComponent implements OnInit {
 
     this.breadCrumbsItems = [
       { label: 'Dashboard' },
-      { label: breadCrumbLabelMap[currentLocation ?? ''] },
+      { label: breadCrumbLabelMap[currentLocation?.split('?')[0] ?? ''] },
     ];
 
     this.profileItems = [

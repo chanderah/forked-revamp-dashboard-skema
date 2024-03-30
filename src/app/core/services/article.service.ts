@@ -35,4 +35,36 @@ export class ArticleService {
       }
     );
   }
+
+  getArticlesByTone(
+    filter: FilterRequestPayload
+  ): Observable<{ data: Article[] }> {
+    return this.http.post<{ data: Article[] }>(
+      `${this.baseUrl}/v1/dashboard/article-by-tone`,
+      {
+        ...filter,
+        media_id: 0,
+        page: 0,
+      }
+    );
+  }
+
+  getMediaCountArticles({
+    article_ids,
+    page,
+    size,
+  }: {
+    article_ids: number[];
+    page: number;
+    size: number;
+  }): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}/v1/dashboard/media-count/articles`,
+      {
+        article_ids,
+        page,
+        size,
+      }
+    );
+  }
 }

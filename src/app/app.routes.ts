@@ -1,8 +1,6 @@
 import { Routes, mapToCanActivate } from '@angular/router';
 import { AuthGuardService } from './core/guards/auth-guard.service';
 import { DashboardRoutes } from './modules/dashboard/dashboard.routes';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { authInterceptor } from './core/interceptors/jwt.interceptors';
 
 export const routes: Routes = [
   {

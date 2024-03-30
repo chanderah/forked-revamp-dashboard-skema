@@ -1,11 +1,11 @@
 <header>
   <p-toolbar styleClass="flex-nowrap">
     <ng-template pTemplate="start">
-      <img src="../../../assets/skema-logo.png" height="24" class="mr-2" />
+      <img src="../../../assets/skema-logo.png" height="20" class="mr-2" />
       <p-divider layout="vertical" class="logo-divider"></p-divider>
       <img
         src="../../../assets/BPJS_Kesehatan_logo.png"
-        height="24"
+        height="20"
         class="mr-2"
       />
     </ng-template>
@@ -29,6 +29,16 @@
                 *ngIf="item.routerLink === 'analyze'"
                 [class]="navActiveItem === 'analyze' ? 'fill-primary' : ''"
               ></icon-chart>
+              <icon-newspaper
+                [width]="20"
+                *ngIf="item.routerLink === 'media-sov'"
+                [class]="navActiveItem === 'media-sov' ? 'fill-primary' : ''"
+              ></icon-newspaper>
+              <icon-globe
+                [width]="20"
+                *ngIf="item.routerLink === 'map'"
+                [class]="navActiveItem === 'map' ? 'fill-primary' : ''"
+              ></icon-globe>
               <icon-people
                 *ngIf="item.routerLink === 'spokesperson'"
                 [class]="navActiveItem === 'spokesperson' ? 'fill-primary' : ''"
@@ -45,7 +55,9 @@
                 *ngIf="item.routerLink === 'share'"
                 [class]="navActiveItem === 'share' ? 'fill-primary' : ''"
               ></icon-cable>
-              <div class="text-xs font-medium text-color">{{ item.label }}</div>
+              <div class="text-xs font-medium text-color white-space-nowrap">
+                {{ item.label }}
+              </div>
             </div>
           </a>
         </ng-template></p-tabMenu
@@ -88,6 +100,7 @@
   </p-breadcrumb>
   <div class="pt-2 pb-4 flex flex-wrap xl:flex-nowrap xl:gap-5">
     <aside
+      *ngIf="showFilter"
       class="w-full md:w-full lg:w-full xl:w-2 xl:min-w-2 mb-4"
       style="min-width: 16.66667%"
     >
