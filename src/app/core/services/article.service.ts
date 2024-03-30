@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { HighlightsResponse } from '../models/highlights.model';
 import { FilterRequestPayload } from '../models/request.model';
-import { Article } from '../models/article.model';
+import { Article, ArticleResponse } from '../models/article.model';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +27,20 @@ export class ArticleService {
   ): Observable<{ data: Article[] }> {
     return this.http.post<{ data: Article[] }>(
       `${this.baseUrl}/v1/user/editingplus/`,
+      {
+        ...filter,
+        media_id: 0,
+        maxSize: 20,
+        page: 0,
+      }
+    );
+  }
+
+  getUserEditing(
+    filter: FilterRequestPayload
+  ): Observable<ArticleResponse> {
+    return this.http.post<ArticleResponse>(
+      `${this.baseUrl}/v1/user/editing/`,
       {
         ...filter,
         media_id: 0,

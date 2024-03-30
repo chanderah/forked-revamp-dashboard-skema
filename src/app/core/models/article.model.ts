@@ -21,3 +21,11 @@ export interface Article {
   image_url?: string;
   preview_link?: string;
 }
+
+export interface ArticleResponse {
+  data: Article[];
+  draw: number;
+  recordsFiltered: number;
+  recordsTotal: number;
+  result: string;
+}

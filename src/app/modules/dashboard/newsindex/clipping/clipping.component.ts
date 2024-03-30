@@ -4,7 +4,11 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { IconPencilComponent } from '../../../../core/components/icons/pencil/pencil.component';
 import { IconNewspaperComponent } from '../../../../core/components/icons/newspaper/newspaper.component';
-
+import { ArticleService } from '../../../../core/services/article.service';
+import { initialState } from '../../../../core/store/filter/filter.reducer';
+import { FilterRequestPayload } from '../../../../core/models/request.model';
+import { Article } from '../../../../core/models/article.model';
+import { TagModule } from 'primeng/tag';
 @Component({
   selector: 'app-clipping',
   standalone: true,
@@ -14,12 +18,13 @@ import { IconNewspaperComponent } from '../../../../core/components/icons/newspa
     ButtonModule,
     IconPencilComponent,
     IconNewspaperComponent,
+    TagModule,
   ],
   templateUrl: './clipping.component.html',
   styleUrl: './clipping.component.scss',
 })
 export class ClippingComponent {
-  customers!: any[];
+  articles!: Article[];
 
   totalRecords!: number;
 
@@ -29,8 +34,22 @@ export class ClippingComponent {
 
   selectedCustomers!: any[];
 
+  constructor(private articleService: ArticleService) {}
+
   ngOnInit() {
     this.loading = true;
+    this.articleService
+      .getUserEditing(initialState as FilterRequestPayload)
+      .subscribe(
+        (resp) => {
+          this.articles = resp.data;
+          this.totalRecords = resp.recordsTotal;
+        },
+        () => {},
+        () => {
+          this.loading = false;
+        }
+      );
   }
 
   getData = () => {
@@ -75,11 +94,10 @@ export class ClippingComponent {
   };
 
   loadCustomers(event: TableLazyLoadEvent) {
-    this.loading = true;
-
+    // this.loading = true;
     setTimeout(() => {
       const data = this.getData();
-      this.customers = data;
+      // this.customers = data;
       this.totalRecords = data.length;
       this.loading = false;
     }, 1000);
