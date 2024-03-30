@@ -11,6 +11,8 @@ import {
   SpokespersonState,
 } from './spokesperson/spokesperson.reducer';
 import { SpokespersonEffects } from './spokesperson/spokesperson.effects';
+import { articlesReducer, ArticlesState } from './articles/articles.reducer';
+import { ArticlesEffects } from './articles/articles.effects';
 
 export interface AppState {
   auth: AuthState;
@@ -18,6 +20,7 @@ export interface AppState {
   filter: FilterState;
   analyze: AnalyzeState;
   spokesperson: SpokespersonState;
+  articles: ArticlesState;
 }
 
 export const reducers: ActionReducerMap<AppState> = {
@@ -26,6 +29,7 @@ export const reducers: ActionReducerMap<AppState> = {
   filter: filterReducer,
   analyze: analyzeReducer,
   spokesperson: spokespersonReducer,
+  articles: articlesReducer,
 };
 
 export const effects = [
@@ -33,4 +37,5 @@ export const effects = [
   OverviewEffects,
   AnalyzeEffects,
   SpokespersonEffects,
+  ArticlesEffects
 ];

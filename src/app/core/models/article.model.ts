@@ -20,6 +20,11 @@ export interface Article {
   media_name: string;
   image_url?: string;
   preview_link?: string;
+  media_type?: string;
+  location?: string;
+  advalue_bw?: number;
+  advalue_fc?: number;
+  tone?: number;
 }
 
 export interface ArticleResponse {

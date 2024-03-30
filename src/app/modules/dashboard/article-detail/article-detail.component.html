@@ -1,56 +1,55 @@
 <section>
   <div class="flex flex-column gap-2">
     <div class="text-sm">
-      <span class="font-semibold">Posted:</span> Maret 17, 2024
+      <span class="font-semibold">Posted:</span> {{ article?.datee ?? "-" }}
     </div>
     <div class="text-3xl font-semibold">
-      Pemindahan Ibukota ke IKN diharapkan Dapat Mewujudkan Visi Indonesia 2045
+      {{ article?.title ?? "-" }}
     </div>
   </div>
   <p-divider></p-divider>
   <div class="flex justify-content-between">
     <div class="flex">
       <div class="text-sm">
-        <div><span class="font-semibold">Jurnalist:</span> SinarHarapan.id</div>
-        <div><span class="font-semibold">Media Type:</span> media online</div>
+        <div>
+          <span class="font-semibold">Jurnalist:</span>
+          {{ article?.journalist ?? "-" }}
+        </div>
+        <div>
+          <span class="font-semibold">Media Type:</span>
+          {{ article?.media_type ?? "-" }}
+        </div>
       </div>
       <p-divider layout="vertical"></p-divider>
       <div class="text-sm">
-        <div><span class="font-semibold">Location:</span> Kota Bandung</div>
-        <div><span class="font-semibold">News Value:</span> 34875000</div>
+        <div>
+          <span class="font-semibold">Location:</span>
+          {{ article?.location ?? "-" }}
+        </div>
+        <div>
+          <span class="font-semibold">News Value:</span>
+          {{ article?.advalue_bw?? 0 | formatAmount }}
+        </div>
       </div>
       <p-divider layout="vertical"></p-divider>
       <div class="text-sm">
-        <div><span class="font-semibold">Ad Value:</span> 34875000</div>
+        <div>
+          <span class="font-semibold">Ad Value:</span>
+          {{ article?.advalue_fc ?? 0 | formatAmount }}
+        </div>
       </div>
     </div>
-    <tag content="Positive" type="positive"></tag>
+    <tag [content]="article?.toneLabel ?? ''" [type]="article?.tone ?? 0"></tag>
   </div>
 
   <img
-    src="null"
+    [src]="article?.image_url ?? ''"
     class="h-24rem w-full my-6"
     style="object-fit: cover"
     imgFallback="https://placehold.co/600x400?text=No+Image+Available"
   />
 
   <div class="text-sm text-color">
-    Untuk mendukung hal tersebut, pembangunan IKN menerapkan konsep
-    sustainability modern secara komprehensif, sehingga tercipta Kota Cerdas.
-    Kota Cerdas akan meningkatkan kualitas hidup masyarakat yang tinggal di sana
-    dan ketika kualitas hidupnya meningkat, akan melahirkan Sumber Daya Manusia
-    (SDM) unggul. “Pemindahan pusat pemerintahan ke Ibu Kota Nusantara (IKN) di
-    Penajam Paser Utara, Provinsi Kalimantan Timur, tidak hanya memindahkan
-    lokasi dan perangkatnya, melainkan menjadi simbol lompatan untuk
-    transformasi bangsa Indonesia menjadi lebih maju dan adaptif dengan
-    perubahan, wujud Indonesia-sentris, serta pemerataan pembangunan,” ucap
-    Direktur Jenderal Informasi dan Komunikasi Publik Kementerian Komunikasi dan
-    Informatika (Kominfo), Usman Kansong, dalam sambutan dalam acara
-    CreativeTalks Pojok Literasi dengan tema “Ngabuburit Bareng Influencer:
-    Sudah Sejauh Mana Pembangunan IKN?” di Bandung, Jawa Barat, pada Jumat
-    (15/03/2024). Usman Kansong juga menyampaikan untuk mendukung pembangunan
-    IKN, akan dibangun infrastruktur digital dan telekomunikasi. Pemerintah
-    telah menyiapkan Pusat Data Nasional (PDN) sebagai upaya menciptakan
-    kedaulatan digital.
+    {{ article?.content ?? "-" }}
   </div>
 </section>

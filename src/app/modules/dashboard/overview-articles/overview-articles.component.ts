@@ -17,6 +17,8 @@ import { MediaCount } from '../../../core/models/media-count.model';
 import { OverviewService } from '../../../core/services/overview.service';
 import { initialState } from '../../../core/store/filter/filter.reducer';
 import { FilterRequestPayload } from '../../../core/models/request.model';
+import { getMediaCountArticles } from '../../../core/store/articles/articles.actions';
+import { selectArticlesState } from '../../../core/store/articles/articles.selectors';
 
 @Component({
   selector: 'app-overview-articles',
@@ -48,28 +50,20 @@ export class OverviewArticlesComponent {
   constructor(
     private route: ActivatedRoute,
     private store: Store<AppState>,
-    private articleService: ArticleService,
     private overviewService: OverviewService
   ) {}
 
   fetchArticles = (mediaCount: MediaCount, page: number, size: number) => {
     this.isLoading = true;
-    this.articleService
-      .getMediaCountArticles({
-        article_ids: mediaCount.article_ids,
-        page,
-        size,
-      })
-      .subscribe(
-        ({ data }) => {
-          this.articles = data.data;
-          this.totalRecords = data.recordsTotal;
+    this.store.dispatch(
+      getMediaCountArticles({
+        filter: {
+          article_ids: mediaCount.article_ids,
+          page,
+          size,
         },
-        () => {},
-        () => {
-          this.isLoading = false;
-        }
-      );
+      })
+    );
   };
 
   async ngOnInit() {
@@ -90,13 +84,20 @@ export class OverviewArticlesComponent {
         .getMediaCount(initialState as FilterRequestPayload)
         .subscribe((resp) => {
           const currentMedia = resp.data[+this.index];
+          this.currentMedia = currentMedia
           this.fetchArticles(currentMedia, 0, 16);
         });
     }
-  }
 
-  toBeImpl() {
-    alert('to be implemented');
+    this.store
+      .select(selectArticlesState)
+      .subscribe(({ mediaCountArticles }) => {
+        this.isLoading = mediaCountArticles.isLoading;
+        if (mediaCountArticles.data) {
+          this.articles = mediaCountArticles.data.data;
+          this.totalRecords = mediaCountArticles.data.recordsTotal;
+        }
+      });
   }
 
   onPageChange(event: any) {
