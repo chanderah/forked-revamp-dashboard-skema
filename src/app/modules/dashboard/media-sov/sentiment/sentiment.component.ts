@@ -7,6 +7,7 @@ import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { AppState } from '../../../../core/store';
 import {
   getArticlesByTone,
+  getMediaVisibility,
   getTones,
 } from '../../../../core/store/analyze/analyze.actions';
 import { AnalyzeState } from '../../../../core/store/analyze/analyze.reducer';
@@ -18,6 +19,7 @@ import {
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { ChartBar, Tones } from '../../../../core/models/tone.model';
 import moment from 'moment';
+import { MediaVisibility } from '../../../../core/models/media-visibility.model';
 
 @Component({
   selector: 'app-sentiment',
@@ -41,77 +43,71 @@ export class SentimentComponent {
 
   ngOnInit() {
     this.initChartOpts();
-    this.initChartData();
-    // this.store.dispatch(
-    //   getArticlesByTone({
-    //     filter: { ...initialState, tone: 0 } as FilterRequestPayload,
-    //   })
-    // );
-    // this.analyzeState.subscribe(({ tones }) => {
-    //   if (tones.data) this.initChartData(tones.data);
-    //   this.isLoading = tones.isLoading;
-    // });
-    // this.filterState.subscribe(this.onFilterChange);
+    this.store.dispatch(
+      getMediaVisibility({ filter: initialState as FilterRequestPayload })
+    );
+
+    this.analyzeState.subscribe(({ mediaVisibility }) => {
+      this.isLoading = mediaVisibility.isLoading;
+      this.initChartData(mediaVisibility.data);
+    });
+    this.filterState.subscribe(this.onFilterChange);
   }
 
-  getChartData = (chartBar: ChartBar[]) => {
-    const negativeValues: number[] = [];
-    const positiveValues: number[] = [];
-    const neutralValues: number[] = [];
-    const dates: string[] = [];
-    const labels: string[] = [];
+  getChartData = (mediaVisibility: MediaVisibility[]) => {
+    const lineDatasets: any[] = [];
+    const pieDatasets: any = [{ data: [], percentages: [] }];
+    const pieLabels: string[] = [];
+    const totalTones = mediaVisibility.reduce((prev, chart) => {
+      return prev + chart.doc_count;
+    }, 0);
 
-    chartBar.forEach((chart) => {
-      chart.tone_per_day.buckets.forEach((bucket) => {
-        if (chart.key === -1) negativeValues.push(bucket.doc_count);
-        if (chart.key === 0) neutralValues.push(bucket.doc_count);
-        if (chart.key === 1) positiveValues.push(bucket.doc_count);
+    mediaVisibility.forEach((media) => {
+      pieLabels.push(media.key);
+      const tmpData: { label: string; data: number[]; tension: number } = {
+        label: media.key,
+        data: [],
+        tension: 0.4,
+      };
+      media.category_id_per_day.buckets.forEach((bucket) => {
+        tmpData.data.push(bucket.doc_count);
       });
+      pieDatasets[0].percentages.push(
+        ((media.doc_count / totalTones) * 100).toFixed(0)
+      );
+      pieDatasets[0].data.push(media.doc_count);
+      lineDatasets.push(tmpData);
     });
 
-    chartBar[0].tone_per_day.buckets.forEach((bucket) => {
-      labels.push(moment(bucket.key_as_string).format('DD MMM'));
-      dates.push(bucket.key_as_string);
+    const visibilityBarDatasets = mediaVisibility.map((visibility) => {
+      const data = visibility.category_id_per_day.buckets.map(
+        (val) => val.doc_count
+      );
+      return {
+        type: 'bar',
+        data,
+        label: visibility.key,
+      };
     });
-    return { labels, dates, negativeValues, positiveValues, neutralValues };
+
+    const lineLabels = mediaVisibility[0].category_id_per_day.buckets.map(
+      (bucket) => moment(bucket.key_as_string).format('DD MMM')
+    );
+    return {
+      lineLabels,
+      lineDatasets,
+      pieLabels,
+      pieDatasets,
+      barLabels: lineLabels,
+      visibilityBarDatasets,
+    };
   };
 
-  initChartData = () => {
-    const documentStyle = getComputedStyle(document.documentElement);
-    // const negativeColor = documentStyle.getPropertyValue('--negative-color');
-    // const positiveColor = documentStyle.getPropertyValue('--positive-color');
-    // const neutralColor = documentStyle.getPropertyValue('--neutral-color');
-
-    // const { labels, negativeValues, neutralValues, positiveValues, dates } =
-    //   this.getChartData(tones.chart_bar ?? []);
-
-    this.chartData = {
-      labels: [
-        'Faskes Kesehatan',
-        'Faskes Kesehatan',
-        'Faskes Kesehatan',
-        'Faskes Kesehatan',
-        'Faskes Kesehatan',
-        'Faskes Kesehatan',
-        'Faskes Kesehatan',
-      ],
-      datasets: [
-        {
-          data: [540, 325, 702, 702, 702, 702, 702],
-          percentages: [20, 20, 20, 20, 20, 20, 20],
-          backgroundColor: [
-            documentStyle.getPropertyValue('--blue-500'),
-            documentStyle.getPropertyValue('--yellow-500'),
-            documentStyle.getPropertyValue('--green-500'),
-          ],
-          hoverBackgroundColor: [
-            documentStyle.getPropertyValue('--blue-400'),
-            documentStyle.getPropertyValue('--yellow-400'),
-            documentStyle.getPropertyValue('--green-400'),
-          ],
-        },
-      ],
-    };
+  initChartData = (mediaVisibility: MediaVisibility[]) => {
+    if (mediaVisibility.length) {
+      const { pieLabels, pieDatasets } = this.getChartData(mediaVisibility);
+      this.chartData = { labels: pieLabels, datasets: pieDatasets };
+    }
   };
 
   initChartOpts = () => {
@@ -122,7 +118,7 @@ export class SentimentComponent {
       maintainAspectRatio: false,
       plugins: {
         htmlLegend: {
-          containerID: 'mediashare-legend-container',
+          containerID: 'sentiment-legend-container',
           flexDirection: 'row',
           fontWeight: 'bold',
           percentagesValueFontSize: '14px',
@@ -138,8 +134,8 @@ export class SentimentComponent {
     };
   };
 
-  // onFilterChange = (filterState: FilterState) => {
-  //   const filter = { ...filterState, tone: 0, maxSize: } as FilterRequestPayload;
-  //   this.store.dispatch(getArticlesByTone({ filter }));
-  // };
+  onFilterChange = (filterState: FilterState) => {
+    const filter = { ...filterState } as FilterRequestPayload;
+    this.store.dispatch(getMediaVisibility({ filter }));
+  };
 }

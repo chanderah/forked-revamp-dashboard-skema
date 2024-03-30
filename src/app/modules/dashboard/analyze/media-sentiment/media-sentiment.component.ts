@@ -3,7 +3,7 @@ import { CardModule } from 'primeng/card';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import { ChartModule } from 'primeng/chart';
 import { IconRadioComponent } from '../../../../core/components/icons/radio/radio.component';
-import { Store } from '@ngrx/store';
+import { Store,  } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppState } from '../../../../core/store';
 import { AnalyzeState } from '../../../../core/store/analyze/analyze.reducer';
@@ -21,6 +21,7 @@ import {
 import { ChartBar, Tones } from '../../../../core/models/tone.model';
 import moment from 'moment';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
+import _ from 'lodash'
 
 @Component({
   selector: 'app-media-sentiment',
@@ -40,6 +41,7 @@ export class MediaSentimentComponent {
   filterState: Observable<FilterState>;
   isLoading: boolean = false;
   chartData: any;
+  tones: Tones | null = null
   options: any;
 
   constructor(private store: Store<AppState>) {
@@ -53,7 +55,10 @@ export class MediaSentimentComponent {
       getTones({ filter: initialState as FilterRequestPayload })
     );
     this.analyzeState.subscribe(({ tones }) => {
-      if (tones.data) this.initChartData(tones.data);
+      if (tones.data && !_.isEqual(this.tones, tones.data)) {
+        this.tones = tones.data
+        this.initChartData(tones.data);
+      }
       this.isLoading = tones.isLoading;
     });
     this.filterState.subscribe(this.onFilterChange);

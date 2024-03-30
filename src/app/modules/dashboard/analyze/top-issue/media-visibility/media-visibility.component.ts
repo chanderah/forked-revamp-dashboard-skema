@@ -106,7 +106,6 @@ export class MediaVisibilityComponent {
       };
       this.visibilityPieData = { labels: pieLabels, datasets: pieDatasets };
 
-      const documentStyle = getComputedStyle(document.documentElement);
       this.visibilityChartBarData = {
         labels: barLabels,
         datasets: visibilityBarDatasets,
