@@ -4,7 +4,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { ImgFallbackDirective } from '../../../core/directive/img-fallback.directive';
 import { PaginatorModule } from 'primeng/paginator';
 import { DividerModule } from 'primeng/divider';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TitleCasePipe } from '../../../core/pipes/titlecase.pipe';
 import { ArticleService } from '../../../core/services/article.service';
 import { Store, select } from '@ngrx/store';
@@ -14,7 +14,9 @@ import { take } from 'rxjs';
 import { Article } from '../../../core/models/article.model';
 import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
 import { MediaCount } from '../../../core/models/media-count.model';
-import { Media } from '../../../core/models/media.model';
+import { OverviewService } from '../../../core/services/overview.service';
+import { initialState } from '../../../core/store/filter/filter.reducer';
+import { FilterRequestPayload } from '../../../core/models/request.model';
 
 @Component({
   selector: 'app-overview-articles',
@@ -27,6 +29,7 @@ import { Media } from '../../../core/models/media.model';
     DividerModule,
     TitleCasePipe,
     SpinnerComponent,
+    RouterModule,
   ],
   templateUrl: './overview-articles.component.html',
   styleUrl: './overview-articles.component.scss',
@@ -44,9 +47,9 @@ export class OverviewArticlesComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private store: Store<AppState>,
-    private articleService: ArticleService
+    private articleService: ArticleService,
+    private overviewService: OverviewService
   ) {}
 
   fetchArticles = (mediaCount: MediaCount, page: number, size: number) => {
@@ -76,19 +79,24 @@ export class OverviewArticlesComponent {
       .pipe(select(selectOverviewState), take(1))
       .toPromise();
 
-    if (store) {
-      const currentMedia = store.mediaCount.data[+this.index];
-      if (currentMedia) {
-        this.currentMedia = currentMedia;
-        this.fetchArticles(currentMedia, 0, 16);
-      } else {
-        this.router.navigate(['/dashboard/overview']);
-      }
+    if (!store) return;
+
+    const currentMedia = store.mediaCount.data[+this.index];
+    if (currentMedia) {
+      this.currentMedia = currentMedia;
+      this.fetchArticles(currentMedia, 0, 16);
+    } else {
+      this.overviewService
+        .getMediaCount(initialState as FilterRequestPayload)
+        .subscribe((resp) => {
+          const currentMedia = resp.data[+this.index];
+          this.fetchArticles(currentMedia, 0, 16);
+        });
     }
   }
 
   toBeImpl() {
-    alert('to be implemented')
+    alert('to be implemented');
   }
 
   onPageChange(event: any) {

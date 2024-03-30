@@ -106,7 +106,12 @@
     >
       <app-filter></app-filter>
     </aside>
-    <section class="w-full md:w-full lg:w-full xl:w-10 xl:max-w-10">
+    <section
+      [ngClass]="{
+        'w-full md:w-full lg:w-full xl:w-10 xl:max-w-10': showFilter,
+        'w-full': !showFilter
+      }"
+    >
       <router-outlet></router-outlet>
     </section>
   </div>

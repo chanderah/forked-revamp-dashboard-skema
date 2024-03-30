@@ -9,6 +9,7 @@ import { NewsIndexRoutes } from './newsindex/newsindex.routes';
 import { MediaSOVComponent } from './media-sov/media-sov.component';
 import { MapComponent } from './map/map.component';
 import { OverviewArticlesComponent } from './overview-articles/overview-articles.component';
+import { ArticleDetailComponent } from './article-detail/article-detail.component';
 
 interface ChildrenRoute extends Route {
   withFilter?: boolean;
@@ -74,6 +75,18 @@ export const DashboardRoutes: DashboardRoutesProps[] = [
         title: 'Overview Articles',
         component: OverviewArticlesComponent,
         withFilter: true,
+      },
+      {
+        path: 'overview-articles',
+        title: 'Overview Articles',
+        component: OverviewArticlesComponent,
+        withFilter: true,
+      },
+      {
+        path: 'articles/:id',
+        title: 'Article Detail',
+        component: ArticleDetailComponent,
+        withFilter: false,
       },
     ],
   },
