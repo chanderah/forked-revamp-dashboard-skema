@@ -15,7 +15,12 @@ import { FormatAmountPipe } from '../../../core/pipes/format-amount.pipe';
 @Component({
   selector: 'app-article-detail',
   standalone: true,
-  imports: [DividerModule, ImgFallbackDirective, TagComponent, FormatAmountPipe],
+  imports: [
+    DividerModule,
+    ImgFallbackDirective,
+    TagComponent,
+    FormatAmountPipe,
+  ],
   templateUrl: './article-detail.component.html',
   styleUrl: './article-detail.component.scss',
 })
@@ -47,9 +52,5 @@ export class ArticleDetailComponent {
         toneLabel: TONE_MAP[current?.tone ?? 0] ?? '',
       } as Article & { toneLabel: string };
     });
-  }
-
-  ngOnInit() {
-    console.log('this.article', this.article);
   }
 }
