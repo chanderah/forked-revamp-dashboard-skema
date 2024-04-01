@@ -118,11 +118,16 @@ export class MapComponent {
           layer.on({
             mouseover: (e) => {
               const layer = e.target;
-              layer.setStyle({ fillColor: '#1999DC' });
+              layer.setStyle({ fillColor: '#1999DC', fillOpacity: 1 });
             },
             mouseout: (e) => {
               const layer = e.target;
-              layer.setStyle({ fillColor: '#8A90AB' });
+              layer.setStyle({
+                fillColor: '#8A90AB',
+                fillOpacity: getOpacity(
+                  getDataByLocation(featureName)?.value ?? 0
+                ),
+              });
             },
           });
         },
