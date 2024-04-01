@@ -1,9 +1,18 @@
-<div style="height: 400px; width: 600px; overflow: hidden">
-  <!-- <div id="map"></div> -->
-  <div
-    style="height: 300px"
-    leaflet
-    (leafletMapReady)="onMapReady($event)"
-    [leafletOptions]="options"
-  ></div>
-</div>
+<section>
+  <div class="text-center mb-3">
+    <div class="text-xl font-semibold">Map Analysis</div>
+    <div class="text-sm">
+      To see a list of distributors for your area, please click on your location
+      on the map
+    </div>
+  </div>
+
+  <div class="w-full h-30rem overflow-hidden">
+    <div
+      class="h-full bg-white"
+      leaflet
+      (leafletMapReady)="onMapReady($event)"
+      [leafletOptions]="options"
+    ></div>
+  </div>
+</section>

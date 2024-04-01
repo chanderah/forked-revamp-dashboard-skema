@@ -131,6 +131,7 @@ export class DashboardComponent implements OnInit {
       newsindex: 'News Index',
       preference: 'Preference',
       'overview-articles': 'Articles',
+      'map': 'Map',
       share: 'Share',
     };
 

@@ -1,7 +1,7 @@
 export interface Location {
   key: string;
   value: number;
-  percentage: number;
+  percentage?: number;
 }
 
 export interface TopLocation {
@@ -12,4 +12,5 @@ export interface TopLocation {
 
 export interface AllCount {
   top_location: TopLocation;
+  data: Location[];
 }
