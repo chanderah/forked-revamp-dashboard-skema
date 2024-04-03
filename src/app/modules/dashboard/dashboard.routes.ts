@@ -10,6 +10,7 @@ import { MediaSOVComponent } from './media-sov/media-sov.component';
 import { MapComponent } from './map/map.component';
 import { OverviewArticlesComponent } from './overview-articles/overview-articles.component';
 import { ArticleDetailComponent } from './article-detail/article-detail.component';
+import { MapArticlesComponent } from './map-articles/map-articles.component';
 
 interface ChildrenRoute extends Route {
   withFilter?: boolean;
@@ -54,6 +55,10 @@ export const DashboardRoutes: DashboardRoutesProps[] = [
         path: 'map',
         title: 'Map',
         component: MapComponent,
+      },{
+        path: 'map-articles',
+        title: 'Map Articles',
+        component: MapArticlesComponent,
       },
       {
         path: 'newsindex',
@@ -69,12 +74,6 @@ export const DashboardRoutes: DashboardRoutesProps[] = [
         path: 'share',
         title: 'Share',
         component: ShareComponent,
-      },
-      {
-        path: 'overview-articles',
-        title: 'Overview Articles',
-        component: OverviewArticlesComponent,
-        withFilter: true,
       },
       {
         path: 'overview-articles',

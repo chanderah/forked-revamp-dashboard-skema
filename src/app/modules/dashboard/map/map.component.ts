@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
 import {
   DomUtil,
   MapOptions,
@@ -21,24 +21,39 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppState } from '../../../core/store';
 import { selectFilterState } from '../../../core/store/filter/filter.selectors';
+import { DividerModule } from 'primeng/divider';
+import { IconNewspaperComponent } from '../../../core/components/icons/newspaper/newspaper.component';
+import { Article, ArticleResponse } from '../../../core/models/article.model';
+import { CommonModule } from '@angular/common';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-map',
   standalone: true,
-  imports: [LeafletModule],
+  imports: [
+    LeafletModule,
+    DividerModule,
+    IconNewspaperComponent,
+    CommonModule,
+    SpinnerComponent,
+    RouterModule,
+  ],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
 })
 export class MapComponent {
   map: L.Map | null = null;
   geoJsonLayer: L.GeoJSON | null = null;
+  selectedLoc: string | null = null;
+  articles: Article[] = [];
+  isLoadingArticles: boolean = false;
 
   options: MapOptions = {
     layers: [
       tileLayer('', {
         maxZoom: 8,
         minZoom: 5,
-        attribution: '...',
       }),
     ],
     zoom: 5,
@@ -48,13 +63,26 @@ export class MapComponent {
 
   filterState: Observable<FilterState>;
 
-  constructor(private mapService: MapService, private store: Store<AppState>) {
+  constructor(
+    private mapService: MapService,
+    private store: Store<AppState>,
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone,
+    private router: Router
+  ) {
     this.filterState = this.store.select(selectFilterState);
   }
 
   ngOnInit(): void {
-    // this.fetchAllCount()
     this.filterState.subscribe(this.onFilterChange);
+  }
+
+  navigateInsideZone() {
+    this.ngZone.run(() => {
+      this.router.navigate(['/dashboard/map-articles'], {
+        queryParams: { location: this.selectedLoc },
+      });
+    });
   }
 
   fetchAllCount = (filter = initialState) => {
@@ -62,6 +90,24 @@ export class MapComponent {
       .getAllCount(filter as FilterRequestPayload)
       .subscribe((data) => {
         this.addGeoJSONLayer(data);
+      });
+  };
+
+  fetchArticlesByGeo = (
+    filter: FilterRequestPayload | FilterState | null,
+    location = this.selectedLoc
+  ) => {
+    this.selectedLoc = location;
+    let reqFilter = filter ?? initialState;
+    if (location)
+      reqFilter = { ...reqFilter, geo_loc: location } as FilterRequestPayload;
+    this.isLoadingArticles = true;
+    this.mapService
+      .getArticleByGeo(reqFilter as FilterRequestPayload)
+      .subscribe((data) => {
+        this.isLoadingArticles = false;
+        this.articles = data.data;
+        this.cdr.detectChanges(); // Trigger change detection
       });
   };
 
@@ -109,20 +155,24 @@ export class MapComponent {
     this.mapService.getGeoJsonData().subscribe((data) => {
       if (!this.map) return;
       this.geoJsonLayer = geoJSON(data, {
-        onEachFeature(feature, layer) {
+        onEachFeature: (feature, layer) => {
           const featureName = feature.properties.name;
           const tooltipContent = `${featureName}: ${
             getDataByLocation(featureName)?.value ?? 0
           }`;
           layer.bindTooltip(tooltipContent);
           layer.on({
+            click: (e) => {
+              const clickedFeatureName = e.target.feature.properties.name;
+              this.fetchArticlesByGeo(null, clickedFeatureName);
+            },
             mouseover: (e) => {
-              const layer = e.target;
-              layer.setStyle({ fillColor: '#1999DC', fillOpacity: 1 });
+              const hoveredLayer = e.target;
+              hoveredLayer.setStyle({ fillColor: '#1999DC', fillOpacity: 1 });
             },
             mouseout: (e) => {
-              const layer = e.target;
-              layer.setStyle({
+              const hoveredLayer = e.target;
+              hoveredLayer.setStyle({
                 fillColor: '#8A90AB',
                 fillOpacity: getOpacity(
                   getDataByLocation(featureName)?.value ?? 0

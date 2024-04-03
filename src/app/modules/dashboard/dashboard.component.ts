@@ -132,6 +132,7 @@ export class DashboardComponent implements OnInit {
       preference: 'Preference',
       'overview-articles': 'Articles',
       'map': 'Map',
+      'map-articles': 'Map Articles',
       share: 'Share',
     };
 

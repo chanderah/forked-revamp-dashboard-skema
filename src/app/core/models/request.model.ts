@@ -8,5 +8,5 @@ export interface FilterRequestPayload {
   user_media_type_id?: number;
   limit?: number;
   maxSize?: number;
+  geo_loc?: string;
 }
- 
