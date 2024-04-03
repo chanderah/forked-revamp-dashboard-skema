@@ -8,7 +8,10 @@
     <p-scroller [items]="articles" [itemSize]="100" scrollHeight="595px">
       <ng-template pTemplate="item" let-item let-options="options">
         <div class="grid grid-nogutter">
-          <div class="col-12">
+          <div
+            class="col-12 cursor-pointer"
+            [routerLink]="'/dashboard/articles/' + item.article_id"
+          >
             <div
               class="flex py-3 gap-4"
               [ngClass]="{ 'border-top-1 surface-border': !options.first }"

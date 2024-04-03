@@ -17,6 +17,7 @@ import { SpokespersonState } from '../../../../core/store/spokesperson/spokesper
 import { selectSpokespersonState } from '../../../../core/store/spokesperson/spokesperson.selectors';
 import { Article } from '../../../../core/models/article.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-latest-news',
@@ -26,7 +27,8 @@ import { SpinnerComponent } from '../../../../core/components/spinner/spinner.co
     IconInfoComponent,
     CommonModule,
     ImgFallbackDirective,
-    SpinnerComponent
+    SpinnerComponent,
+    RouterLink
   ],
   templateUrl: './latest-news.component.html',
   styleUrl: './latest-news.component.scss',

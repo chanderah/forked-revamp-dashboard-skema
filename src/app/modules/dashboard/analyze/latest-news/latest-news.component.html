@@ -12,7 +12,7 @@
       [responsiveOptions]="responsiveOptions"
     >
       <ng-template let-article pTemplate="item">
-        <div>
+        <div class="cursor-pointer" [routerLink]="'/dashboard/articles/' + article.article_id">
           <div class="mb-3">
             <img
               [src]="article.image_url"

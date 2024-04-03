@@ -19,6 +19,7 @@ import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { Article } from '../../../../core/models/article.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-latest-news',
@@ -31,6 +32,7 @@ import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.di
     CommonModule,
     SpinnerComponent,
     ImgFallbackDirective,
+    RouterLink
   ],
   templateUrl: './latest-news.component.html',
   styleUrl: './latest-news.component.scss',

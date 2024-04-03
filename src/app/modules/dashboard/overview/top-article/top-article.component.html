@@ -16,10 +16,17 @@
     </div>
   </div>
   <spinner [spinning]="isLoading">
-    <p-scroller [items]="articles" [itemSize]="articles.length + 2" scrollHeight="524px">
+    <p-scroller
+      [items]="articles"
+      [itemSize]="articles.length + 2"
+      scrollHeight="524px"
+    >
       <ng-template pTemplate="item" let-item let-options="options">
         <div class="grid grid-nogutter">
-          <div class="col-12">
+          <div
+            class="col-12 cursor-pointer"
+            [routerLink]="'/dashboard/articles/' + item.article_id"
+          >
             <div
               class="flex flex-column xl:flex-row xl:align-items-start py-3 gap-4"
               [ngClass]="{ 'border-top-1 surface-border': !options.first }"

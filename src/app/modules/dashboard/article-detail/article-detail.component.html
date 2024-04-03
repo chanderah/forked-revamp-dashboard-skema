@@ -1,55 +1,60 @@
 <section>
-  <div class="flex flex-column gap-2">
-    <div class="text-sm">
-      <span class="font-semibold">Posted:</span> {{ article?.datee ?? "-" }}
-    </div>
-    <div class="text-3xl font-semibold">
-      {{ article?.title ?? "-" }}
-    </div>
-  </div>
-  <p-divider></p-divider>
-  <div class="flex justify-content-between">
-    <div class="flex">
+  <spinner [spinning]="isLoading">
+    <div class="flex flex-column gap-2">
       <div class="text-sm">
-        <div>
-          <span class="font-semibold">Jurnalist:</span>
-          {{ article?.journalist ?? "-" }}
-        </div>
-        <div>
-          <span class="font-semibold">Media Type:</span>
-          {{ article?.media_type ?? "-" }}
-        </div>
+        <span class="font-semibold">Posted:</span> {{ article?.datee ?? "-" }}
       </div>
-      <p-divider layout="vertical"></p-divider>
-      <div class="text-sm">
-        <div>
-          <span class="font-semibold">Location:</span>
-          {{ article?.location ?? "-" }}
-        </div>
-        <div>
-          <span class="font-semibold">News Value:</span>
-          {{ article?.advalue_bw?? 0 | formatAmount }}
-        </div>
-      </div>
-      <p-divider layout="vertical"></p-divider>
-      <div class="text-sm">
-        <div>
-          <span class="font-semibold">Ad Value:</span>
-          {{ article?.advalue_fc ?? 0 | formatAmount }}
-        </div>
+      <div class="text-3xl font-semibold">
+        {{ article?.title ?? "-" }}
       </div>
     </div>
-    <tag [content]="article?.toneLabel ?? ''" [type]="article?.tone ?? 0"></tag>
-  </div>
+    <p-divider></p-divider>
 
-  <img
-    [src]="article?.image_url ?? ''"
-    class="h-24rem w-full my-6"
-    style="object-fit: cover"
-    imgFallback="https://placehold.co/600x400?text=No+Image+Available"
-  />
+    <div class="flex justify-content-between">
+      <div class="flex">
+        <div class="text-sm">
+          <div>
+            <span class="font-semibold">Jurnalist:</span>
+            {{ article?.journalist ?? "-" }}
+          </div>
+          <div>
+            <span class="font-semibold">Media Type:</span>
+            {{ article?.media_type ?? "-" }}
+          </div>
+        </div>
+        <p-divider layout="vertical"></p-divider>
+        <div class="text-sm">
+          <div>
+            <span class="font-semibold">Location:</span>
+            {{ article?.location ?? "-" }}
+          </div>
+          <div>
+            <span class="font-semibold">News Value:</span>
+            {{ article?.advalue_bw ?? 0 | formatAmount }}
+          </div>
+        </div>
+        <p-divider layout="vertical"></p-divider>
+        <div class="text-sm">
+          <div>
+            <span class="font-semibold">Ad Value:</span>
+            {{ article?.advalue_fc ?? 0 | formatAmount }}
+          </div>
+        </div>
+      </div>
+      <tag
+        *ngIf="article"
+        [content]="article.toneLabel"
+        [type]="article.tone ?? 0"
+      ></tag>
+    </div>
 
-  <div class="text-sm text-color">
-    {{ article?.content ?? "-" }}
-  </div>
+    <img
+      [src]="article?.image_url ?? ''"
+      class="h-30rem w-full my-6"
+      style="object-fit: cover"
+      imgFallback="https://placehold.co/600x400?text=No+Image+Available"
+    />
+
+    <div class="text-sm text-color" [innerHTML]="sanitizedContent ?? article?.content ?? ''"></div>
+  </spinner>
 </section>

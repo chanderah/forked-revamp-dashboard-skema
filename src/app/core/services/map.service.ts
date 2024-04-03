@@ -27,9 +27,10 @@ export class MapService {
 
   getArticleByGeo(filter: FilterRequestPayload): Observable<ArticleResponse> {
     return this.http.post<ArticleResponse>(`${this.baseUrl}/v2/article-by-geo/`, {
-      ...filter,
-      max_size: 10,
+      size: 10,
       page: 0,
+      ...filter,
+      max_size: 16,
       type_location: 'article',
     });
   }

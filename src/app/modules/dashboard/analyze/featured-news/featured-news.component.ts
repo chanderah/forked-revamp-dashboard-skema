@@ -14,6 +14,7 @@ import { Article } from '../../../../core/models/article.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 import { initialState } from '../../../../core/store/filter/filter.reducer';
 import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-featured-news',
@@ -24,7 +25,8 @@ import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.di
     ScrollerModule,
     CommonModule,
     SpinnerComponent,
-    ImgFallbackDirective
+    ImgFallbackDirective,
+    RouterLink
   ],
   templateUrl: './featured-news.component.html',
   styleUrl: './featured-news.component.scss',

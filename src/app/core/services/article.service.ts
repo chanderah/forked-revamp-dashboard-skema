@@ -36,18 +36,13 @@ export class ArticleService {
     );
   }
 
-  getUserEditing(
-    filter: FilterRequestPayload
-  ): Observable<ArticleResponse> {
-    return this.http.post<ArticleResponse>(
-      `${this.baseUrl}/v1/user/editing/`,
-      {
-        ...filter,
-        media_id: 0,
-        maxSize: 20,
-        page: 0,
-      }
-    );
+  getUserEditing(filter: FilterRequestPayload): Observable<ArticleResponse> {
+    return this.http.post<ArticleResponse>(`${this.baseUrl}/v1/user/editing/`, {
+      ...filter,
+      media_id: 0,
+      maxSize: 20,
+      page: 0,
+    });
   }
 
   getArticlesByTone(
@@ -79,6 +74,19 @@ export class ArticleService {
         page,
         size,
       }
+    );
+  }
+
+  getArticleById(articleId: string): Observable<{ data: Article }> {
+    return this.http.get<{ data: Article }>(
+      `${this.baseUrl}/v1/user/article/${articleId}`
+    );
+  }
+
+  getKeywordsByArticleId(articleId: string): Observable<{ data: string[] }> {
+    return this.http.post<{ data: string[] }>(
+      `${this.baseUrl}/v1/user/keywords-by-article-id/`,
+      { article_id: articleId }
     );
   }
 }

@@ -16,7 +16,10 @@
       *ngIf="articles.length > 0"
     >
       <ng-container *ngFor="let article of articles">
-        <div>
+        <div
+          class="cursor-pointer"
+          [routerLink]="'/dashboard/articles/' + article.article_id"
+        >
           <div
             class="flex flex-column xl:flex-row xl:align-items-start py-1 gap-3"
           >
@@ -54,11 +57,9 @@
                   </div>
                   <div class="flex align-items-center gap-2">
                     <i class="pi pi-clock text-500 text-xs"></i>
-                    <span
-                      class="text-500 p-0 mt-0"
-                      style="font-size: 10px"
-                      >{{ article.datee.split(" ")[0] }}</span
-                    >
+                    <span class="text-500 p-0 mt-0" style="font-size: 10px">{{
+                      article.datee.split(" ")[0]
+                    }}</span>
                   </div>
                 </div>
               </div>

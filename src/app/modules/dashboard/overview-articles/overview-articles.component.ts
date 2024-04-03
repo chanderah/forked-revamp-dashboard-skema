@@ -6,7 +6,6 @@ import { PaginatorModule } from 'primeng/paginator';
 import { DividerModule } from 'primeng/divider';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TitleCasePipe } from '../../../core/pipes/titlecase.pipe';
-import { ArticleService } from '../../../core/services/article.service';
 import { Store, select } from '@ngrx/store';
 import { AppState } from '../../../core/store';
 import { selectOverviewState } from '../../../core/store/overview/overview.selectors';
@@ -19,6 +18,7 @@ import { initialState } from '../../../core/store/filter/filter.reducer';
 import { FilterRequestPayload } from '../../../core/models/request.model';
 import { getMediaCountArticles } from '../../../core/store/articles/articles.actions';
 import { selectArticlesState } from '../../../core/store/articles/articles.selectors';
+import { ArticleListComponent } from '../../../core/components/article-list/article-list.component';
 
 @Component({
   selector: 'app-overview-articles',
@@ -32,6 +32,7 @@ import { selectArticlesState } from '../../../core/store/articles/articles.selec
     TitleCasePipe,
     SpinnerComponent,
     RouterModule,
+    ArticleListComponent
   ],
   templateUrl: './overview-articles.component.html',
   styleUrl: './overview-articles.component.scss',
@@ -100,7 +101,7 @@ export class OverviewArticlesComponent {
       });
   }
 
-  onPageChange(event: any) {
+  onPageChange = (event: any) => {
     this.page = event.page;
     this.rows = event.rows;
     this.first = event.first;

@@ -131,8 +131,9 @@ export class DashboardComponent implements OnInit {
       newsindex: 'News Index',
       preference: 'Preference',
       'overview-articles': 'Articles',
-      'map': 'Map',
+      map: 'Map',
       'map-articles': 'Map Articles',
+      articles: 'Article',
       share: 'Share',
     };
 
@@ -140,20 +141,27 @@ export class DashboardComponent implements OnInit {
       if (route instanceof NavigationEnd) {
         const nav = route as NavigationEnd;
         const location = nav.url.split('/')?.pop?.() ?? '';
+        const breadCrumbsItems = [{ label: 'Dashboard' }];
 
-        this.breadCrumbsItems = [
-          { label: 'Dashboard' },
-          {
-            label: breadCrumbLabelMap[location.split('?')[0]] ?? '-',
-          },
-        ];
+        if (breadCrumbLabelMap[location.split('?')[0]]) {
+          breadCrumbsItems.push({
+            label: breadCrumbLabelMap[location.split('?')[0]],
+          });
+        }
+
+        this.breadCrumbsItems = breadCrumbsItems;
       }
     });
 
-    this.breadCrumbsItems = [
-      { label: 'Dashboard' },
-      { label: breadCrumbLabelMap[currentLocation?.split('?')[0] ?? ''] },
-    ];
+    const breadCrumbsItems = [{ label: 'Dashboard' }];
+
+    if (breadCrumbLabelMap[currentLocation?.split('?')[0] ?? '']) {
+      breadCrumbsItems.push({
+        label: breadCrumbLabelMap[currentLocation?.split('?')[0] ?? ''],
+      });
+    }
+
+    this.breadCrumbsItems = breadCrumbsItems;
 
     this.profileItems = [
       {
