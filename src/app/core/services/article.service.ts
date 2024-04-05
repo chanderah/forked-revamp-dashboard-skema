@@ -47,13 +47,14 @@ export class ArticleService {
 
   getArticlesByTone(
     filter: FilterRequestPayload
-  ): Observable<{ data: Article[] }> {
-    return this.http.post<{ data: Article[] }>(
+  ): Observable<ArticleResponse> {
+    return this.http.post<ArticleResponse>(
       `${this.baseUrl}/v1/dashboard/article-by-tone`,
       {
         ...filter,
-        media_id: 0,
-        page: 0,
+        media_id: filter.media_id ?? 0,
+        page: filter.page ?? 0,
+        maxSize: filter.maxSize ?? undefined,
       }
     );
   }

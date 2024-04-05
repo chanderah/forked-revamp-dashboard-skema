@@ -15,6 +15,7 @@ import { ChartCardComponent } from '../../../../core/components/chart-card/chart
 export class MediaChartComponent {
   @Input() data!: any;
   @Input() title!: string;
+  @Input() onSelectTone!: (media_id: number, media_name: string, tone: number) => void;
 
   options: any;
   plugins = [ChartDataLabels];
@@ -48,4 +49,11 @@ export class MediaChartComponent {
       },
     };
   }
+
+  onDataSelect = (value: any) => {
+    const mediaId = this.data.media_id
+    const mediaName = this.data.media_name
+    const tone = this.data.toneValues[value.element.index]
+    this.onSelectTone(mediaId, mediaName, tone)
+  };
 }

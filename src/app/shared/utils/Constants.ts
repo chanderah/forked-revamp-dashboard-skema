@@ -1,5 +1,9 @@
+export const NEGATIVE_TONE = -1
+export const NEUTRAL_TONE = 0
+export const POSITIVE_TONE =1
+
 export const TONE_MAP: { [x: string]: string } = {
-  '-1': 'Negative',
-  0: 'Neutral',
-  1: 'Positive',
+  [NEGATIVE_TONE]: 'Negative',
+  [NEUTRAL_TONE]: 'Neutral',
+  [POSITIVE_TONE]: 'Positive',
 };

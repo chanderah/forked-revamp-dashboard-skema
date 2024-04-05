@@ -21,6 +21,8 @@ import {
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
+import { NEGATIVE_TONE, NEUTRAL_TONE, POSITIVE_TONE } from '../../../../shared/utils/Constants';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-top-media',
@@ -46,7 +48,7 @@ export class TopMediaComponent implements OnInit {
   chartsData: any[] = [];
   isLoading: boolean = false;
 
-  constructor(private store: Store<AppState>) {
+  constructor(private store: Store<AppState>, private router: Router) {
     this.overviewState = this.store.select(selectOverviewState);
     this.filterState = this.store.select(selectFilterState);
   }
@@ -93,6 +95,7 @@ export class TopMediaComponent implements OnInit {
         ...t,
         totalTones,
         combinedTones,
+        toneValues: [POSITIVE_TONE, NEGATIVE_TONE, NEUTRAL_TONE],
         datasets: [
           {
             data: simplifiedTones,
@@ -103,4 +106,8 @@ export class TopMediaComponent implements OnInit {
       };
     });
   };
+
+  onSelectTone = (mediaId: number, mediaName: string, tone: number) => {
+    this.router.navigateByUrl(`/dashboard/articles-by-tone?mediaId=${mediaId}&tone=${tone}&mediaName=${mediaName}`)
+  }
 }

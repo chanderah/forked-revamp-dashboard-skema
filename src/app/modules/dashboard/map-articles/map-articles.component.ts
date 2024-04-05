@@ -18,9 +18,7 @@ import { initialState } from '../../../core/store/filter/filter.reducer';
 })
 export class MapArticlesComponent {
   location: string | null = null;
-  index: string = '0';
   articles: Article[] = [];
-  currentMedia: MediaCount | null = null;
   page: number = 0;
   first: number = 0;
   rows: number = 16;
