@@ -25,6 +25,8 @@ export interface Article {
   advalue_bw?: number;
   advalue_fc?: number;
   tone?: number;
+  category_id?: string;
+  issue?: string
 }
 
 export interface ArticleResponse {

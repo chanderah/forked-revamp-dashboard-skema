@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { HighlightsResponse } from '../models/highlights.model';
 import { FilterRequestPayload } from '../models/request.model';
 import { Article, ArticleResponse } from '../models/article.model';
+import { CategoryResponse } from '../models/category.model';
 
 @Injectable({
   providedIn: 'root',
@@ -40,14 +41,11 @@ export class ArticleService {
     return this.http.post<ArticleResponse>(`${this.baseUrl}/v1/user/editing/`, {
       ...filter,
       media_id: 0,
-      maxSize: 20,
-      page: 0,
+      maxSize: 10,
     });
   }
 
-  getArticlesByTone(
-    filter: FilterRequestPayload
-  ): Observable<ArticleResponse> {
+  getArticlesByTone(filter: FilterRequestPayload): Observable<ArticleResponse> {
     return this.http.post<ArticleResponse>(
       `${this.baseUrl}/v1/dashboard/article-by-tone`,
       {
@@ -89,5 +87,38 @@ export class ArticleService {
       `${this.baseUrl}/v1/user/keywords-by-article-id/`,
       { article_id: articleId }
     );
+  }
+
+  deleteArticle(articleIds: Record<string, string>[]): Observable<string> {
+    return this.http.post<string>(
+      `${this.baseUrl}/v1/user/article/delete`,
+      articleIds
+    );
+  }
+
+  updateArticleTitle(payload: {
+    article_id: string;
+    category_id: string;
+    title: string;
+  }): Observable<string> {
+    return this.http.post<string>(
+      `${this.baseUrl}/v1/user/title/update`,
+      payload
+    );
+  }
+
+  updateArticleTone(payload: {
+    article_id: string[];
+    category_id: string[];
+    tone: number;
+  }): Observable<string> {
+    return this.http.post<string>(
+      `${this.baseUrl}/v1/user/tone/update`,
+      payload
+    );
+  }
+
+  getSubCategoriesDistinct(): Observable<CategoryResponse> {
+    return this.http.get<CategoryResponse>(`${this.baseUrl}/v1/user/subcategories-distinct/`);
   }
 }

@@ -11,6 +11,7 @@ import { SpinnerComponent } from '../../../core/components/spinner/spinner.compo
 import { CommonModule } from '@angular/common';
 import { forkJoin, switchMap } from 'rxjs';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ButtonSecondaryComponent } from '../../../core/components/button-secondary/button-secondary.component';
 
 const highlightKeywords = (content: string, keywords: string[]): string => {
   const cleanedKeywords = keywords.map((keyword) => keyword.replace(/"/g, ''));

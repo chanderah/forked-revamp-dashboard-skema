@@ -1,7 +1,7 @@
 export interface FilterRequestPayload {
-  start_date: string;
-  date_type: string;
-  end_date: string;
+  start_date?: string;
+  date_type?: string;
+  end_date?: string;
   category_id?: string;
   category_set?: number;
   page?: number
@@ -12,4 +12,5 @@ export interface FilterRequestPayload {
   geo_loc?: string;
   media_id?: number | null;
   tone?: number | null;
+  term?: string
 }

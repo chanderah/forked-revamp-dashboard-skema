@@ -5,13 +5,13 @@ import { AnalyzeComponent } from './analyze/analyze.component';
 import { SpokespersonComponent } from './spokesperson/spokesperson.component';
 import { PreferenceComponent } from './preference/preference.component';
 import { ShareComponent } from './share/share.component';
-import { NewsIndexRoutes } from './newsindex/newsindex.routes';
 import { MediaSOVComponent } from './media-sov/media-sov.component';
 import { MapComponent } from './map/map.component';
 import { OverviewArticlesComponent } from './overview-articles/overview-articles.component';
 import { ArticleDetailComponent } from './article-detail/article-detail.component';
 import { MapArticlesComponent } from './map-articles/map-articles.component';
 import { ArticlesByToneComponent } from './articles-by-tone/articles-by-tone.component';
+import { NewsindexComponent } from './newsindex/newsindex.component';
 
 interface ChildrenRoute extends Route {
   withFilter?: boolean;
@@ -70,7 +70,7 @@ export const DashboardRoutes: DashboardRoutesProps[] = [
       {
         path: 'newsindex',
         title: 'News Index',
-        children: NewsIndexRoutes,
+        component: NewsindexComponent,
         withFilter: true,
       },
       {
