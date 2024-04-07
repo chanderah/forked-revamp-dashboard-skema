@@ -1,0 +1,252 @@
+<div>
+  <div class="flex justify-content-between align-items-center mb-5">
+    <div>
+      <p-confirmPopup></p-confirmPopup>
+      <p-button
+        label="Update Tone"
+        icon="pi pi-file-edit"
+        [disabled]="!selectedArticles.length"
+        (click)="menu.toggle($event)"
+      ></p-button
+      ><p-tieredMenu
+        #menu
+        [model]="updateToneItems"
+        [popup]="true"
+      ></p-tieredMenu>
+    </div>
+  </div>
+  <div>
+    <div class="card">
+      <p-table
+        [value]="articles"
+        dataKey="article_id"
+        [selection]="selectedArticles"
+        (selectionChange)="onSelectionChange($event)"
+        [rows]="10"
+        [totalRecords]="totalRecords"
+        [showFirstLastIcon]="false"
+        [loading]="loading"
+        [tableStyle]="{ 'min-width': '50rem' }"
+      >
+        <ng-template pTemplate="header">
+          <tr class="text-sm font-medium">
+            <th style="width: 8px"></th>
+            <th class="w-8rem pl-0">
+              <div class="flex align-items-center gap-2">
+                <p-tableHeaderCheckbox class="offs"></p-tableHeaderCheckbox>
+                <span>Date</span>
+                <i pSortableColumn="datee" class="pi pi-angle-down"></i>
+              </div>
+            </th>
+            <th>
+              <div class="flex align-items-center gap-2">
+                Media Name
+                <i pSortableColumn="media_name" class="pi pi-angle-down"></i>
+              </div>
+            </th>
+            <th>
+              <div class="flex align-items-center gap-2">
+                News Title
+                <i pSortablxxeColumn="title" class="pi pi-angle-down"></i>
+              </div>
+            </th>
+            <th>
+              <div class="flex align-items-center gap-2">Issue</div>
+            </th>
+            <th style="width: 4rem" class="text-center">Preview</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-article let-expanded="expanded">
+          <tr class="text-sm">
+            <td class="pr-2">
+              <p-button
+                [text]="true"
+                size="small"
+                [pRowToggler]="article"
+                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+                styleClass="p-0 px-0  text-color"
+                [style]="{ width: 'max-content' }"
+              ></p-button>
+            </td>
+            <td class="pl-0">
+              <div class="flex align-items-center gap-2">
+                <p-tableCheckbox [value]="article"></p-tableCheckbox>
+                {{ article.datee.split(" ")[0] }}
+              </div>
+            </td>
+            <td>
+              <div class="flex align-items-center gap-1 w-max">
+                <tag
+                  [content]="getToneLabel(article.tone)"
+                  [type]="article.tone ?? 0"
+                ></tag>
+                <div>
+                  {{ article.media_name }}
+                </div>
+              </div>
+            </td>
+            <td>{{ article.title }}</td>
+            <td>{{ article.issue }}</td>
+            <td>
+              <div class="flex gap-2">
+                <p-button
+                  [outlined]="true"
+                  [text]="true"
+                  size="small"
+                  styleClass="p-2 border-1 border-200"
+                  (onClick)="openEditModal(article)"
+                >
+                  <icon-pencil class="fill-text-color"></icon-pencil>
+                </p-button>
+                <p-button
+                  [outlined]="true"
+                  [text]="true"
+                  size="small"
+                  styleClass="p-2 border-1 border-200"
+                  (onClick)="openPreview(article)"
+                >
+                  <icon-newspaper
+                    [width]="16"
+                    [height]="16"
+                    class="fill-text-color"
+                  ></icon-newspaper>
+                </p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-article>
+          <tr>
+            <td colspan="4">
+              <div class="flex flex-column gap-2">
+                <div class="text-sm">{{ article.title }}</div>
+                <div class="flex align-items-center gap-2">
+                  <div class="text-sm">Issue:</div>
+                  <p-tag [value]="article.issue"></p-tag>
+                </div>
+                <div class="text-sm">{{ article.content }}</div>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <p-paginator
+        (onPageChange)="onPageChange($event)"
+        [first]="first"
+        [rows]="rows"
+        [totalRecords]="totalRecords"
+        [templateLeft]="customLeftTemplate"
+        [showFirstLastIcon]="false"
+      >
+        <ng-template #customLeftTemplate let-state>
+          <span class="text-sm text-color"
+            >Showing {{ state.first + 1 }}-{{ state.first + state.rows }} from
+            {{ state.totalRecords }}</span
+          >
+        </ng-template>
+      </p-paginator>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  header="Header"
+  [(visible)]="modalUpdateOpen"
+  [modal]="true"
+  [style]="{ width: '50rem' }"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+>
+  <ng-template pTemplate="header">
+    <div class="inline-flex align-items-center justify-content-center gap-2">
+      <span class="font-bold">Edit article</span>
+    </div>
+  </ng-template>
+  <form [formGroup]="editedValues" class="flex flex-column gap-4">
+    <div class="flex flex-column gap-2">
+      <label for="title">Title</label>
+      <input pInputText formControlName="title" id="title" class="text-xs" />
+    </div>
+    <div class="grid">
+      <div class="col-6">
+        <div class="flex justify-content-between">
+          <div class="text-xs font-semibold">Date:</div>
+          <div class="text-xs">{{ editedArticle?.datee ?? "-" }}</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="flex justify-content-between">
+          <div class="text-xs font-semibold">News Value:</div>
+          <div class="text-xs">
+            {{ editedArticle?.advalue_bw ?? 0 | formatAmount }}
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="flex justify-content-between">
+          <div class="text-xs font-semibold">Media:</div>
+          <div class="text-xs">{{ editedArticle?.media_name ?? "-" }}</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="flex justify-content-between">
+          <div class="text-xs font-semibold">Ad Value:</div>
+          <div class="text-xs">
+            {{ editedArticle?.advalue_fc ?? 0 | formatAmount }}
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="flex justify-content-between">
+          <div class="text-xs font-semibold">Option:</div>
+          <a
+            class="text-xs"
+            [href]="editedArticle?.preview_link"
+            target="_blank"
+            >Preview</a
+          >
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-column gap-2">
+      <label for="issue">Issue</label>
+      <input pInputText formControlName="issue" id="issue" class="text-xs" />
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <label for="content">Content</label>
+      <textarea
+        pInputTextarea
+        formControlName="content"
+        id="content"
+        class="text-xs"
+        rows="10"
+      ></textarea>
+    </div>
+  </form>
+  <p-multiSelect
+    [options]="availableCategories"
+    [filter]="false"
+    [(ngModel)]="editedCategories"
+    dataKey="category_id"
+    placeholder="Select Cateogry"
+    optionLabel="category_id"
+    display="chip"
+    appendTo="body"
+    styleClass="text-xs w-full mt-4"
+  ></p-multiSelect>
+  <ng-template pTemplate="footer">
+    <p-button
+      (click)="modalUpdateOpen = false"
+      label="Cancel"
+      pAutoFocus
+      [outlined]="true"
+    ></p-button>
+    <p-button
+      icon="pi pi-check"
+      (click)="updateArticle()"
+      label="Save"
+      pAutoFocus
+      [autofocus]="true"
+    ></p-button>
+  </ng-template>
+</p-dialog>
