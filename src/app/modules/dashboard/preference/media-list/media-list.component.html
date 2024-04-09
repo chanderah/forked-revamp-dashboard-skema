@@ -3,9 +3,9 @@
     <div>
       <p-confirmPopup></p-confirmPopup>
       <p-button
-        label="Update Tone"
-        icon="pi pi-file-edit"
-        [disabled]="!selectedArticles.length"
+        label="Add Media"
+        icon="pi pi-plus"
+        [style]="{backgroundColor: 'var(--surface-200)'}"
         (click)="menu.toggle($event)"
       ></p-button
       ><p-tieredMenu

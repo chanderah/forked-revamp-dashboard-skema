@@ -113,12 +113,49 @@ export class ArticleService {
     tone: number;
   }): Observable<string> {
     return this.http.post<string>(
-      `${this.baseUrl}/v1/user/tone/update`,
+      `${this.baseUrl}/v1/user/tone/multiple/update`,
+      payload
+    );
+  }
+
+  updateArticleIssue(payload: {
+    article_id: number[];
+    topic: string[];
+    new_topic: string;
+  }): Observable<string> {
+    return this.http.put<string>(`${this.baseUrl}/v1/issue/update/`, payload);
+  }
+
+  updateArticleSave(payload: {
+    advalue_bw: string;
+    advalue_fc: string;
+    article_id: number;
+    category_ids: string[];
+    circulation: string;
+    datee: string;
+    media_id: number;
+    tone: number;
+  }): Observable<string> {
+    return this.http.post<string>(
+      `${this.baseUrl}/v1/user/article/save`,
+      payload
+    );
+  }
+
+  updateArticleSummary(payload: {
+    article_id: number;
+    category_id: string;
+    summary: string;
+  }): Observable<string> {
+    return this.http.post<string>(
+      `${this.baseUrl}/v1/user/summary/update`,
       payload
     );
   }
 
   getSubCategoriesDistinct(): Observable<CategoryResponse> {
-    return this.http.get<CategoryResponse>(`${this.baseUrl}/v1/user/subcategories-distinct/`);
+    return this.http.get<CategoryResponse>(
+      `${this.baseUrl}/v1/user/subcategories-distinct/`
+    );
   }
 }

@@ -1,4 +1,5 @@
 <section>
+  <p-toast></p-toast>
   <div class="flex align-items-center gap-2 mb-4">
     <icon-newspaper fill="var(--primary-color)"></icon-newspaper>
     <div class="text-sm font-semibold">News</div>
@@ -197,7 +198,7 @@
   </ng-template>
   <form [formGroup]="editedValues" class="flex flex-column gap-4">
     <div class="flex flex-column gap-2">
-      <label for="title">Title</label>
+      <label class="font-semibold" for="title">Title</label>
       <input pInputText formControlName="title" id="title" class="text-xs" />
     </div>
     <div class="grid">
@@ -242,19 +243,22 @@
       </div>
     </div>
     <div class="flex flex-column gap-2">
-      <label for="issue">Issue</label>
+      <label class="font-semibold" for="issue">Issue</label>
       <input pInputText formControlName="issue" id="issue" class="text-xs" />
     </div>
-
     <div class="flex flex-column gap-2">
-      <label for="content">Content</label>
+      <label class="font-semibold" for="summary">Summary</label>
       <textarea
         pInputTextarea
-        formControlName="content"
-        id="content"
+        formControlName="summary"
+        id="summary"
         class="text-xs"
-        rows="10"
+        rows="5"
       ></textarea>
+    </div>
+    <div class="flex flex-column gap-2">
+      <label class="font-semibold" for="content">Content</label>
+      <div class="text-xs">{{ editedArticle?.content ?? "" }}</div>
     </div>
   </form>
   <p-multiSelect
@@ -274,12 +278,14 @@
       label="Cancel"
       pAutoFocus
       [outlined]="true"
+      [loading]="isUpdating"
     ></p-button>
     <p-button
       icon="pi pi-check"
       (click)="updateArticle()"
       label="Save"
       pAutoFocus
+      [loading]="isUpdating"
       [autofocus]="true"
     ></p-button>
   </ng-template>

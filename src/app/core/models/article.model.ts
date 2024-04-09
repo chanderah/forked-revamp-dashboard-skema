@@ -26,6 +26,7 @@ export interface Article {
   advalue_fc?: number;
   tone?: number;
   category_id?: string;
+  summary?: string;
   issue?: string
 }
 
