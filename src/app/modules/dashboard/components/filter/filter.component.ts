@@ -13,9 +13,9 @@ import { Observable } from 'rxjs';
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { setFilter } from '../../../../core/store/filter/filter.actions';
 import moment from 'moment';
-import { FilterService } from '../../../../core/services/filter.service';
 import { CommonModule } from '@angular/common';
 import { CalendarModule } from 'primeng/calendar';
+import { PreferenceService } from '../../../../core/services/preference.service';
 
 interface Option {
   name: string;
@@ -76,7 +76,7 @@ export class FilterComponent {
 
   constructor(
     private store: Store<AppState>,
-    private filterService: FilterService
+    private preferenceService: PreferenceService
   ) {
     this.filterState = this.store.select(selectFilterState);
     this.getCategoriesOptions();
@@ -85,7 +85,7 @@ export class FilterComponent {
   }
 
   getCategoriesOptions = () => {
-    this.filterService.getCategories().subscribe(
+    this.preferenceService.getCategories().subscribe(
       (response) => {
         const categoryOptions = response.results.map((category) => ({
           name: category.descriptionz,
@@ -103,7 +103,7 @@ export class FilterComponent {
   };
 
   getSubCategoriesOptions = () => {
-    this.filterService.getSubCategories().subscribe(
+    this.preferenceService.getSubCategories().subscribe(
       (response) => {
         const subCategoryOptions = response.results.map((category) => ({
           name: category.descriptionz,
@@ -124,7 +124,7 @@ export class FilterComponent {
   };
 
   getMediaOptions = () => {
-    this.filterService.getMedias().subscribe(
+    this.preferenceService.getMedias().subscribe(
       (response) => {
         const mediaOptions = response.results.map((category) => ({
           name: category.user_media_type_name_def,

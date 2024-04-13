@@ -4,52 +4,43 @@ import { IconNewspaperComponent } from '../../../../core/components/icons/newspa
 import { IconPencilComponent } from '../../../../core/components/icons/pencil/pencil.component';
 import { RouterModule } from '@angular/router';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
-import { ArticleService } from '../../../../core/services/article.service';
-import { FilterRequestPayload } from '../../../../core/models/request.model';
-import { initialState } from '../../../../core/store/filter/filter.reducer';
 import { Article } from '../../../../core/models/article.model';
-import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { TagComponent } from '../../../../core/components/tag/tag.component';
-import {
-  NEGATIVE_TONE,
-  NEUTRAL_TONE,
-  POSITIVE_TONE,
-  TONE_MAP,
-} from '../../../../shared/utils/Constants';
+import { TONE_MAP } from '../../../../shared/utils/Constants';
 import { ButtonSecondaryComponent } from '../../../../core/components/button-secondary/button-secondary.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { TieredMenuModule } from 'primeng/tieredmenu';
-import { ConfirmationService, MenuItem } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { PaginatorModule } from 'primeng/paginator';
 import { CommonModule } from '@angular/common';
-import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DialogModule } from 'primeng/dialog';
-import { FilterService } from '../../../../core/services/filter.service';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { FormatAmountPipe } from '../../../../core/pipes/format-amount.pipe';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { ChipModule } from 'primeng/chip';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { Category } from '../../../../core/models/category.model';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { TabViewModule } from 'primeng/tabview';
+import { PreferenceService } from '../../../../core/services/preference.service';
+import { Media, MediaListUpdate } from '../../../../core/models/media.model';
+import { ToastModule } from 'primeng/toast';
+import { IconAlertComponent } from '../../../../core/components/icons/alert/alert.component';
+import { TreeSelectModule } from 'primeng/treeselect';
+
 @Component({
   selector: 'app-media-list',
   standalone: true,
   imports: [
-    DividerModule,
-    IconNewspaperComponent,
     IconPencilComponent,
-    RouterModule,
-    IconInfoComponent,
-    TagModule,
     ButtonModule,
     TableModule,
-    TagComponent,
-    ButtonSecondaryComponent,
     InputTextModule,
     TieredMenuModule,
     PaginatorModule,
@@ -59,160 +50,158 @@ import { TabViewModule } from 'primeng/tabview';
     ReactiveFormsModule,
     FormatAmountPipe,
     InputTextareaModule,
-    ChipModule,
     MultiSelectModule,
     TabMenuModule,
     TabViewModule,
+    ToastModule,
+    IconAlertComponent,
+    TreeSelectModule,
   ],
-  providers: [ConfirmationService],
+  providers: [ConfirmationService, MessageService],
   templateUrl: './media-list.component.html',
   styleUrl: './media-list.component.scss',
 })
 export class MediaListComponent {
-  articles!: Article[];
+  medias!: Media[];
   totalRecords!: number;
   loading: boolean = false;
-  selectedArticles: Article[] = [];
   page: number = 0;
   first: number = 0;
   rows: number = 10;
-  searchText$ = new Subject<string>();
+
+  modalAddOpen: boolean = false;
+  createValues = new FormGroup({
+    media: new FormControl('', [Validators.required]),
+  });
+  isCreating: boolean = false;
+
+  selectedMedia: Media | null = null;
+
   modalUpdateOpen: boolean = false;
-
-  items: MenuItem[] = [
-    { label: 'Media List', icon: 'pi pi-fw pi-list' },
-    { label: 'Category List', icon: 'pi pi-fw pi-file' },
-    { label: 'SubCategory List', icon: 'pi pi-fw pi-list' },
-    { label: 'Spokeperson Alias', icon: 'pi pi-fw pi-user' },
-    { label: 'Stopword', icon: 'pi pi-fw pi-volume-up' },
-    { label: 'File Export', icon: 'pi pi-fw pi-file-export' },
-  ];
-
-  editedArticle: Article | null = null;
-  editedCategories: { category_id: string }[] = [];
-  availableCategories: Category[] = [];
+  selectedMediaGroups: any[] = [];
+  mediaGroupsOptions: any[] = [];
   editedValues = new FormGroup({
-    title: new FormControl(''),
-    issue: new FormControl(''),
-    content: new FormControl(''),
+    media: new FormControl('', [Validators.required]),
   });
 
-  updateToneItems: MenuItem[] = [
-    {
-      label: 'Update Tone',
-    },
-    {
-      label: 'Posivite',
-      command: () => this.updateTone(POSITIVE_TONE),
-    },
-    {
-      label: 'Neutral',
-      command: () => this.updateTone(NEUTRAL_TONE),
-    },
-    {
-      label: 'Negative',
-      command: () => this.updateTone(NEGATIVE_TONE),
-    },
-  ];
+  isDeleting: boolean = false;
+  modalDeleteOpen: boolean = false;
 
   constructor(
-    private articleService: ArticleService,
-    private filterService: FilterService,
-    private confirmationService: ConfirmationService
+    private preferenceService: PreferenceService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {
-    this.filterService.subscribe((filter) => {
-      this.fetchData({ ...filter, page: this.page, maxSize: 10 });
-    });
-    this.searchText$
-      .pipe(debounceTime(500), distinctUntilChanged())
-      .subscribe((value) => {
-        this.page = 0;
-        this.first = 0;
-        this.fetchData({ page: 0, term: value });
-      });
+    this.fetchData();
   }
 
-  fetchData = (filter?: Partial<FilterRequestPayload>) => {
+  fetchData = () => {
     this.loading = true;
-    this.articleService
-      .getUserEditing({ ...initialState, ...filter } as FilterRequestPayload)
-      .subscribe((resp) => {
-        this.loading = false;
-        this.articles = resp.data;
-        this.totalRecords = resp.recordsTotal;
-      });
+    this.preferenceService.getMedias().subscribe((resp) => {
+      this.loading = false;
+      this.medias = resp.results;
+      this.totalRecords = resp.count;
+    });
   };
-
-  onSelectionChange(value = []) {
-    this.selectedArticles = value;
-  }
 
   onPageChange = (event: any) => {
     this.page = event.page;
     this.rows = event.rows;
     this.first = event.first;
-    this.fetchData({ page: event.page });
   };
 
-  deleteArticle = (event: Event) => {
-    this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: 'Are you sure to delete this record(s)?',
-      icon: 'pi pi-info-circle',
-      acceptButtonStyleClass: 'p-button-danger p-button-sm',
-      accept: this.confirmDeleteArticle,
-    });
+  deleteMedia = (media: Media) => {
+    this.selectedMedia = media;
+    this.modalDeleteOpen = true;
   };
 
-  confirmDeleteArticle = () => {
-    const articleIds = this.selectedArticles.map(({ article_id }) => ({
-      article_id,
-    }));
-
-    this.articleService.deleteArticle(articleIds).subscribe(() => {
-      this.fetchData({ ...this.filterService.filter, page: 0 });
-      this.selectedArticles = [];
-    });
-  };
-
-  updateTone = async (tone: number) => {
-    const article_id = this.selectedArticles.map(
-      ({ article_id }) => article_id
-    );
-    const category_id =
-      this.selectedArticles.map(({ category_id }) => category_id ?? '') ?? [];
-
-    this.articleService
-      .updateArticleTone({
-        article_id,
-        category_id,
-        tone: tone,
-      })
+  confirmDeleteMedia = () => {
+    const { user_media_type_id, user_media_type_name_def } =
+      this.selectedMedia!;
+    this.isDeleting = true;
+    this.preferenceService
+      .deleteMedia(user_media_type_id)
       .subscribe(() => {
-        this.selectedArticles = [];
-        this.fetchData({ ...this.filterService.filter, page: 0 });
+        this.fetchData();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Delete success',
+          detail: `${user_media_type_name_def} has been deleted.`,
+        });
+      })
+      .add(() => {
+        this.isDeleting = false;
+        this.selectedMedia = null;
+        this.modalDeleteOpen = false;
       });
   };
 
-  updateArticle = () => {
-    const { title, content, issue } = this.editedValues.controls;
-    console.log('title', title.value);
-    console.log('content', content.value);
-    console.log('issue', issue.value);
-    console.log('editedCategories', this.editedCategories);
-
-    const payload = {
-      title: title.value,
-      content: content.value,
-      issue: issue.value,
-    };
+  createMedia = () => {
+    const { media } = this.createValues.controls;
+    this.isCreating = true;
+    this.preferenceService
+      .createMedia(media.value!)
+      .subscribe(() => {
+        this.modalAddOpen = false;
+        this.createValues.controls.media.setValue('');
+        this.fetchData();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Create success',
+          detail: 'Media has been created.',
+        });
+      })
+      .add(() => {
+        this.isCreating = false;
+      });
   };
 
-  search(searchTerm: string) {
-    this.searchText$.next(searchTerm);
-  }
+  updateMedia = () => {
+    console.log('this.selectedMediaGroups', this.selectedMediaGroups);
+    const selectedIds = this.selectedMediaGroups.reduce(
+      (mediaGroups, mediaGroup) => {
+        if (mediaGroup.isSelectAll || mediaGroup.isParent) return mediaGroups;
+
+        return [...mediaGroups, mediaGroup.media_id];
+      },
+      []
+    );
+
+    const payload = this.mediaGroupsOptions[0].children.reduce(
+      (mediaGroups: any[], mediaGroup: any) => {
+        let ids: any[] = [];
+        mediaGroup.children.forEach((media: any) => {
+          const isChosen = selectedIds.includes(media.media_id);
+          ids.push({ media_id: `${media.media_id}`, chosen: isChosen });
+        });
+        return [...mediaGroups, ...ids];
+      },
+      []
+    );
+
+    // const { media } = this.editedValues.controls;
+    // this.preferenceService
+    //   .updateMedia(this.selectedMedia?.user_media_type_id!, media.value!)
+    //   .subscribe(() => {
+    //     this.preferenceService
+    //       .updateSelectedMediaGroups(
+    //         this.selectedMedia?.user_media_type_id!,
+    //         payload
+    //       )
+    //       .subscribe(() => {
+    //         this.fetchData();
+    //         this.modalUpdateOpen = false;
+    //         this.selectedMediaGroups = [];
+    //         this.messageService.add({
+    //           severity: 'success',
+    //           summary: 'Update success',
+    //           detail: 'Media has been updated.',
+    //         });
+    //       });
+    //   });
+  };
 
   getValue(event: Event): string {
     return (event.target as HTMLInputElement).value;
@@ -222,30 +211,63 @@ export class MediaListComponent {
     return TONE_MAP[tone] ?? '';
   }
 
-  openEditModal = async (article: Article) => {
-    const categoriesResp = await this.articleService
-      .getSubCategoriesDistinct()
+  openEditModal = async (media: Media) => {
+    this.selectedMedia = media;
+    const response = await this.preferenceService
+      .getMediaGroups(media.user_media_type_id)
       .toPromise();
-    this.availableCategories = categoriesResp?.results ?? [];
-    this.editedArticle = article;
-    this.editedCategories = article.categories.map((val) => ({
-      category_id: val,
-    }));
+
+    const selectedGroup: any[] = [];
+    const actualData =
+      response?.data.map((mediaGroup) => {
+        let hasChosen = false;
+        const children = mediaGroup.media_list.map((mediaList) => {
+          hasChosen = mediaList.chosen;
+          if (hasChosen) {
+            selectedGroup.push({
+              ...mediaList,
+              key: mediaList.media_id,
+              data: mediaList.media_id,
+              label: mediaList.media_name,
+              isParent: false,
+              isSelectAll: false,
+            });
+          }
+
+          return {
+            ...mediaList,
+            key: mediaList.media_id,
+            data: mediaList.media_id,
+            label: mediaList.media_name,
+            isParent: false,
+            isSelectAll: false,
+          };
+        });
+        return {
+          children,
+          data: mediaGroup.media_type,
+          label: mediaGroup.media_type,
+          isParent: true,
+          isSelectAll: false,
+          partialSelected: hasChosen,
+        };
+      }) ?? [];
+
+    console.log('data', selectedGroup);
+    this.selectedMediaGroups = selectedGroup
+
+    this.mediaGroupsOptions = [
+      {
+        label: 'Select all',
+        data: 'all',
+        children: actualData,
+        isSelectAll: true,
+      },
+    ];
+
     this.editedValues.setValue({
-      title: article.title ?? '',
-      issue: article?.issue ?? '',
-      content: article.content ?? '',
+      media: media.user_media_type_name_def ?? '',
     });
     this.modalUpdateOpen = true;
   };
-
-  onRemoveCategory = (category: string) => {
-    // this.editedCategories = this.editedCategories.filter(
-    //   (categoryStr) => categoryStr !== category
-    // );
-  };
-
-  openPreview(article: Article) {
-    window.open(article.preview_link, '_blank');
-  }
 }

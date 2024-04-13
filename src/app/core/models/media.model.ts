@@ -13,3 +13,19 @@ export interface MediaResponse {
   previous: string;
   results: Media[];
 }
+
+export interface MediaGroup {
+  media_type: string;
+  media_list: MediaList[];
+}
+
+export interface MediaList {
+  chosen: boolean;
+  media_id: number;
+  media_name: string;
+}
+
+export interface MediaListUpdate {
+  media_id: string;
+  choses: boolean;
+}

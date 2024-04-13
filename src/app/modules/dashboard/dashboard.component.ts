@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MenubarModule } from 'primeng/menubar';
 import { TabMenuModule } from 'primeng/tabmenu';
 import {
-  ActivatedRoute,
   NavigationEnd,
   Router,
   RouterLink,
@@ -31,6 +30,7 @@ import { ToggleDarkmodeComponent } from './components/toggle-darkmode/toggle-dar
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { IconGlobeComponent } from '../../core/components/icons/globe/globe.component';
 import { IconNewspaperComponent } from '../../core/components/icons/newspaper/newspaper.component';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-dashboard',
