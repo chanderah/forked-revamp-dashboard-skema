@@ -37,3 +37,9 @@ export interface InfluencerResponseMetadata {
   recordsTotal: number;
   result: string;
 }
+
+export interface SpokepersonAlias {
+  aliases: string[];
+  image: string;
+  influencer: string;
+}

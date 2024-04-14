@@ -7,12 +7,14 @@ import {
   MediaListUpdate,
   MediaResponse,
 } from '../models/media.model';
+import { SpokepersonAlias } from '../models/influencer.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PreferenceService {
   private baseUrl = 'https://api.skema.co.id/api';
+  private influenceBaseUrl = 'https://api-influencer.skema.co.id/api';
   constructor(private http: HttpClient) {}
 
   getCategories(): Observable<CategoryResponse> {
@@ -214,6 +216,16 @@ export class PreferenceService {
     return this.http.post<MediaResponse>(
       `${this.baseUrl}/v1/user/media-group/delete`,
       { user_media_type_id }
+    );
+  }
+
+  getSpokepersonAlias(
+    page: number,
+    limit: number
+  ): Observable<{ data: SpokepersonAlias[]; recordsTotal: number }> {
+    return this.http.post<{ data: SpokepersonAlias[]; recordsTotal: number }>(
+      `${this.influenceBaseUrl}/v1/get-alias-influencer/`,
+      { page, limit }
     );
   }
 }
