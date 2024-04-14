@@ -70,6 +70,106 @@ export class PreferenceService {
     );
   }
 
+  getSubCategoriesCollections(): Observable<CategoryResponse> {
+    return this.http.get<CategoryResponse>(
+      `${this.baseUrl}/v1/user/categorycollections/`
+    );
+  }
+
+  createSubCategory(category_id: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/v1/user/create/subcategory`, {
+      category_id,
+    });
+  }
+
+  deleteSubCategory(category_id: string): Observable<void> {
+    return this.http.post<void>(
+      `${this.baseUrl}/v1/user/sub-category/delete
+    `,
+      {
+        category_id,
+      }
+    );
+  }
+
+  updateSubCategory(
+    category_id: string,
+    new_category_id: string
+  ): Observable<void> {
+    return this.http.post<void>(
+      `${this.baseUrl}/v1/user/sub-category/update
+    `,
+      {
+        category_id,
+        new_category_id,
+      }
+    );
+  }
+
+  getCategoryKeywords(category_id: string): Observable<{ data: string[] }> {
+    return this.http.post<{ data: string[] }>(
+      `${this.baseUrl}/v1/user/keywords/
+    `,
+      {
+        category_id,
+      }
+    );
+  }
+
+  createCategoryKeyword(
+    category_id: string,
+    keyword: string,
+    start_date: string,
+    end_date: string
+  ): Observable<void> {
+    return this.http.post<void>(
+      `${this.baseUrl}/v1/user/keyword/create
+    `,
+      {
+        category_id,
+        end_date,
+        keyword,
+        start_date,
+      }
+    );
+  }
+
+  deleteCategoryKeyword(
+    category_id: string,
+    keyword: string
+  ): Observable<void> {
+    return this.http.post<void>(
+      `${this.baseUrl}/v1/user/keyword/delete
+    `,
+      {
+        category_id,
+        keyword,
+      }
+    );
+  }
+
+  restream(
+    sub_category: string[],
+    start_date: string,
+    end_date: string
+  ): Observable<void> {
+    return this.http.post<void>(
+      `${this.baseUrl}/v1/user/keyword/restream
+    `,
+      {
+        sub_category,
+        start_date,
+        end_date,
+      }
+    );
+  }
+
+  checkRestream(): Observable<{ message: string; status: boolean }> {
+    return this.http.get<{ message: string; status: boolean }>(
+      `${this.baseUrl}/v1/user/keyword/restream`
+    );
+  }
+
   getMedias(): Observable<MediaResponse> {
     return this.http.get<MediaResponse>(`${this.baseUrl}/v1/user/medias/`);
   }
