@@ -1,8 +1,15 @@
 import { Component } from '@angular/core';
+import { DividerModule } from 'primeng/divider';
+import { IconNewspaperComponent } from '../../../../core/components/icons/newspaper/newspaper.component';
 import { IconPencilComponent } from '../../../../core/components/icons/pencil/pencil.component';
+import { RouterModule } from '@angular/router';
+import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
+import { Article } from '../../../../core/models/article.model';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
+import { TagComponent } from '../../../../core/components/tag/tag.component';
 import { TONE_MAP } from '../../../../shared/utils/Constants';
+import { ButtonSecondaryComponent } from '../../../../core/components/button-secondary/button-secondary.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -28,7 +35,7 @@ import { IconAlertComponent } from '../../../../core/components/icons/alert/aler
 import { TreeSelectModule } from 'primeng/treeselect';
 
 @Component({
-  selector: 'app-media-list',
+  selector: 'app-category-list',
   standalone: true,
   imports: [
     IconPencilComponent,
@@ -51,10 +58,10 @@ import { TreeSelectModule } from 'primeng/treeselect';
     TreeSelectModule,
   ],
   providers: [ConfirmationService, MessageService],
-  templateUrl: './media-list.component.html',
-  styleUrl: './media-list.component.scss',
+  templateUrl: './category-list.component.html',
+  styleUrl: './category-list.component.scss',
 })
-export class MediaListComponent {
+export class CategoryListComponent {
   medias!: Media[];
   totalRecords!: number;
   loading: boolean = false;
@@ -152,6 +159,7 @@ export class MediaListComponent {
   };
 
   updateMedia = () => {
+    console.log('this.selectedMediaGroups', this.selectedMediaGroups);
     const selectedIds = this.selectedMediaGroups.reduce(
       (mediaGroups, mediaGroup) => {
         if (mediaGroup.isSelectAll || mediaGroup.isParent) return mediaGroups;
@@ -173,26 +181,26 @@ export class MediaListComponent {
       []
     );
 
-    const { media } = this.editedValues.controls;
-    this.preferenceService
-      .updateMedia(this.selectedMedia?.user_media_type_id!, media.value!)
-      .subscribe(() => {
-        this.preferenceService
-          .updateSelectedMediaGroups(
-            this.selectedMedia?.user_media_type_id!,
-            payload
-          )
-          .subscribe(() => {
-            this.fetchData();
-            this.modalUpdateOpen = false;
-            this.selectedMediaGroups = [];
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Update success',
-              detail: 'Media has been updated.',
-            });
-          });
-      });
+    // const { media } = this.editedValues.controls;
+    // this.preferenceService
+    //   .updateMedia(this.selectedMedia?.user_media_type_id!, media.value!)
+    //   .subscribe(() => {
+    //     this.preferenceService
+    //       .updateSelectedMediaGroups(
+    //         this.selectedMedia?.user_media_type_id!,
+    //         payload
+    //       )
+    //       .subscribe(() => {
+    //         this.fetchData();
+    //         this.modalUpdateOpen = false;
+    //         this.selectedMediaGroups = [];
+    //         this.messageService.add({
+    //           severity: 'success',
+    //           summary: 'Update success',
+    //           detail: 'Media has been updated.',
+    //         });
+    //       });
+    //   });
   };
 
   getValue(event: Event): string {
@@ -246,7 +254,7 @@ export class MediaListComponent {
       }) ?? [];
 
     console.log('data', selectedGroup);
-    this.selectedMediaGroups = selectedGroup
+    this.selectedMediaGroups = selectedGroup;
 
     this.mediaGroupsOptions = [
       {
