@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { CategoryResponse } from '../models/category.model';
+import { CategoryChosen, CategoryResponse } from '../models/category.model';
 import {
   MediaGroup,
   MediaListUpdate,
@@ -18,6 +18,49 @@ export class PreferenceService {
   getCategories(): Observable<CategoryResponse> {
     return this.http.get<CategoryResponse>(
       `${this.baseUrl}/v1/user/categories/`
+    );
+  }
+
+  createCategory(group_name: string): Observable<void> {
+    return this.http.post<void>(
+      `${this.baseUrl}/v1/user/create/group-category`,
+      { group_name }
+    );
+  }
+
+  deleteCategory(category_set: number): Observable<void> {
+    return this.http.post<void>(
+      `${this.baseUrl}/v1/user/delete/group-category`,
+      { category_set }
+    );
+  }
+
+  updateCategoryName(
+    category_set: number,
+    group_name: string
+  ): Observable<void> {
+    return this.http.post<void>(
+      `${this.baseUrl}/v1/user/update/group-category`,
+      { category_set, group_name }
+    );
+  }
+
+  getSubCategoriesChosen(
+    category_set: number
+  ): Observable<{ data: CategoryChosen[] }> {
+    return this.http.post<{ data: CategoryChosen[] }>(
+      `${this.baseUrl}/v1/user/subcategory-chosen`,
+      { category_set }
+    );
+  }
+
+  updateSubCategoriesChosen(
+    category_set: number,
+    category_list: CategoryChosen[]
+  ): Observable<{ data: CategoryChosen[] }> {
+    return this.http.post<{ data: CategoryChosen[] }>(
+      `${this.baseUrl}/v1/user/group-sub-category/update`,
+      { category_set, category_list }
     );
   }
 

@@ -14,3 +14,8 @@ export interface CategoryResponse {
   previous: string;
   results: Category[];
 }
+
+export interface CategoryChosen {
+  category_id: string;
+  chosen: boolean;
+}

@@ -7,9 +7,9 @@
           <span class="text-xs text-color font-normal">Media list</span>
         </div>
       </ng-template>
-      <div>
+      <ng-template pTemplate="content">
         <app-media-list></app-media-list>
-      </div>
+      </ng-template>
     </p-tabPanel>
     <p-tabPanel>
       <ng-template pTemplate="header">
@@ -18,9 +18,9 @@
           <span class="text-xs text-color font-normal">Category List</span>
         </div>
       </ng-template>
-      <div>
-        <app-media-list></app-media-list>
-      </div>
+      <ng-template pTemplate="content">
+        <app-category-list></app-category-list>
+      </ng-template>
     </p-tabPanel>
     <p-tabPanel>
       <ng-template pTemplate="header">

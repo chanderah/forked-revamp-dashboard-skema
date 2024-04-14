@@ -12,7 +12,7 @@ import { TONE_MAP } from '../../../../shared/utils/Constants';
 import { ButtonSecondaryComponent } from '../../../../core/components/button-secondary/button-secondary.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { TieredMenuModule } from 'primeng/tieredmenu';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService, TreeNode } from 'primeng/api';
 import { PaginatorModule } from 'primeng/paginator';
 import { CommonModule } from '@angular/common';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
@@ -29,10 +29,10 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { TabViewModule } from 'primeng/tabview';
 import { PreferenceService } from '../../../../core/services/preference.service';
-import { Media } from '../../../../core/models/media.model';
 import { ToastModule } from 'primeng/toast';
 import { IconAlertComponent } from '../../../../core/components/icons/alert/alert.component';
 import { TreeSelectModule } from 'primeng/treeselect';
+import { Category } from '../../../../core/models/category.model';
 
 @Component({
   selector: 'app-category-list',
@@ -62,7 +62,7 @@ import { TreeSelectModule } from 'primeng/treeselect';
   styleUrl: './category-list.component.scss',
 })
 export class CategoryListComponent {
-  medias!: Media[];
+  categories: Category[] = [];
   totalRecords!: number;
   loading: boolean = false;
   page: number = 0;
@@ -71,17 +71,17 @@ export class CategoryListComponent {
 
   modalAddOpen: boolean = false;
   createValues = new FormGroup({
-    media: new FormControl('', [Validators.required]),
+    category: new FormControl('', [Validators.required]),
   });
   isCreating: boolean = false;
 
-  selectedMedia: Media | null = null;
+  selectedCategory: Category | null = null;
 
   modalUpdateOpen: boolean = false;
-  selectedMediaGroups: any[] = [];
-  mediaGroupsOptions: any[] = [];
+  selectedSubCategories: any[] = [];
+  subCategoryOptions: any[] = [];
   editedValues = new FormGroup({
-    media: new FormControl('', [Validators.required]),
+    category: new FormControl('', [Validators.required]),
   });
 
   isDeleting: boolean = false;
@@ -89,7 +89,6 @@ export class CategoryListComponent {
 
   constructor(
     private preferenceService: PreferenceService,
-    private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {}
 
@@ -99,9 +98,9 @@ export class CategoryListComponent {
 
   fetchData = () => {
     this.loading = true;
-    this.preferenceService.getMedias().subscribe((resp) => {
+    this.preferenceService.getCategories().subscribe((resp) => {
       this.loading = false;
-      this.medias = resp.results;
+      this.categories = resp.results;
       this.totalRecords = resp.count;
     });
   };
@@ -112,45 +111,44 @@ export class CategoryListComponent {
     this.first = event.first;
   };
 
-  deleteMedia = (media: Media) => {
-    this.selectedMedia = media;
+  deleteCategory = (category: Category) => {
+    this.selectedCategory = category;
     this.modalDeleteOpen = true;
   };
 
-  confirmDeleteMedia = () => {
-    const { user_media_type_id, user_media_type_name_def } =
-      this.selectedMedia!;
+  confirmDeleteCategory = () => {
+    const { category_set, descriptionz } = this.selectedCategory!;
     this.isDeleting = true;
     this.preferenceService
-      .deleteMedia(user_media_type_id)
+      .deleteCategory(category_set)
       .subscribe(() => {
         this.fetchData();
         this.messageService.add({
           severity: 'success',
           summary: 'Delete success',
-          detail: `${user_media_type_name_def} has been deleted.`,
+          detail: `${descriptionz} has been deleted.`,
         });
       })
       .add(() => {
         this.isDeleting = false;
-        this.selectedMedia = null;
+        this.selectedCategory = null;
         this.modalDeleteOpen = false;
       });
   };
 
-  createMedia = () => {
-    const { media } = this.createValues.controls;
+  createCategory = () => {
+    const { category } = this.createValues.controls;
     this.isCreating = true;
     this.preferenceService
-      .createMedia(media.value!)
+      .createCategory(category.value!)
       .subscribe(() => {
         this.modalAddOpen = false;
-        this.createValues.controls.media.setValue('');
+        this.createValues.controls.category.setValue('');
         this.fetchData();
         this.messageService.add({
           severity: 'success',
           summary: 'Create success',
-          detail: 'Media has been created.',
+          detail: 'Category has been created.',
         });
       })
       .add(() => {
@@ -158,49 +156,49 @@ export class CategoryListComponent {
       });
   };
 
-  updateMedia = () => {
-    console.log('this.selectedMediaGroups', this.selectedMediaGroups);
-    const selectedIds = this.selectedMediaGroups.reduce(
-      (mediaGroups, mediaGroup) => {
-        if (mediaGroup.isSelectAll || mediaGroup.isParent) return mediaGroups;
-
-        return [...mediaGroups, mediaGroup.media_id];
+  updateCategory = () => {
+    const selectedIds = this.selectedSubCategories.reduce(
+      (subCategories, subCategory) => {
+        if (subCategory.isSelectAll || subCategory.isParent)
+          return subCategories;
+        return [...subCategories, subCategory.data];
       },
       []
     );
 
-    const payload = this.mediaGroupsOptions[0].children.reduce(
-      (mediaGroups: any[], mediaGroup: any) => {
+    const payload = this.subCategoryOptions[0].children.reduce(
+      (subCategories: any[], subCategory: any) => {
         let ids: any[] = [];
-        mediaGroup.children.forEach((media: any) => {
-          const isChosen = selectedIds.includes(media.media_id);
-          ids.push({ media_id: `${media.media_id}`, chosen: isChosen });
+        const isChosen = selectedIds.includes(subCategory.data);
+        ids.push({
+          category_id: `${subCategory.data}`,
+          chosen: isChosen,
         });
-        return [...mediaGroups, ...ids];
+        return [...subCategories, ...ids];
       },
       []
     );
 
-    // const { media } = this.editedValues.controls;
-    // this.preferenceService
-    //   .updateMedia(this.selectedMedia?.user_media_type_id!, media.value!)
-    //   .subscribe(() => {
-    //     this.preferenceService
-    //       .updateSelectedMediaGroups(
-    //         this.selectedMedia?.user_media_type_id!,
-    //         payload
-    //       )
-    //       .subscribe(() => {
-    //         this.fetchData();
-    //         this.modalUpdateOpen = false;
-    //         this.selectedMediaGroups = [];
-    //         this.messageService.add({
-    //           severity: 'success',
-    //           summary: 'Update success',
-    //           detail: 'Media has been updated.',
-    //         });
-    //       });
-    //   });
+    const { category } = this.editedValues.controls;
+    this.preferenceService
+      .updateCategoryName(this.selectedCategory?.category_set!, category.value!)
+      .subscribe(() => {
+        this.preferenceService
+          .updateSubCategoriesChosen(
+            this.selectedCategory?.category_set!,
+            payload
+          )
+          .subscribe(() => {
+            this.fetchData();
+            this.modalUpdateOpen = false;
+            this.selectedSubCategories = [];
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Update success',
+              detail: 'Category has been updated.',
+            });
+          });
+      });
   };
 
   getValue(event: Event): string {
@@ -211,52 +209,35 @@ export class CategoryListComponent {
     return TONE_MAP[tone] ?? '';
   }
 
-  openEditModal = async (media: Media) => {
-    this.selectedMedia = media;
+  openEditModal = async (category: Category) => {
+    this.selectedCategory = category;
     const response = await this.preferenceService
-      .getMediaGroups(media.user_media_type_id)
+      .getSubCategoriesChosen(category.category_set)
       .toPromise();
 
-    const selectedGroup: any[] = [];
+    const selected: any[] = [];
     const actualData =
-      response?.data.map((mediaGroup) => {
-        let hasChosen = false;
-        const children = mediaGroup.media_list.map((mediaList) => {
-          hasChosen = mediaList.chosen;
-          if (hasChosen) {
-            selectedGroup.push({
-              ...mediaList,
-              key: mediaList.media_id,
-              data: mediaList.media_id,
-              label: mediaList.media_name,
-              isParent: false,
-              isSelectAll: false,
-            });
-          }
-
-          return {
-            ...mediaList,
-            key: mediaList.media_id,
-            data: mediaList.media_id,
-            label: mediaList.media_name,
-            isParent: false,
+      response?.data.map((categoryChosen) => {
+        if (categoryChosen.chosen) {
+          selected.push({
+            key: categoryChosen.category_id,
+            data: categoryChosen.category_id,
+            label: categoryChosen.category_id,
             isSelectAll: false,
-          };
-        });
+          });
+        }
+
         return {
-          children,
-          data: mediaGroup.media_type,
-          label: mediaGroup.media_type,
-          isParent: true,
+          key: categoryChosen.category_id,
+          data: categoryChosen.category_id,
+          label: categoryChosen.category_id,
           isSelectAll: false,
-          partialSelected: hasChosen,
         };
       }) ?? [];
 
-    console.log('data', selectedGroup);
-    this.selectedMediaGroups = selectedGroup;
+    this.selectedSubCategories = selected;
 
-    this.mediaGroupsOptions = [
+    this.subCategoryOptions = [
       {
         label: 'Select all',
         data: 'all',
@@ -266,7 +247,7 @@ export class CategoryListComponent {
     ];
 
     this.editedValues.setValue({
-      media: media.user_media_type_name_def ?? '',
+      category: category.descriptionz ?? '',
     });
     this.modalUpdateOpen = true;
   };

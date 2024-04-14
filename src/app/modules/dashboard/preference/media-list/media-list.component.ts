@@ -55,7 +55,7 @@ import { TreeSelectModule } from 'primeng/treeselect';
   styleUrl: './media-list.component.scss',
 })
 export class MediaListComponent {
-  medias!: Media[];
+  medias: Media[] = [];
   totalRecords!: number;
   loading: boolean = false;
   page: number = 0;
@@ -82,7 +82,6 @@ export class MediaListComponent {
 
   constructor(
     private preferenceService: PreferenceService,
-    private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {}
 
@@ -245,7 +244,6 @@ export class MediaListComponent {
         };
       }) ?? [];
 
-    console.log('data', selectedGroup);
     this.selectedMediaGroups = selectedGroup
 
     this.mediaGroupsOptions = [
