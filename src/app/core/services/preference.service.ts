@@ -228,4 +228,36 @@ export class PreferenceService {
       { page, limit }
     );
   }
+
+  createSpokeperson(name: string): Observable<void> {
+    return this.http.post<void>(
+      `${this.influenceBaseUrl}/v1/create-name-influencer/`,
+      { name }
+    );
+  }
+
+  deleteSpokeperson(name: string): Observable<void> {
+    return this.http.post<void>(
+      `${this.influenceBaseUrl}/v1/delete-aliases-influencer/`,
+      { name }
+    );
+  }
+
+  updateSpokeperson(name: string, new_name: string): Observable<void> {
+    return this.http.post<void>(
+      `${this.influenceBaseUrl}/v1/update-aliases-influencer/`,
+      { name, new_name }
+    );
+  }
+
+  updateSpokepersonImage(
+    name: string,
+    image: { base64: string; filename: string }
+  ): Observable<void> {
+    const image_name = [image];
+    return this.http.post<void>(
+      `${this.influenceBaseUrl}/v1/update-aliases-influencer/`,
+      { name, image_name }
+    );
+  }
 }

@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { IconPencilComponent } from '../../../../core/components/icons/pencil/pencil.component';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
-import { TONE_MAP } from '../../../../shared/utils/Constants';
 import { InputTextModule } from 'primeng/inputtext';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { MessageService } from 'primeng/api';
@@ -22,10 +21,12 @@ import { TabViewModule } from 'primeng/tabview';
 import { PreferenceService } from '../../../../core/services/preference.service';
 import { ToastModule } from 'primeng/toast';
 import { IconAlertComponent } from '../../../../core/components/icons/alert/alert.component';
-import { Category } from '../../../../core/models/category.model';
 import { CalendarModule } from 'primeng/calendar';
-import moment from 'moment';
 import { SpokepersonAlias } from '../../../../core/models/influencer.model';
+import { AvatarModule } from 'primeng/avatar';
+import { FileUploadModule } from 'primeng/fileupload';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
 
 @Component({
   selector: 'app-spokeperson-alias',
@@ -47,6 +48,9 @@ import { SpokepersonAlias } from '../../../../core/models/influencer.model';
     ToastModule,
     CalendarModule,
     IconAlertComponent,
+    AvatarModule,
+    FileUploadModule,
+    ImgFallbackDirective,
   ],
   providers: [MessageService],
   templateUrl: './spokeperson-alias.component.html',
@@ -62,36 +66,28 @@ export class SpokepersonAliasComponent {
 
   modalAddOpen: boolean = false;
   createValues = new FormGroup({
-    category: new FormControl('', [Validators.required]),
+    spokeperson: new FormControl('', [Validators.required]),
   });
   isCreating: boolean = false;
 
-  selectedCategory: Category | null = null;
+  selectedSpokeperson: SpokepersonAlias | null = null;
+
+  uploadedImageURL: SafeUrl | null = null;
+  uploadedImage: any = null;
 
   modalUpdateOpen: boolean = false;
-  selectedSubCategories: any[] = [];
-  subCategoryOptions: any[] = [];
   editedValues = new FormGroup({
-    category: new FormControl('', [Validators.required]),
-    keyword: new FormControl(''),
-    startDate: new FormControl(''),
-    expired: new FormControl(''),
+    spokeperson: new FormControl('', [Validators.required]),
+    alias: new FormControl(''),
   });
-  existingKeywords: string[] = [];
 
   isDeleting: boolean = false;
   modalDeleteOpen: boolean = false;
 
-  modalRestreamOpen: boolean = false;
-  restreamValues = new FormGroup({
-    category: new FormControl('', [Validators.required]),
-    startDate: new FormControl('', [Validators.required]),
-    endDate: new FormControl('', [Validators.required]),
-  });
-
   constructor(
     private preferenceService: PreferenceService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
@@ -116,44 +112,44 @@ export class SpokepersonAliasComponent {
     this.first = event.first;
   };
 
-  deleteSubCategory = (category: Category) => {
-    this.selectedCategory = category;
+  deleteSpokeperson = (spokeperson: SpokepersonAlias) => {
+    this.selectedSpokeperson = spokeperson;
     this.modalDeleteOpen = true;
   };
 
-  confirmDeleteSubCategory = () => {
-    const { category_id } = this.selectedCategory!;
+  confirmDeleteSpokeperson = () => {
+    const { influencer } = this.selectedSpokeperson!;
     this.isDeleting = true;
     this.preferenceService
-      .deleteSubCategory(category_id)
+      .deleteSpokeperson(influencer)
       .subscribe(() => {
         this.fetchData();
         this.messageService.add({
           severity: 'success',
           summary: 'Delete success',
-          detail: `${category_id} has been deleted.`,
+          detail: `${influencer} has been deleted.`,
         });
       })
       .add(() => {
         this.isDeleting = false;
-        this.selectedCategory = null;
+        this.selectedSpokeperson = null;
         this.modalDeleteOpen = false;
       });
   };
 
-  createSubCategory = () => {
-    const { category } = this.createValues.controls;
+  createSpokeperson = () => {
+    const { spokeperson } = this.createValues.controls;
     this.isCreating = true;
     this.preferenceService
-      .createSubCategory(category.value!)
+      .createSpokeperson(spokeperson.value!)
       .subscribe(() => {
         this.modalAddOpen = false;
-        this.createValues.controls.category.setValue('');
+        this.createValues.controls.spokeperson.setValue('');
         this.fetchData();
         this.messageService.add({
           severity: 'success',
           summary: 'Create success',
-          detail: 'SubCategory has been created.',
+          detail: 'Spokeperson has been created.',
         });
       })
       .add(() => {
@@ -161,107 +157,59 @@ export class SpokepersonAliasComponent {
       });
   };
 
-  deleteKeyword = (keyword: string) => {
-    this.preferenceService
-      .deleteCategoryKeyword(this.selectedCategory?.category_id!, keyword)
-      .subscribe(() => {
-        this.preferenceService
-          .getCategoryKeywords(this.selectedCategory?.category_id!)
-          .subscribe((response) => {
-            this.existingKeywords = response?.data ?? [];
-          });
-      });
+  file2Base64 = (file: File): Promise<string> => {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result?.toString() || '');
+      reader.onerror = (error) => reject(error);
+    });
   };
 
-  updateCategory = async () => {
-    const { category, expired, startDate, keyword } =
-      this.editedValues.controls;
-
+  updateSpokeperson = async () => {
+    const { spokeperson } = this.editedValues.controls;
     const promises = [
       this.preferenceService
-        .updateSubCategory(this.selectedCategory?.category_id!, category.value!)
+        .updateSpokeperson(
+          this.selectedSpokeperson?.influencer!,
+          spokeperson.value!
+        )
         .toPromise(),
     ];
 
-    if (keyword.value && startDate.value && expired.value) {
+    if (this.uploadedImage) {
+      const base64 = await this.file2Base64(this.uploadedImage);
       promises.push(
         this.preferenceService
-          .createCategoryKeyword(
-            this.selectedCategory?.category_id!,
-            keyword.value,
-            moment(startDate.value).format('YYYY-MM-DD'),
-            moment(expired.value).format('YYYY-MM-DD')
-          )
+          .updateSpokepersonImage(this.selectedSpokeperson?.influencer!, {
+            base64,
+            filename: this.uploadedImage.name,
+          })
           .toPromise()
       );
     }
-
     await Promise.allSettled(promises);
     this.fetchData();
     this.modalUpdateOpen = false;
-    this.selectedSubCategories = [];
     this.messageService.add({
       severity: 'success',
       summary: 'Update success',
-      detail: 'SubCategory has been updated.',
-    });
-
-    if (!expired.value || !startDate.value || !expired.value) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Warning',
-        detail: 'Keyword or Dates is required',
-      });
-    }
-  };
-
-  checkRestream = () => {
-    this.preferenceService.checkRestream().subscribe(({ message, status }) => {
-      this.messageService.add({
-        severity: status ? 'success' : 'error',
-        detail: message,
-      });
+      detail: 'Spokeperson has been updated.',
     });
   };
 
-  submitRestream = () => {
-    const { category, endDate, startDate } = this.restreamValues.controls;
-
-    const start = moment(startDate.value).format('YYYY-MM-DD');
-    const end = moment(endDate.value).format('YYYY-MM-DD');
-
-    this.preferenceService
-      .restream([category.value!], start, end)
-      .subscribe(() => {
-        this.modalRestreamOpen = false;
-        this.messageService.add({
-          severity: 'success',
-          detail: 'Restream success.',
-        });
-      });
+  onUpload = (image: any) => {
+    const objectURL = URL.createObjectURL(image.currentFiles[0]);
+    this.uploadedImage = image.currentFiles[0];
+    this.uploadedImageURL = this.sanitizer.bypassSecurityTrustUrl(objectURL);
   };
 
-  getValue(event: Event): string {
-    return (event.target as HTMLInputElement).value;
-  }
-
-  getToneLabel(tone: number) {
-    return TONE_MAP[tone] ?? '';
-  }
-
-  openEditModal = async (category: Category) => {
-    this.selectedCategory = category;
-    this.preferenceService
-      .getCategoryKeywords(category.category_id)
-      .subscribe((response) => {
-        this.editedValues.setValue({
-          category: category.category_id ?? '',
-          keyword: '',
-          startDate: '',
-          expired: '',
-        });
-        this.existingKeywords = response?.data ?? [];
-        this.modalUpdateOpen = true;
-      });
+  openEditModal = async (spokeperson: SpokepersonAlias) => {
+    this.selectedSpokeperson = spokeperson;
+    this.editedValues.setValue({
+      spokeperson: spokeperson.influencer,
+      alias: spokeperson.aliases?.[0] ?? '',
+    });
+    this.modalUpdateOpen = true;
   };
 }

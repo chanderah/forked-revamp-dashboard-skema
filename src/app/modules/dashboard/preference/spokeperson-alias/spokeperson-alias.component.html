@@ -1,330 +1,242 @@
 <div>
-    <p-toast></p-toast>
-    <div class="flex justify-content-between align-items-center mb-5">
-      <div>
-        <p-button
-          severity="secondary"
-          [plain]="true"
-          iconPos="left"
-          styleClass="border-0"
-          [style]="{ backgroundColor: '#F1F4FA' }"
-          (onClick)="modalAddOpen = true"
-        >
-          <div class="flex gap-2 align-items-center">
-            <i class="pi pi-plus text-primary"></i>
-            <div class="text-color text-sm">Add Spokeperson</div>
-          </div>
-        </p-button>
-      </div>
-    </div>
+  <p-toast></p-toast>
+  <div class="flex justify-content-between align-items-center mb-5">
     <div>
-      <div class="card">
-        <p-table
-          [value]="categories"
-          dataKey="category_set"
-          [rows]="10"
-          [totalRecords]="totalRecords"
-          [showFirstLastIcon]="false"
-          [loading]="loading"
-          [tableStyle]="{ 'min-width': '50rem' }"
-        >
-          <ng-template pTemplate="header">
-            <tr class="text-sm font-medium">
-              <th class="w-6rem">
-                <div class="flex align-items-center gap-2">
-                  <span>No</span>
-                  <i pSortableColumn="no" class="pi pi-angle-down"></i>
-                </div>
-              </th>
-              <th>
-                <div class="flex align-items-center gap-2">
-                  Spokeperson Name
-                  <i pSortableColumn="influencer" class="pi pi-angle-down"></i>
-                </div>
-              </th>
-              <th style="width: 4rem" class="text-center">Action</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-spokeperson let-expanded="expanded">
-            <tr class="text-sm">
-              <td>
-                <div class="flex align-items-center gap-2">
-                  {{ spokeperson.no }}
-                </div>
-              </td>
-              <td>
-                <div class="flex align-items-center gap-1 w-max">
-                  <div>
-                    {{ spokeperson.influencer }}
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="flex gap-2">
-                  <p-button
-                    [outlined]="true"
-                    [text]="true"
-                    size="small"
-                    styleClass="p-2 border-1 border-200"
-                    (onClick)="openEditModal(spokeperson)"
-                  >
-                    <icon-pencil class="fill-text-color"></icon-pencil>
-                  </p-button>
-                  <p-button
-                    [outlined]="true"
-                    [text]="true"
-                    size="small"
-                    styleClass="p-2 border-1 border-200"
-                    (onClick)="deleteSubCategory(spokeperson)"
-                  >
-                    <i class="pi pi-trash text-red-500"></i>
-                  </p-button>
-                </div>
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-        <p-paginator
-          (onPageChange)="onPageChange($event)"
-          [first]="first"
-          [rows]="rows"
-          [totalRecords]="totalRecords"
-          [templateLeft]="customLeftTemplate"
-          [showFirstLastIcon]="false"
-        >
-          <ng-template #customLeftTemplate let-state>
-            <span class="text-sm text-color">
-              Total Category:
-              <span class="text-sm font-semibold">{{
-                state.totalRecords
-              }}</span></span
-            >
-          </ng-template>
-        </p-paginator>
-      </div>
+      <p-button
+        severity="secondary"
+        [plain]="true"
+        iconPos="left"
+        styleClass="border-0"
+        [style]="{ backgroundColor: '#F1F4FA' }"
+        (onClick)="modalAddOpen = true"
+      >
+        <div class="flex gap-2 align-items-center">
+          <i class="pi pi-plus text-primary"></i>
+          <div class="text-color text-sm">Add Spokeperson</div>
+        </div>
+      </p-button>
     </div>
   </div>
-  
-  <p-dialog
-    header="Header"
-    [(visible)]="modalAddOpen"
-    [modal]="true"
-    [style]="{ width: '50rem' }"
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-  >
-    <ng-template pTemplate="header">
-      <div class="inline-flex align-items-center justify-content-center gap-2">
-        <span class="font-bold text-md">Create subcategory</span>
-      </div>
-    </ng-template>
-    <form [formGroup]="createValues" class="flex flex-column gap-4">
-      <div class="flex flex-column gap-2">
-        <label for="category" class="font-semibold text-sm"
-          >SubCategory Name</label
-        >
-        <input
-          pInputText
-          formControlName="category"
-          id="category"
-          placeholder="SubCategory Name"
-        />
-      </div>
-    </form>
-    <ng-template pTemplate="footer">
-      <p-button
-        (click)="modalAddOpen = false"
-        label="Cancel"
-        [outlined]="true"
-      ></p-button>
-      <p-button
-        (click)="createSubCategory()"
-        label="Submit"
-        pAutoFocus
-        [autofocus]="true"
-        [disabled]="!this.createValues.controls.category.valid"
-      ></p-button>
-    </ng-template>
-  </p-dialog>
-  
-  <p-dialog
-    header="Header"
-    [(visible)]="modalUpdateOpen"
-    [modal]="true"
-    [style]="{ width: '50rem' }"
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-  >
-    <ng-template pTemplate="header">
-      <div class="inline-flex align-items-center justify-content-center gap-2">
-        <span class="font-bold text-md">Detail SubCategory</span>
-      </div>
-    </ng-template>
-    <form [formGroup]="editedValues" class="flex flex-column gap-4">
-      <div class="flex flex-column gap-2">
-        <label for="category" class="text-sm">SubCategory Name</label>
-        <input pInputText formControlName="category" id="category" />
-      </div>
-      <div class="flex flex-column gap-2">
-        <label for="keyword" class="text-sm">Keyword</label>
-        <input pInputText formControlName="keyword" id="keyword" />
-      </div>
-      <div class="flex gap-4">
-        <div class="flex flex-auto flex-column gap-2">
-          <label for="startDate" class="text-sm">Start Date</label>
-          <p-calendar
-            formControlName="startDate"
-            inputId="startDate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-calendar>
-        </div>
-        <div class="flex flex-auto flex-column gap-2">
-          <label for="expired" class="text-sm">Expired</label>
-          <p-calendar
-            formControlName="expired"
-            inputId="expired"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-calendar>
-        </div>
-      </div>
-      <div class="flex flex-column gap-2">
-        <div
-          class="flex justify-content-between"
-          *ngFor="let keyword of existingKeywords"
-        >
-          <div>{{ keyword }}</div>
-          <p-button
-            [outlined]="true"
-            [text]="true"
-            size="small"
-            styleClass="p-2 border-1 border-200"
-            (onClick)="deleteKeyword(keyword)"
+  <div>
+    <div class="card">
+      <p-table
+        [value]="categories"
+        dataKey="category_set"
+        [rows]="10"
+        [totalRecords]="totalRecords"
+        [showFirstLastIcon]="false"
+        [loading]="loading"
+        [tableStyle]="{ 'min-width': '50rem' }"
+      >
+        <ng-template pTemplate="header">
+          <tr class="text-sm font-medium">
+            <th class="w-6rem">
+              <div class="flex align-items-center gap-2">
+                <span>No</span>
+                <i pSortableColumn="no" class="pi pi-angle-down"></i>
+              </div>
+            </th>
+            <th>
+              <div class="flex align-items-center gap-2">
+                Spokeperson Name
+                <i pSortableColumn="influencer" class="pi pi-angle-down"></i>
+              </div>
+            </th>
+            <th style="width: 4rem" class="text-center">Action</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-spokeperson let-expanded="expanded">
+          <tr class="text-sm">
+            <td>
+              <div class="flex align-items-center gap-2">
+                {{ spokeperson.no }}
+              </div>
+            </td>
+            <td>
+              <div class="flex align-items-center gap-1 w-max">
+                <div>
+                  {{ spokeperson.influencer }}
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="flex gap-2">
+                <p-button
+                  [outlined]="true"
+                  [text]="true"
+                  size="small"
+                  styleClass="p-2 border-1 border-200"
+                  (onClick)="openEditModal(spokeperson)"
+                >
+                  <icon-pencil class="fill-text-color"></icon-pencil>
+                </p-button>
+                <p-button
+                  [outlined]="true"
+                  [text]="true"
+                  size="small"
+                  styleClass="p-2 border-1 border-200"
+                  (onClick)="deleteSpokeperson(spokeperson)"
+                >
+                  <i class="pi pi-trash text-red-500"></i>
+                </p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <p-paginator
+        (onPageChange)="onPageChange($event)"
+        [first]="first"
+        [rows]="rows"
+        [totalRecords]="totalRecords"
+        [templateLeft]="customLeftTemplate"
+        [showFirstLastIcon]="false"
+      >
+        <ng-template #customLeftTemplate let-state>
+          <span class="text-sm text-color">
+            Total Category:
+            <span class="text-sm font-semibold">{{
+              state.totalRecords
+            }}</span></span
           >
-            <i class="pi pi-trash text-red-500"></i>
-          </p-button>
-        </div>
-      </div>
-    </form>
-    <div class="mt-4"></div>
-    <ng-template pTemplate="footer">
-      <p-button
-        (click)="modalUpdateOpen = false"
-        label="Cancel"
-        pAutoFocus
-        [outlined]="true"
-      ></p-button>
-      <p-button
-        (click)="updateCategory()"
-        label="Save"
-        pAutoFocus
-        [autofocus]="true"
-        [disabled]="!this.editedValues.controls.category.valid"
-      ></p-button>
-    </ng-template>
-  </p-dialog>
-  
-  <p-dialog
-    header="Header"
-    [(visible)]="modalDeleteOpen"
-    [modal]="true"
-    [style]="{ width: '50rem' }"
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-  >
-    <ng-template pTemplate="header">
-      <div class="inline-flex align-items-center justify-content-center gap-2">
-        <span class="font-bold text-md">Delete SubCategory</span>
-      </div>
-    </ng-template>
-    <div class="text-center">
-      <icon-alert></icon-alert>
-      <div class="text-2xl font-semibold mb-2">Are you sure?</div>
-      <div class="text-md">
-        Do you really want to delete this data? <br />this process can't be
-        undone.
-      </div>
+        </ng-template>
+      </p-paginator>
     </div>
-    <ng-template pTemplate="footer">
-      <p-button
-        (click)="modalDeleteOpen = false"
-        label="Cancel"
-        pAutoFocus
-        [outlined]="true"
-      ></p-button>
-      <p-button
-        (click)="confirmDeleteSubCategory()"
-        [loading]="isDeleting"
-        label="Delete"
-        severity="danger"
-        pAutoFocus
-        [autofocus]="true"
-      ></p-button>
-    </ng-template>
-  </p-dialog>
-  
-  <p-dialog
-    header="Header"
-    [(visible)]="modalRestreamOpen"
-    [modal]="true"
-    [style]="{ width: '50rem' }"
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-  >
-    <ng-template pTemplate="header">
-      <div class="inline-flex align-items-center justify-content-center gap-2">
-        <span class="font-bold text-md">Restream</span>
-      </div>
-    </ng-template>
-    <div class="mb-4 text-sm">Status: Input Range Date For Restream</div>
-    <form [formGroup]="restreamValues" class="flex flex-column gap-4">
-      <div class="flex gap-4">
-        <div class="flex flex-auto flex-column gap-2">
-          <label for="startDate" class="text-sm">Start Date</label>
-          <p-calendar
-            formControlName="startDate"
-            inputId="startDate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-calendar>
-        </div>
-        <div class="flex flex-auto flex-column gap-2">
-          <label for="endDate" class="text-sm">End Date</label>
-          <p-calendar
-            formControlName="endDate"
-            inputId="endDate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-calendar>
-        </div>
-      </div>
-      <div class="flex flex-column gap-2">
-        <label for="category" class="text-sm">SubCategory</label>
-        <input pInputText formControlName="category" id="category" />
-      </div>
-    </form>
-    <div class="mt-4"></div>
-    <ng-template pTemplate="footer">
-      <p-button
-        (click)="modalRestreamOpen = false"
-        label="Cancel"
-        pAutoFocus
-        [outlined]="true"
-      ></p-button>
-      <p-button
-        label="Check Status"
-        (click)="checkRestream()"
-        pAutoFocus
-        [outlined]="true"
-      ></p-button>
-      <p-button
-        (click)="submitRestream()"
-        label="Save"
-        pAutoFocus
-        [autofocus]="true"
-        [disabled]="
-          !this.restreamValues.controls.category.valid ||
-          !this.restreamValues.controls.startDate.valid ||
-          !this.restreamValues.controls.endDate.valid
-        "
-      ></p-button>
-    </ng-template>
-  </p-dialog>
-  
+  </div>
+</div>
+
+<p-dialog
+  header="Header"
+  [(visible)]="modalAddOpen"
+  [modal]="true"
+  [style]="{ width: '50rem' }"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+>
+  <ng-template pTemplate="header">
+    <div class="inline-flex align-items-center justify-content-center gap-2">
+      <span class="font-bold text-md">Create Spokeperson</span>
+    </div>
+  </ng-template>
+  <form [formGroup]="createValues" class="flex flex-column gap-4">
+    <div class="flex flex-column gap-2">
+      <label for="spokeperson" class="font-semibold text-sm"
+        >Spokeperson Name</label
+      >
+      <input
+        pInputText
+        formControlName="spokeperson"
+        id="spokeperson"
+        placeholder="Influencer Name"
+      />
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <p-button
+      (click)="modalAddOpen = false"
+      label="Cancel"
+      [outlined]="true"
+    ></p-button>
+    <p-button
+      (click)="createSpokeperson()"
+      label="Submit"
+      pAutoFocus
+      [autofocus]="true"
+      [disabled]="!this.createValues.controls.spokeperson.valid"
+    ></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  header="Header"
+  [(visible)]="modalUpdateOpen"
+  [modal]="true"
+  [style]="{ width: '50rem' }"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+>
+  <ng-template pTemplate="header">
+    <div class="inline-flex align-items-center justify-content-center gap-2">
+      <span class="font-bold text-md">Detail Spokeperson</span>
+    </div>
+  </ng-template>
+  <div *ngIf="modalUpdateOpen" class="flex align-items-center gap-2 mb-4">
+    <img
+      [src]="uploadedImageURL ?? ''"
+      class="mr-2 w-6rem h-6rem border-circle"
+      imgFallback="https://placehold.co/600x400?text=No+Image+Available"
+    />
+    <p-fileUpload
+      mode="basic"
+      chooseLabel="Choose Image"
+      chooseStyleClass="text-sm"
+      accept="image/*"
+      maxFileSize="1000000"
+      (onSelect)="onUpload($event)"
+    ></p-fileUpload>
+  </div>
+  <form [formGroup]="editedValues" class="flex flex-column gap-4">
+    <div class="flex flex-column gap-2">
+      <label for="spokeperson" class="text-sm">Influencer Name</label>
+      <input pInputText formControlName="spokeperson" id="spokeperson" />
+    </div>
+    <div class="flex flex-column gap-2">
+      <label for="alias" class="text-sm"
+        >{{ selectedSpokeperson?.influencer }} alias</label
+      >
+      <input pInputText formControlName="alias" id="alias" />
+    </div>
+  </form>
+  <div class="mt-4"></div>
+  <ng-template pTemplate="footer">
+    <p-button
+      (click)="modalUpdateOpen = false; uploadedImageURL = null"
+      label="Cancel"
+      pAutoFocus
+      [outlined]="true"
+    ></p-button>
+    <p-button
+      (click)="updateSpokeperson()"
+      label="Save"
+      pAutoFocus
+      [autofocus]="true"
+      [disabled]="!this.editedValues.controls.spokeperson.valid"
+    ></p-button>
+  </ng-template>
+</p-dialog>
+
+<p-dialog
+  header="Header"
+  [(visible)]="modalDeleteOpen"
+  [modal]="true"
+  [style]="{ width: '50rem' }"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+>
+  <ng-template pTemplate="header">
+    <div class="inline-flex align-items-center justify-content-center gap-2">
+      <span class="font-bold text-md">Delete Spokeperson</span>
+    </div>
+  </ng-template>
+  <div class="text-center">
+    <icon-alert></icon-alert>
+    <div class="text-2xl font-semibold mb-2">Are you sure?</div>
+    <div class="text-md">
+      Do you really want to delete this data? <br />this process can't be
+      undone.
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button
+      (click)="modalDeleteOpen = false"
+      label="Cancel"
+      pAutoFocus
+      [outlined]="true"
+    ></p-button>
+    <p-button
+      (click)="confirmDeleteSpokeperson()"
+      [loading]="isDeleting"
+      label="Delete"
+      severity="danger"
+      pAutoFocus
+      [autofocus]="true"
+    ></p-button>
+  </ng-template>
+</p-dialog>
