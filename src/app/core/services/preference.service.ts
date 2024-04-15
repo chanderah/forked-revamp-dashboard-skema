@@ -260,4 +260,31 @@ export class PreferenceService {
       { name, image_name }
     );
   }
+
+  getStopwords(page: number, size: number): Observable<{ data: string[] }> {
+    return this.http.get<{ data: string[] }>(
+      `${this.baseUrl}/v1/stop-words?page=${page}&size=${size}`
+    );
+  }
+
+  createStopword(stop_word: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/v1/stop-words`, {
+      stop_words: [stop_word],
+    });
+  }
+
+  deleteStopword(stop_word: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/v1/stop-words`, {
+      body: {
+        stop_words: [stop_word],
+      },
+    });
+  }
+
+  updateStopword(stop_word: string, new_stop_word: string): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/v1/stop-words`, {
+      stop_word,
+      new_stop_word,
+    });
+  }
 }

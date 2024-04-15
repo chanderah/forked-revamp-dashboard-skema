@@ -96,7 +96,7 @@ export class SpokepersonAliasComponent {
 
   fetchData = () => {
     this.loading = true;
-    this.preferenceService.getSpokepersonAlias(0, 100).subscribe((resp) => {
+    this.preferenceService.getSpokepersonAlias(this.page, 100).subscribe((resp) => {
       this.loading = false;
       this.categories = resp.data.map((val, idx) => ({
         ...val,
