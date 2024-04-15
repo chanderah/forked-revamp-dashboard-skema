@@ -8,6 +8,7 @@ import {
   MediaResponse,
 } from '../models/media.model';
 import { SpokepersonAlias } from '../models/influencer.model';
+import { Column } from '../models/file-export.model';
 
 @Injectable({
   providedIn: 'root',
@@ -285,6 +286,37 @@ export class PreferenceService {
     return this.http.put<void>(`${this.baseUrl}/v1/stop-words`, {
       stop_word,
       new_stop_word,
+    });
+  }
+
+  getColumns(): Observable<{ data: Column[] }> {
+    return this.http.get<{ data: Column[] }>(
+      `${this.baseUrl}/v1/dashboard/excel/columns`
+    );
+  }
+
+  createColumn(name: string, auto_check: boolean): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/v1/dashboard/excel/columns`, {
+      name,
+      auto_check,
+    });
+  }
+
+  deleteColumn(column_id: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.baseUrl}/v1/dashboard/excel/columns/${column_id}`
+    );
+  }
+
+  updateColumn(
+    id: number,
+    name: string,
+    auto_check: boolean
+  ): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/v1/dashboard/excel/columns`, {
+      id,
+      name,
+      auto_check,
     });
   }
 }

@@ -23,7 +23,6 @@ import { TabViewModule } from 'primeng/tabview';
 import { PreferenceService } from '../../../../core/services/preference.service';
 import { ToastModule } from 'primeng/toast';
 import { IconAlertComponent } from '../../../../core/components/icons/alert/alert.component';
-import { Category } from '../../../../core/models/category.model';
 
 interface StopwordData {
   stopword: string;
