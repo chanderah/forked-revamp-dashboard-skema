@@ -29,3 +29,7 @@ export interface MediaListUpdate {
   media_id: string;
   choses: boolean;
 }
+
+export interface WartawanMedia {
+  media_name: string;
+}

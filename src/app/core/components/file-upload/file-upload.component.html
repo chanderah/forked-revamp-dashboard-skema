@@ -1,0 +1,14 @@
+<div
+  class="drop-zone"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+  [formGroup]="form"
+>
+  <p class="upload-text">Picture upload</p>
+  <input
+    class="input"
+    type="file"
+    formControlName="image"
+  />
+</div>

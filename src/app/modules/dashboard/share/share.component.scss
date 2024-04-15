@@ -1,0 +1,23 @@
+:host ::ng-deep {
+  .p-selectbutton {
+    display: flex;
+    gap: 10px;
+
+    > div {
+      width: 33%;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+
+      > span {
+        font-weight: 500;
+        font-size: 16px;
+      }
+
+      &.p-button.p-highlight {
+        background-color: white;
+        color: var(--text-color);
+        border: 2px solid var(--primary-color);
+      }
+    }
+  }
+}
