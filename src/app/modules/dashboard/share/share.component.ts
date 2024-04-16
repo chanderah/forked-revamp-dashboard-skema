@@ -15,6 +15,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { FileUploadComponent } from '../../../core/components/file-upload/file-upload.component';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-share',
@@ -28,6 +29,7 @@ import { FileUploadComponent } from '../../../core/components/file-upload/file-u
     SelectButtonModule,
     ReactiveFormsModule,
     FileUploadComponent,
+    ToastModule,
   ],
   providers: [MessageService],
   templateUrl: './share.component.html',
@@ -44,13 +46,14 @@ export class ShareComponent {
 
   formGroup = new FormGroup({
     headline: new FormControl('', [Validators.required]),
-    cc: new FormControl(''),
     subline: new FormControl('', [Validators.required]),
     editorDesk: new FormControl('', [Validators.required]),
-    media: new FormControl('', [Validators.required]),
     content: new FormControl('', [Validators.required]),
-    image: new FormControl(''),
+    cc: new FormControl(''),
+    media: new FormControl([]),
+    image: new FormControl<File | null>(null),
   });
+  isSending: boolean = false;
 
   constructor(
     private shareService: ShareService,
@@ -69,16 +72,45 @@ export class ShareComponent {
     });
   };
 
-  sendEmail = () => {
+  sendEmail = async () => {
     const { cc, content, editorDesk, headline, media, subline, image } =
       this.formGroup.controls;
 
-    console.log('cc.value', cc.value);
-    console.log('content.value', content.value);
-    console.log('editorDesk.value', editorDesk.value);
-    console.log('headline.value', headline.value);
-    console.log('media.value', media.value);
-    console.log('subline.value', subline.value);
-    console.log('image.value', image.value);
+    let images: any;
+    if (image.value) {
+      const base64 = await this.file2Base64(image.value!);
+      const filename = image.value?.name ?? 'file.jpg';
+      images = [{ base64, filename }];
+    }
+
+    this.isSending = true;
+    this.shareService
+      .sendEmail({
+        content: content.value!,
+        editorial_desk: editorDesk.value!,
+        headline: headline.value!,
+        subline: subline.value!,
+        images: images ?? undefined,
+        media_names: media.value ?? undefined,
+        client_email: cc.value ?? undefined,
+      })
+      .subscribe(({ message }) => {
+        this.messageService.add({
+          severity: 'success',
+          detail: message ?? 'Success',
+        });
+      })
+      .add(() => {
+        this.isSending = false;
+      });
+  };
+
+  file2Base64 = (file: File): Promise<string> => {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result?.toString() || '');
+      reader.onerror = (error) => reject(error);
+    });
   };
 }

@@ -15,4 +15,19 @@ export class ShareService {
       `${this.baseUrl}/v1/wartawan/medias`
     );
   }
+
+  sendEmail(payload: {
+    content: string;
+    editorial_desk: string;
+    headline: string;
+    subline: string;
+    client_email?: string;
+    images?: { base64: string; filename: string }[];
+    media_names?: string[];
+  }): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(
+      `${this.baseUrl}/v1/wartawan/upload`,
+      payload
+    );
+  }
 }

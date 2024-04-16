@@ -5,10 +5,34 @@
   (drop)="onDrop($event)"
   [formGroup]="form"
 >
-  <p class="upload-text">Picture upload</p>
-  <input
-    class="input"
-    type="file"
-    formControlName="image"
-  />
+  <div class="flex flex-column justify-content-center align-items-center">
+    <i
+      class="pi pi-cloud-upload text-primary font-normal"
+      style="font-size: 3.2rem"
+    ></i>
+    <p class="upload-text text-lg">Picture upload</p>
+  </div>
+  <input class="input" type="file" (change)="onImagePicked($event)" />
+</div>
+<div
+  class="flex align-items-center gap-2 mt-4"
+  *ngIf="uploadedImageURL || file"
+>
+  <div class="flex align-items-center">
+    <img
+      [src]="uploadedImageURL"
+      class="mr-2 w-4rem h-4rem"
+      imgFallback="https://placehold.co/600x400?text=No+Image+Available"
+    />
+    <div>{{ file?.name ?? "-" }}</div>
+  </div>
+  <p-button
+    [outlined]="true"
+    [text]="true"
+    size="small"
+    styleClass="p-2 border-1 border-200"
+    (onClick)="removeImage()"
+  >
+    <i class="pi pi-trash text-red-500"></i>
+  </p-button>
 </div>
