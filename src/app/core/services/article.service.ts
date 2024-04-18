@@ -25,14 +25,15 @@ export class ArticleService {
 
   getUserEditingPlus(
     filter: FilterRequestPayload
-  ): Observable<{ data: Article[] }> {
-    return this.http.post<{ data: Article[] }>(
+  ): Observable<{ data: Article[]; recordsTotal: number }> {
+    return this.http.post<{ data: Article[]; recordsTotal: number }>(
       `${this.baseUrl}/v1/user/editingplus/`,
       {
         ...filter,
         media_id: 0,
         maxSize: 20,
-        page: 0,
+        page: filter.page ?? 0,
+        size: filter.size ?? 0,
       }
     );
   }

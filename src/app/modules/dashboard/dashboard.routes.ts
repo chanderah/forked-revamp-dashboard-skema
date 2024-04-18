@@ -12,6 +12,7 @@ import { ArticleDetailComponent } from './article-detail/article-detail.componen
 import { MapArticlesComponent } from './map-articles/map-articles.component';
 import { ArticlesByToneComponent } from './articles-by-tone/articles-by-tone.component';
 import { NewsindexComponent } from './newsindex/newsindex.component';
+import { TopArticlesComponent } from './top-articles/top-articles.component';
 
 interface ChildrenRoute extends Route {
   withFilter?: boolean;
@@ -89,6 +90,12 @@ export const DashboardRoutes: DashboardRoutesProps[] = [
         path: 'overview-articles',
         title: 'Overview Articles',
         component: OverviewArticlesComponent,
+        withFilter: true,
+      },
+      {
+        path: 'top-articles',
+        title: 'Top Articles',
+        component: TopArticlesComponent,
         withFilter: true,
       },
       {
