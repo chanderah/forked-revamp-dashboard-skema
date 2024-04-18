@@ -6,18 +6,25 @@
   </div>
   <spinner [spinning]="isLoading">
     <p-scroller
-      [items]="influencerCount"
-      [itemSize]="influencerCount.length + 1"
+      [items]="medias"
+      [itemSize]="medias.length + 2"
       scrollHeight="740px"
     >
       <ng-template pTemplate="item" let-item let-options="options">
-        <div class="grid grid-nogutter">
+        <div
+          class="grid grid-nogutter cursor-pointer"
+          [ngClass]="{
+            ' border-left-3 border-primary bg-gray-100':
+              item.media_id === selectedMedia?.media_id
+          }"
+          (click)="onClick(item)"
+        >
           <div class="col-12">
             <div class="flex align-items-center py-1 gap-3">
-              <div class="w-4rem">
+              <div class="w-4rem pl-1">
                 <img
                   [src]="item.image"
-                  [alt]="item.influencer_name"
+                  [alt]="item.media_name"
                   class="h-4rem w-full border-round"
                   style="object-fit: cover"
                   imgFallback="https://placehold.co/600x400?text=No+Image+Available"
@@ -31,14 +38,14 @@
                     class="text-sm font-semibold white-space-nowrap text-overflow-ellipsis overflow-hidden"
                     style="width: 140px"
                   >
-                    {{ item.influencer_name }}
+                    {{ item.media_name }}
                   </div>
                   <p
                     class="white-space-nowrap overflow-hidden text-overflow-ellipsis p-0 mt-1"
                     style="width: 140px"
                   >
-                    {{ item.count.all }}
-                    <span class="text-color-secondary">Statement</span>
+                    {{ item.doc_count }}
+                    <span class="text-color-secondary">Articles</span>
                   </p>
                 </div>
               </div>
@@ -49,8 +56,8 @@
     </p-scroller>
     <div>
       <p class="p-0 mt-5">
-        {{ influencerCount.length }}
-        <span class="text-color-secondary">Spokeperson</span>
+        {{ medias.length }}
+        <span class="text-color-secondary">Media</span>
       </p>
     </div>
   </spinner>

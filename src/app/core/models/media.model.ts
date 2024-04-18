@@ -33,3 +33,23 @@ export interface MediaListUpdate {
 export interface WartawanMedia {
   media_name: string;
 }
+
+export interface MediaSOV {
+  doc_count: number;
+  image_url: string;
+  media_id: number;
+  media_name: string;
+}
+export interface MediaTone {
+  media_id: number;
+  media_name: string;
+  media_favourability_index: number;
+  total_articles: number;
+  tone_articles: ToneArticle;
+}
+
+export interface ToneArticle {
+  positive: number;
+  negative: number;
+  neutral: number;
+}

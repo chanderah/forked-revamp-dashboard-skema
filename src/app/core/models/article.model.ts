@@ -1,4 +1,5 @@
 export interface Article {
+  toneLabel?: string;
   article_id: string;
   title: string;
   media_id: number;
@@ -27,7 +28,7 @@ export interface Article {
   tone?: number;
   category_id?: string;
   summary?: string;
-  issue?: string
+  issue?: string;
 }
 
 export interface ArticleResponse {

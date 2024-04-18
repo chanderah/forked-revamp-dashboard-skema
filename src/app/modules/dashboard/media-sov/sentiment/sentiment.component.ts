@@ -2,112 +2,115 @@ import { Component } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { htmlLegendPlugin } from '../../../../shared/utils/ChartUtils';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, map, pluck } from 'rxjs';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { AppState } from '../../../../core/store';
+import { MediaSOVService } from '../../../../core/services/media-sov.service';
+import { MediaTone } from '../../../../core/models/media.model';
+import { FilterService } from '../../../../core/services/filter.service';
+import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
+import { MediaSOVState } from '../../../../core/store/media-sov/media-sov.reducer';
+import { selectMediaSOVState } from '../../../../core/store/media-sov/media-sov.selectors';
 import {
-  getArticlesByTone,
-  getMediaVisibility,
-  getTones,
-} from '../../../../core/store/analyze/analyze.actions';
-import { AnalyzeState } from '../../../../core/store/analyze/analyze.reducer';
-import { selectAnalyzeState } from '../../../../core/store/analyze/analyze.selectors';
-import {
-  FilterState,
-  initialState,
-} from '../../../../core/store/filter/filter.reducer';
-import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
-import { ChartBar, Tones } from '../../../../core/models/tone.model';
-import moment from 'moment';
-import { MediaVisibility } from '../../../../core/models/media-visibility.model';
+  NEGATIVE_TONE,
+  NEUTRAL_TONE,
+  POSITIVE_TONE,
+} from '../../../../shared/utils/Constants';
+import { setTone } from '../../../../core/store/media-sov/media-sov.actions';
 
 @Component({
   selector: 'app-sentiment',
   standalone: true,
-  imports: [ChartModule],
+  imports: [ChartModule, SpinnerComponent],
   templateUrl: './sentiment.component.html',
   styleUrl: './sentiment.component.scss',
 })
 export class SentimentComponent {
-  analyzeState: Observable<AnalyzeState>;
-  filterState: Observable<FilterState>;
   isLoading: boolean = false;
   chartData: any;
   options: any;
   plugins = [htmlLegendPlugin];
+  mediaSOVState: Observable<MediaSOVState>;
 
-  constructor(private store: Store<AppState>) {
-    this.analyzeState = this.store.select(selectAnalyzeState);
-    this.filterState = this.store.select(selectFilterState);
+  constructor(
+    private mediaSOVService: MediaSOVService,
+    private filterService: FilterService,
+    private store: Store<AppState>
+  ) {
+    this.mediaSOVState = this.store.select(selectMediaSOVState);
   }
+
+  fetchData = async (filter: FilterRequestPayload) => {
+    this.isLoading = true;
+    this.mediaSOVService
+      .getMediaTones(filter)
+      .subscribe((data) => {
+        this.initChartData(data.data);
+      })
+      .add(() => {
+        this.isLoading = false;
+      });
+  };
 
   ngOnInit() {
     this.initChartOpts();
-    this.store.dispatch(
-      getMediaVisibility({ filter: initialState as FilterRequestPayload })
-    );
-
-    this.analyzeState.subscribe(({ mediaVisibility }) => {
-      this.isLoading = mediaVisibility.isLoading;
-      this.initChartData(mediaVisibility.data);
+    this.filterService.subscribe((filter) => {
+      this.fetchData(filter);
     });
-    this.filterState.subscribe(this.onFilterChange);
+    this.mediaSOVState.pipe(pluck('media')).subscribe((data) => {
+      this.fetchData({
+        ...this.filterService.filter,
+        media_id: data?.media_id,
+      });
+    });
   }
 
-  getChartData = (mediaVisibility: MediaVisibility[]) => {
-    const lineDatasets: any[] = [];
-    const pieDatasets: any = [{ data: [], percentages: [] }];
-    const pieLabels: string[] = [];
-    const totalTones = mediaVisibility.reduce((prev, chart) => {
-      return prev + chart.doc_count;
-    }, 0);
+  getChartData = (mediaTone: MediaTone) => {
+    const totalTones = mediaTone.total_articles;
+    const getPercentage = (toneVal: number) =>
+      ((toneVal / totalTones) * 100).toFixed(0);
 
-    mediaVisibility.forEach((media) => {
-      pieLabels.push(media.key);
-      const tmpData: { label: string; data: number[]; tension: number } = {
-        label: media.key,
-        data: [],
-        tension: 0.4,
-      };
-      media.category_id_per_day.buckets.forEach((bucket) => {
-        tmpData.data.push(bucket.doc_count);
-      });
-      pieDatasets[0].percentages.push(
-        ((media.doc_count / totalTones) * 100).toFixed(0)
-      );
-      pieDatasets[0].data.push(media.doc_count);
-      lineDatasets.push(tmpData);
-    });
+    const documentStyle = getComputedStyle(document.documentElement);
+    const positiveColor = documentStyle.getPropertyValue('--positive-color');
+    const negativeColor = documentStyle.getPropertyValue('--negative-color');
+    const neutralColor = documentStyle.getPropertyValue('--neutral-color');
 
-    const visibilityBarDatasets = mediaVisibility.map((visibility) => {
-      const data = visibility.category_id_per_day.buckets.map(
-        (val) => val.doc_count
-      );
-      return {
-        type: 'bar',
-        data,
-        label: visibility.key,
-      };
-    });
+    const positive = mediaTone.tone_articles.positive;
+    const negative = mediaTone.tone_articles.negative;
+    const neutral = mediaTone.tone_articles.neutral;
 
-    const lineLabels = mediaVisibility[0].category_id_per_day.buckets.map(
-      (bucket) => moment(bucket.key_as_string).format('DD MMM')
-    );
-    return {
-      lineLabels,
-      lineDatasets,
-      pieLabels,
-      pieDatasets,
-      barLabels: lineLabels,
-      visibilityBarDatasets,
-    };
+    const pieDatasets: any = [
+      {
+        data: [
+          mediaTone.tone_articles.positive,
+          mediaTone.tone_articles.negative,
+          mediaTone.tone_articles.neutral,
+        ],
+        tones: [POSITIVE_TONE, NEGATIVE_TONE, NEUTRAL_TONE],
+        percentages: [
+          getPercentage(positive),
+          getPercentage(negative),
+          getPercentage(neutral),
+        ],
+        backgroundColor: [positiveColor, negativeColor, neutralColor],
+      },
+    ];
+    const pieLabels: string[] = ['Positive', 'Negative', 'Neutral'];
+
+    return { pieLabels, pieDatasets };
   };
 
-  initChartData = (mediaVisibility: MediaVisibility[]) => {
-    if (mediaVisibility.length) {
-      const { pieLabels, pieDatasets } = this.getChartData(mediaVisibility);
+  initChartData = (media: MediaTone) => {
+    if (media) {
+      const { pieDatasets, pieLabels } = this.getChartData(media);
       this.chartData = { labels: pieLabels, datasets: pieDatasets };
     }
+  };
+
+  onDataSelect = (value: any) => {
+    const currentData = this.chartData.datasets[value.element.datasetIndex];
+    const tone = currentData.tones[value.element.index];
+    this.store.dispatch(setTone({ tone }));
   };
 
   initChartOpts = () => {
@@ -132,10 +135,5 @@ export class SentimentComponent {
         },
       },
     };
-  };
-
-  onFilterChange = (filterState: FilterState) => {
-    const filter = { ...filterState } as FilterRequestPayload;
-    this.store.dispatch(getMediaVisibility({ filter }));
   };
 }

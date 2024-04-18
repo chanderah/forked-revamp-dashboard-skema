@@ -4,6 +4,7 @@ import { AuthEffects } from './auth/auth.effects';
 import { overviewReducer, OverviewState } from './overview/overview.reducer';
 import { OverviewEffects } from './overview/overview.effects';
 import { filterReducer, FilterState } from './filter/filter.reducer';
+import { mediaSOVReducer, MediaSOVState } from './media-sov/media-sov.reducer';
 import { analyzeReducer, AnalyzeState } from './analyze/analyze.reducer';
 import { AnalyzeEffects } from './analyze/analyze.effects';
 import {
@@ -21,6 +22,7 @@ export interface AppState {
   analyze: AnalyzeState;
   spokesperson: SpokespersonState;
   articles: ArticlesState;
+  mediaSov: MediaSOVState;
 }
 
 export const reducers: ActionReducerMap<AppState> = {
@@ -30,6 +32,7 @@ export const reducers: ActionReducerMap<AppState> = {
   analyze: analyzeReducer,
   spokesperson: spokespersonReducer,
   articles: articlesReducer,
+  mediaSov: mediaSOVReducer,
 };
 
 export const effects = [
@@ -37,5 +40,5 @@ export const effects = [
   OverviewEffects,
   AnalyzeEffects,
   SpokespersonEffects,
-  ArticlesEffects
+  ArticlesEffects,
 ];

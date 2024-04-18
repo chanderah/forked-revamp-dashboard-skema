@@ -1,8 +1,11 @@
 <section>
   <spinner [spinning]="isLoading">
     <div class="flex flex-column gap-2">
-      <div class="text-sm">
-        <span class="font-semibold">Posted:</span> {{ article?.datee ?? "-" }}
+      <div class="text-sm flex gap-3 align-items-center">
+        <div class="cursor-pointer" (click)="goBack()"><i class="pi pi-arrow-left"></i></div>
+        <div>
+          <span class="font-semibold">Posted:</span> {{ article?.datee ?? "-" }}
+        </div>
       </div>
       <div class="text-3xl font-semibold">
         {{ article?.title ?? "-" }}
@@ -55,6 +58,9 @@
       imgFallback="https://placehold.co/600x400?text=No+Image+Available"
     />
 
-    <div class="text-sm text-color" [innerHTML]="sanitizedContent ?? article?.content ?? ''"></div>
+    <div
+      class="text-sm text-color"
+      [innerHTML]="sanitizedContent ?? article?.content ?? ''"
+    ></div>
   </spinner>
 </section>

@@ -13,4 +13,6 @@ export interface FilterRequestPayload {
   media_id?: number | null;
   tone?: number | null;
   term?: string
+  max_size?: string
+  order_by?: string
 }

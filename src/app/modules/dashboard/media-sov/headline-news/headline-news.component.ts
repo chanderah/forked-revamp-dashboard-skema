@@ -5,6 +5,17 @@ import { ScrollerModule } from 'primeng/scroller';
 import { CommonModule } from '@angular/common';
 import { TagComponent } from '../../../../core/components/tag/tag.component';
 import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
+import { Article } from '../../../../core/models/article.model';
+import { MediaSOVService } from '../../../../core/services/media-sov.service';
+import { FilterRequestPayload } from '../../../../core/models/request.model';
+import { FilterService } from '../../../../core/services/filter.service';
+import { TONE_MAP } from '../../../../shared/utils/Constants';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { AppState } from '../../../../core/store';
+import { MediaSOVState } from '../../../../core/store/media-sov/media-sov.reducer';
+import { selectMediaSOVState } from '../../../../core/store/media-sov/media-sov.selectors';
+import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 
 @Component({
   selector: 'app-headline-news',
@@ -15,72 +26,55 @@ import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.di
     ScrollerModule,
     CommonModule,
     TagComponent,
-    ImgFallbackDirective
+    ImgFallbackDirective,
+    SpinnerComponent
   ],
   templateUrl: './headline-news.component.html',
   styleUrl: './headline-news.component.scss',
 })
 export class HeadlineNewsComponent {
-  articles: any[] = [
-    {
-      title: 'test title',
-      content: 'test contentel jkasjdkj lasdla asdl asdlasld  asldlas dav',
-      tone: 'Negative',
-      datee: '2021-23-01 09',
-    },
-    {
-      title: 'test title',
-      content: 'test contentel jkasjdkjav',
-      tone: 'Positive',
-      datee: '2021-23-01 09',
-    },
-    {
-      title: 'test title',
-      content: 'test contentel jkasjdkjav',
-      tone: 'Negative',
-      datee: '2021-23-01 09',
-    },
-    {
-      title: 'test title',
-      content: 'test contentel jkasjdkjav',
-      tone: 'Neutral',
-      datee: '2021-23-01 09',
-    },
-    {
-      title: 'test title',
-      content: 'test contentel jkasjdkjav',
-      tone: 'Negative',
-      datee: '2021-23-01 09',
-    },
-    {
-      title: 'test title',
-      content: 'test contentel jkasjdkjav',
-      tone: 'Positive',
-      datee: '2021-23-01 09',
-    },
-    {
-      title: 'test title',
-      content: 'test contentel jkasjdkjav',
-      tone: 'Positive',
-      datee: '2021-23-01 09',
-    },
-    {
-      title: 'test title',
-      content: 'test contentel jkasjdkjav',
-      tone: 'Negative',
-      datee: '2021-23-01 09',
-    },
-    {
-      title: 'test title',
-      content: 'test contentel jkasjdkjav',
-      tone: 'Negative',
-      datee: '2021-23-01 09',
-    },
-    {
-      title: 'test title',
-      content: 'test contentel jkasjdkjav',
-      tone: 'Negative',
-      datee: '2021-23-01 09',
-    },
-  ];
+  articles: Article[] = [];
+  isLoading: boolean = false;
+
+  mediaSOVState: Observable<MediaSOVState>;
+
+  constructor(
+    private mediaSOVService: MediaSOVService,
+    private filterService: FilterService,
+    private store: Store<AppState>
+  ) {
+    this.mediaSOVState = this.store.select(selectMediaSOVState);
+  }
+
+  fetchData = (filter: FilterRequestPayload) => {
+    this.isLoading = true;
+    this.mediaSOVService
+      .getLatestArticles(filter)
+      .subscribe(({ data }) => {
+        this.articles = data.data.map((article) => {
+          return { ...article, toneLabel: TONE_MAP[article?.tone ?? ''] };
+        });
+      })
+      .add(() => {
+        this.isLoading = false;
+      });
+  };
+
+  ngOnInit() {
+    this.filterService.subscribe((filter) => {
+      this.fetchData({
+        ...filter,
+        order_by: 'advalue_bw',
+        max_size: '20',
+      } as FilterRequestPayload);
+    });
+    this.mediaSOVState.subscribe((data) => {
+      this.fetchData({
+        ...this.filterService.filter,
+        order_by: 'advalue_bw',
+        max_size: '20',
+        media_id: data.media?.media_id,
+      } as FilterRequestPayload);
+    });
+  }
 }

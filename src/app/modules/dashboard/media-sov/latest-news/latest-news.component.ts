@@ -7,16 +7,14 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { AppState } from '../../../../core/store';
-import {
-  FilterState,
-  initialState,
-} from '../../../../core/store/filter/filter.reducer';
-import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
-import { getLatestNews } from '../../../../core/store/spokesperson/spokesperson.actions';
-import { SpokespersonState } from '../../../../core/store/spokesperson/spokesperson.reducer';
-import { selectSpokespersonState } from '../../../../core/store/spokesperson/spokesperson.selectors';
 import { Article } from '../../../../core/models/article.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
+import { MediaSOVService } from '../../../../core/services/media-sov.service';
+import { FilterService } from '../../../../core/services/filter.service';
+import { MediaSOVState } from '../../../../core/store/media-sov/media-sov.reducer';
+import { selectMediaSOVState } from '../../../../core/store/media-sov/media-sov.selectors';
+import _ from 'lodash';
+import { MediaSOV } from '../../../../core/models/media.model';
 
 @Component({
   selector: 'app-latest-news',
@@ -26,35 +24,49 @@ import { SpinnerComponent } from '../../../../core/components/spinner/spinner.co
     IconInfoComponent,
     CommonModule,
     ImgFallbackDirective,
-    SpinnerComponent
+    SpinnerComponent,
   ],
   templateUrl: './latest-news.component.html',
   styleUrl: './latest-news.component.scss',
 })
 export class LatestNewsComponent {
-  spokespersonState: Observable<SpokespersonState>;
-  filterState: Observable<FilterState>;
   articles: Article[] = [];
   isLoading: boolean = false;
+  mediaSOVState: Observable<MediaSOVState>;
+  prevMedia: MediaSOV | null = null;
 
-  constructor(private store: Store<AppState>) {
-    this.spokespersonState = this.store.select(selectSpokespersonState);
-    this.filterState = this.store.select(selectFilterState);
+  constructor(
+    private mediaSOVService: MediaSOVService,
+    private filterService: FilterService,
+    private store: Store<AppState>
+  ) {
+    this.mediaSOVState = this.store.select(selectMediaSOVState);
   }
+
+  fetchData = (filter: FilterRequestPayload) => {
+    this.isLoading = true;
+    this.mediaSOVService
+      .getLatestArticles(filter)
+      .subscribe(({ data }) => {
+        this.articles = data.data;
+      })
+      .add(() => {
+        this.isLoading = false;
+      });
+  };
 
   ngOnInit() {
-    this.store.dispatch(
-      getLatestNews({ filter: initialState as FilterRequestPayload })
-    );
-    this.spokespersonState.subscribe(({ latestNews }) => {
-      this.isLoading = latestNews.isLoading;
-      this.articles = latestNews.data.slice(0, 6);
+    this.filterService.subscribe((filter) => {
+      this.fetchData(filter as FilterRequestPayload);
     });
-    this.filterState.subscribe(this.onFilterChange);
+    this.mediaSOVState.subscribe((data) => {
+      if (!_.isEqual(data.media?.media_id, this.prevMedia?.media_id)) {
+        this.prevMedia = data.media;
+        this.fetchData({
+          ...this.filterService.filter,
+          media_id: data?.media?.media_id,
+        });
+      }
+    });
   }
-
-  onFilterChange = (filterState: FilterState) => {
-    const filter = { ...filterState } as FilterRequestPayload;
-    this.store.dispatch(getLatestNews({ filter }));
-  };
 }

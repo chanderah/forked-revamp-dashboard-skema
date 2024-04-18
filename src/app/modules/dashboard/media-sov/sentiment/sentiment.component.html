@@ -1,13 +1,16 @@
 <div class="p-4 border-round border-1 border-200">
   <div class="text-sm font-semibold mb-5">Sentiment</div>
-  <div class="flex w-full justify-content-center align-items-center">
-    <div id="sentiment-legend-container" >
-      <p-chart
-        type="pie"
-        [data]="chartData"
-        [options]="options"
-        [plugins]="plugins"
-      ></p-chart>
+  <spinner [spinning]="isLoading">
+    <div class="flex w-full justify-content-center align-items-center">
+      <div id="sentiment-legend-container">
+        <p-chart
+          type="pie"
+          [data]="chartData"
+          [options]="options"
+          [plugins]="plugins"
+          (onDataSelect)="onDataSelect($event)"
+        ></p-chart>
+      </div>
     </div>
-  </div>
+  </spinner>
 </div>

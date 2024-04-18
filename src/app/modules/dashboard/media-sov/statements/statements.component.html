@@ -10,8 +10,8 @@
   </div>
   <spinner [spinning]="isLoading">
     <p-scroller
-      [items]="influencer"
-      [itemSize]="influencer.length + 1"
+      [items]="articles"
+      [itemSize]="articles.length + 2"
       scrollHeight="500px"
     >
       <ng-template pTemplate="item" let-item let-options="options">
@@ -23,7 +23,7 @@
               <div class="w-4rem">
                 <img
                   [src]="item.image_url"
-                  [alt]="item.influencer_name"
+                  [alt]="item.title"
                   class="h-4rem w-full border-round"
                   style="object-fit: cover"
                   imgFallback="https://placehold.co/600x400?text=No+Image+Available"
@@ -37,13 +37,13 @@
                     class="text-xs font-semibold white-space-nowrap text-overflow-ellipsis overflow-hidden"
                     style="width: 220px"
                   >
-                    {{ item.influencer_name }}
+                    {{ item.title }}
                   </div>
                   <p
                     class="white-space-nowrap overflow-hidden text-overflow-ellipsis p-0 mt-0 mb-0"
                     style="width: 220px"
                   >
-                    {{ item.quotes }}
+                    {{ item.content }}
                   </p>
                   <div class="flex gap-3 align-items-center">
                     <div class="flex align-items-center gap-2">
@@ -51,13 +51,13 @@
                       <span
                         class="text-xs text-500 p-0 mt-0 white-space-nowrap overflow-hidden text-overflow-ellipsis"
                         style="width: 80px"
-                        >{{ item.media }}</span
+                        >{{ item.media_name }}</span
                       >
                     </div>
                     <div class="flex align-items-center gap-2">
                       <i class="pi pi-clock text-500 text-xs"></i>
                       <span class="text-xs text-500 p-0 mt-0">{{
-                        item.date
+                        item.datee.split("?")[0]
                       }}</span>
                     </div>
                   </div>

@@ -8,10 +8,9 @@ import { TONE_MAP } from '../../../shared/utils/Constants';
 import { FormatAmountPipe } from '../../../core/pipes/format-amount.pipe';
 import { ArticleService } from '../../../core/services/article.service';
 import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { forkJoin, switchMap } from 'rxjs';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ButtonSecondaryComponent } from '../../../core/components/button-secondary/button-secondary.component';
 
 const highlightKeywords = (content: string, keywords: string[]): string => {
   const cleanedKeywords = keywords.map((keyword) => keyword.replace(/"/g, ''));
@@ -41,7 +40,8 @@ export class ArticleDetailComponent {
   constructor(
     private activatedRoute: ActivatedRoute,
     private articleService: ArticleService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private location: Location
   ) {}
 
   ngOnInit() {
@@ -73,4 +73,8 @@ export class ArticleDetailComponent {
         };
       });
   }
+
+  goBack = () => {
+    this.location.back();
+  };
 }
