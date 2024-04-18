@@ -16,7 +16,7 @@
       *ngIf="articles.length > 0"
     >
       <ng-container *ngFor="let article of articles">
-        <div>
+        <div class="cursor-pointer" [routerLink]="'/dashboard/articles/' + article.article_id">
           <div
             class="flex flex-column xl:flex-row xl:align-items-start py-1 gap-3"
           >

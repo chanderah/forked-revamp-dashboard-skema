@@ -15,6 +15,7 @@ import { MediaSOVState } from '../../../../core/store/media-sov/media-sov.reduce
 import { selectMediaSOVState } from '../../../../core/store/media-sov/media-sov.selectors';
 import _ from 'lodash';
 import { MediaSOV } from '../../../../core/models/media.model';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-latest-news',
@@ -25,6 +26,7 @@ import { MediaSOV } from '../../../../core/models/media.model';
     CommonModule,
     ImgFallbackDirective,
     SpinnerComponent,
+    RouterLink
   ],
   templateUrl: './latest-news.component.html',
   styleUrl: './latest-news.component.scss',

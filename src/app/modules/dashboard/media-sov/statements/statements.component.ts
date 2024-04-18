@@ -24,6 +24,7 @@ import { Article } from '../../../../core/models/article.model';
 import { TONE_MAP } from '../../../../shared/utils/Constants';
 import { MediaSOVState } from '../../../../core/store/media-sov/media-sov.reducer';
 import { selectMediaSOVState } from '../../../../core/store/media-sov/media-sov.selectors';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-statements',
@@ -35,6 +36,7 @@ import { selectMediaSOVState } from '../../../../core/store/media-sov/media-sov.
     CommonModule,
     ImgFallbackDirective,
     SpinnerComponent,
+    RouterLink
   ],
   templateUrl: './statements.component.html',
   styleUrl: './statements.component.scss',
