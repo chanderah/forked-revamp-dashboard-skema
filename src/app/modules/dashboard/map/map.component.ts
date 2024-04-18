@@ -23,10 +23,13 @@ import { AppState } from '../../../core/store';
 import { selectFilterState } from '../../../core/store/filter/filter.selectors';
 import { DividerModule } from 'primeng/divider';
 import { IconNewspaperComponent } from '../../../core/components/icons/newspaper/newspaper.component';
-import { Article, ArticleResponse } from '../../../core/models/article.model';
+import { Article } from '../../../core/models/article.model';
 import { CommonModule } from '@angular/common';
 import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
 import { Router, RouterModule } from '@angular/router';
+import { DropdownModule } from 'primeng/dropdown';
+import { FormsModule } from '@angular/forms';
+import { FilterService } from '../../../core/services/filter.service';
 
 @Component({
   selector: 'app-map',
@@ -38,6 +41,8 @@ import { Router, RouterModule } from '@angular/router';
     CommonModule,
     SpinnerComponent,
     RouterModule,
+    DropdownModule,
+    FormsModule,
   ],
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss',
@@ -48,6 +53,12 @@ export class MapComponent {
   selectedLoc: string | null = null;
   articles: Article[] = [];
   isLoadingArticles: boolean = false;
+
+  selectedFilter: string = 'article';
+  filterOptions = [
+    { name: 'Article', value: 'article' },
+    { name: 'Media', value: 'media' },
+  ];
 
   options: MapOptions = {
     layers: [
@@ -68,7 +79,8 @@ export class MapComponent {
     private store: Store<AppState>,
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
-    private router: Router
+    private router: Router,
+    private filterService: FilterService
   ) {
     this.filterState = this.store.select(selectFilterState);
   }
@@ -85,11 +97,14 @@ export class MapComponent {
     });
   }
 
-  fetchAllCount = (filter = initialState) => {
+  fetchAllCount = (
+    filter: FilterRequestPayload | FilterState = initialState
+  ) => {
     this.mapService
       .getAllCount(filter as FilterRequestPayload)
       .subscribe((data) => {
         this.addGeoJSONLayer(data);
+        this.selectedLoc = null
       });
   };
 
@@ -204,6 +219,13 @@ export class MapComponent {
     this.map.addControl(customZoomControl);
     this.addLegendControl();
   }
+
+  onFilterTypeChange = (type_location: string) => {
+    if (this.geoJsonLayer) {
+      this.geoJsonLayer.removeFrom(this.map!);
+    }
+    this.fetchAllCount({ ...this.filterService.filter, type_location });
+  };
 
   onFilterChange = (filterState: FilterState) => {
     if (this.geoJsonLayer) {

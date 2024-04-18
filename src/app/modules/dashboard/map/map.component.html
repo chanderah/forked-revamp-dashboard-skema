@@ -1,9 +1,23 @@
 <section class="border-1 border-200">
-  <div class="text-center mb-3 pt-4">
-    <div class="text-xl font-semibold">Map Analysis</div>
-    <div class="text-sm">
-      To see a list of distributors for your area, please click on your location
-      on the map
+  <div class="flex align-items-center justify-content-between px-4">
+    <div class="flex-grow-1 text-center ml-8 mb-3 pt-4">
+      <div class="text-xl font-semibold">Map Analysis</div>
+      <div class="text-sm">
+        To see a list of distributors for your area, please click on your
+        location on the map
+      </div>
+    </div>
+
+    <div class="card flex justify-content-center">
+      <p-dropdown
+        [options]="filterOptions"
+        [(ngModel)]="selectedFilter"
+        (ngModelChange)="onFilterTypeChange($event)"
+        dataKey="value"
+        optionLabel="name"
+        optionValue="value"
+        placeholder="Select filter"
+      ></p-dropdown>
     </div>
   </div>
 

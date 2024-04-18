@@ -15,4 +15,5 @@ export interface FilterRequestPayload {
   term?: string
   max_size?: string
   order_by?: string
+  type_location?: string
 }

@@ -21,17 +21,20 @@ export class MapService {
     return this.http.post<AllCount>(`${this.baseUrl}/v2/all-count/`, {
       ...filter,
       maxSize: null,
-      type_location: 'article',
+      type_location: filter.type_location ?? 'article',
     });
   }
 
   getArticleByGeo(filter: FilterRequestPayload): Observable<ArticleResponse> {
-    return this.http.post<ArticleResponse>(`${this.baseUrl}/v2/article-by-geo/`, {
-      size: 10,
-      page: 0,
-      ...filter,
-      max_size: 16,
-      type_location: 'article',
-    });
+    return this.http.post<ArticleResponse>(
+      `${this.baseUrl}/v2/article-by-geo/`,
+      {
+        size: 10,
+        page: 0,
+        ...filter,
+        max_size: 16,
+        type_location: filter.type_location ?? 'article',
+      }
+    );
   }
 }
