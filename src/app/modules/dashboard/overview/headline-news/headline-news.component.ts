@@ -16,6 +16,7 @@ import { AppState } from '../../../../core/store';
 import { MediaSOVState } from '../../../../core/store/media-sov/media-sov.reducer';
 import { selectMediaSOVState } from '../../../../core/store/media-sov/media-sov.selectors';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-headline-news',
@@ -27,7 +28,8 @@ import { SpinnerComponent } from '../../../../core/components/spinner/spinner.co
     CommonModule,
     TagComponent,
     ImgFallbackDirective,
-    SpinnerComponent
+    SpinnerComponent,
+    RouterLink
   ],
   templateUrl: './headline-news.component.html',
   styleUrl: './headline-news.component.scss',

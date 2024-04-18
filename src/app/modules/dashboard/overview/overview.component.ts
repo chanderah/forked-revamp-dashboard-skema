@@ -4,6 +4,7 @@ import { OverviewTilesComponent } from './overview-tiles/overview-tiles.componen
 import { TopCityComponent } from './top-city/top-city.component';
 import { TopArticleComponent } from './top-article/top-article.component';
 import { TopMediaComponent } from './top-media/top-media.component';
+import { HeadlineNewsComponent } from './headline-news/headline-news.component';
 
 @Component({
   selector: 'app-overview',
@@ -14,6 +15,7 @@ import { TopMediaComponent } from './top-media/top-media.component';
     TopArticleComponent,
     TopMediaComponent,
     DividerModule,
+    HeadlineNewsComponent,
   ],
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.scss',

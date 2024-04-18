@@ -7,7 +7,10 @@
   <spinner [spinning]="isLoading">
     <div class="grid overflow-y-auto" style="height: 240px">
       <div class="col-4" *ngFor="let item of articles">
-        <div class="grid grid-nogutter border-1 border-200 p-3">
+        <div
+          class="grid grid-nogutter border-1 border-200 p-3 cursor-pointer"
+          [routerLink]="'/dashboard/articles/' + item.article_id"
+        >
           <div class="col-12">
             <div class="flex gap-2">
               <img
@@ -23,13 +26,13 @@
                 <div class="flex flex-column gap-1">
                   <div
                     class="text-sm font-semibold white-space-nowrap text-overflow-ellipsis overflow-hidden"
-                    style="width: 160px"
+                    style="width: 240px"
                   >
                     {{ item.title }}
                   </div>
                   <p
                     class="white-space-nowrap overflow-hidden text-overflow-ellipsis p-0 m-0"
-                    style="width: 160px"
+                    style="width: 240px"
                   >
                     {{ item.content }}
                   </p>
