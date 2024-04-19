@@ -16,7 +16,11 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-city>
-          <tr>
+          <tr
+            class="cursor-pointer"
+            routerLink="/dashboard/map-articles"
+            [queryParams]="{ location: city.key }"
+          >
             <td>
               <p>{{ city.key }}</p>
             </td>

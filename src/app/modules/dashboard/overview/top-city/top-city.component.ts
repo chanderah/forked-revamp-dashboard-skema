@@ -21,6 +21,7 @@ import {
 } from '../../../../core/store/filter/filter.reducer';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-top-city',
@@ -32,6 +33,7 @@ import { SpinnerComponent } from '../../../../core/components/spinner/spinner.co
     IconInfoComponent,
     CommonModule,
     SpinnerComponent,
+    RouterLink
   ],
   templateUrl: './top-city.component.html',
   styleUrl: './top-city.component.scss',
