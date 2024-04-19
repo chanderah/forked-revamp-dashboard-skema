@@ -128,6 +128,7 @@ export class MediaVisibilityComponent {
         },
         htmlLegend: {
           containerID: 'legend-container',
+          flexDirection: 'row',
         },
       },
     };

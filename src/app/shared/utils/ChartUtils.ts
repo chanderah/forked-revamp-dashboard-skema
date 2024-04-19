@@ -7,6 +7,7 @@ const getOrCreateLegendList = ({ containerID, flexDirection }) => {
     listContainer = document.createElement('ul');
     listContainer.style.display = 'flex';
     listContainer.style.flexDirection = flexDirection ?? 'column';
+    listContainer.style.justifyContent = 'center';
     listContainer.style.flexWrap = 'wrap';
     listContainer.style.gap = '12px';
     listContainer.style.marginLeft = 0;

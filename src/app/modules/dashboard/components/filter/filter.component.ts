@@ -16,6 +16,7 @@ import moment from 'moment';
 import { CommonModule } from '@angular/common';
 import { CalendarModule } from 'primeng/calendar';
 import { PreferenceService } from '../../../../core/services/preference.service';
+import { DividerModule } from 'primeng/divider';
 
 interface Option {
   name: string;
@@ -45,6 +46,7 @@ const DEFAULT_MEDIA: Option = {
     FormsModule,
     CommonModule,
     CalendarModule,
+    DividerModule,
   ],
   templateUrl: './filter.component.html',
   styleUrl: './filter.component.scss',
@@ -58,7 +60,9 @@ export class FilterComponent {
   selectedSubCategory: string = initialState.category_id;
   selectedMedia: number = initialState.user_media_type_id;
   startDate: Date = moment(initialState.start_date).toDate();
+  startTime: Date = moment(initialState.start_date).toDate();
   endDate: Date = moment(initialState.end_date).toDate();
+  endTime: Date = moment(initialState.end_date).toDate();
 
   periodicOptions: Option[] = [
     { name: 'Yesterday', value: 'yesterday' },
