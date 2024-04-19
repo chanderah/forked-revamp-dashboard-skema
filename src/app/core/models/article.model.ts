@@ -29,6 +29,7 @@ export interface Article {
   category_id?: string;
   summary?: string;
   issue?: string;
+  keywords?: string[];
 }
 
 export interface ArticleResponse {

@@ -11,6 +11,7 @@ import { SpinnerComponent } from '../../../core/components/spinner/spinner.compo
 import { CommonModule, Location } from '@angular/common';
 import { forkJoin, switchMap } from 'rxjs';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { FilterService } from '../../../core/services/filter.service';
 
 const highlightKeywords = (content: string, keywords: string[]): string => {
   const cleanedKeywords = keywords.map((keyword) => keyword.replace(/"/g, ''));
@@ -41,7 +42,8 @@ export class ArticleDetailComponent {
     private activatedRoute: ActivatedRoute,
     private articleService: ArticleService,
     private sanitizer: DomSanitizer,
-    private location: Location
+    private location: Location,
+    private filterService: FilterService
   ) {}
 
   ngOnInit() {
@@ -52,21 +54,22 @@ export class ArticleDetailComponent {
           this.isLoading = true;
           return forkJoin({
             articleResp: this.articleService.getArticleById(id!),
-            keywordResp: this.articleService.getKeywordsByArticleId(id!),
           });
         })
       )
-      .subscribe(({ articleResp, keywordResp }) => {
+      .subscribe(({ articleResp }) => {
         this.isLoading = false;
         const articleData = articleResp.data;
-        const keywordData = keywordResp.data;
-
-        const hightligtedWords = highlightKeywords(
-          articleData.content,
-          keywordData
-        );
-        this.sanitizedContent =
-          this.sanitizer.bypassSecurityTrustHtml(hightligtedWords);
+        this.filterService.subscribe((filter) => {
+          if (filter.category_set !== 0) {
+            const hightligtedWords = highlightKeywords(
+              articleData.content,
+              articleData?.keywords ?? []
+            );
+            this.sanitizedContent =
+              this.sanitizer.bypassSecurityTrustHtml(hightligtedWords);
+          }
+        });
         this.article = {
           ...articleData,
           toneLabel: TONE_MAP[articleData?.tone ?? 0] ?? '',
