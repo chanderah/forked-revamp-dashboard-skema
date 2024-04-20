@@ -5,23 +5,21 @@ import { FilterState } from '../../../core/store/filter/filter.reducer';
 import { FilterRequestPayload } from '../../../core/models/request.model';
 import { FilterService } from '../../../core/services/filter.service';
 import { Article } from '../../../core/models/article.model';
-import { TitleCasePipe } from '../../../core/pipes/titlecase.pipe';
 import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
 import { ArticleListComponent } from '../../../core/components/article-list/article-list.component';
 import { TONE_MAP } from '../../../shared/utils/Constants';
 
 @Component({
-  selector: 'app-articles-by-tone',
+  selector: 'app-articles-by-media',
   standalone: true,
   imports: [SpinnerComponent, ArticleListComponent],
-  templateUrl: './articles-by-tone.component.html',
-  styleUrl: './articles-by-tone.component.scss',
+  templateUrl: './articles-by-media.component.html',
+  styleUrl: './articles-by-media.component.scss',
 })
-export class ArticlesByToneComponent {
+export class ArticlesByMediaComponent {
   mediaId: number | null = null;
   mediaName: string | null = null;
   tone: number | null = null;
-  category_id: string | null = null;
   toneLabel: string | null = null;
 
   articles: Article[] = [];
@@ -37,35 +35,26 @@ export class ArticlesByToneComponent {
     private articleService: ArticleService,
     private filterService: FilterService
   ) {
-    const mediaId = this.route.snapshot.queryParamMap.get('mediaId')!;
     const mediaName = this.route.snapshot.queryParamMap.get('mediaName')!;
-    const tone = this.route.snapshot.queryParamMap.get('tone');
-    const categoryName = this.route.snapshot.queryParamMap.get('categoryName');
 
-    if (tone) {
-      this.mediaId = +mediaId;
+    if (mediaName) {
       this.mediaName = mediaName;
-      this.tone = +tone;
-      this.category_id = categoryName;
-      this.toneLabel = TONE_MAP[tone];
       this.filterService.subscribe((filter) => {
-        this.fetchArticlesByTone(filter);
+        this.fetchArticles(filter);
       });
     } else {
-      this.router.navigateByUrl('/dashboard/overview');
+      this.router.navigateByUrl('/dashboard/analyze');
     }
   }
 
-  fetchArticlesByTone = (filter: FilterRequestPayload) => {
+  fetchArticles = (filter: FilterRequestPayload) => {
     const req = {
       ...filter,
-      media_id: this?.mediaId ?? 0,
-      tone: this?.tone ?? 0,
-      category_id: this.category_id ?? 'all',
+      category_id: this.mediaName,
     };
     this.isLoading = true;
     this.articleService
-      .getArticlesByTone(req as FilterRequestPayload)
+      .getUserEditingPlus(req as FilterRequestPayload)
       .subscribe((data) => {
         this.isLoading = false;
         this.articles = data.data;
@@ -77,7 +66,7 @@ export class ArticlesByToneComponent {
     this.page = event.page;
     this.rows = event.rows;
     this.first = event.first;
-    this.fetchArticlesByTone({
+    this.fetchArticles({
       ...this.filterService.filter,
       page: event.page,
       size: event.rows,

@@ -54,6 +54,7 @@ export class ArticleService {
         media_id: filter.media_id ?? 0,
         page: filter.page ?? 0,
         maxSize: filter.maxSize ?? undefined,
+        size: filter.size ?? 0,
       }
     );
   }

@@ -22,6 +22,12 @@ import moment from 'moment';
 import { ToneByCategory } from '../../../../../core/models/tone-by-category.model';
 import { getToneByMedia } from '../../../../../core/store/analyze/analyze.actions';
 import { ToneByMedia } from '../../../../../core/models/tone-by-media.model';
+import {
+  NEGATIVE_TONE,
+  NEUTRAL_TONE,
+  POSITIVE_TONE,
+} from '../../../../../shared/utils/Constants';
+import { Router } from '@angular/router';
 
 const documentStyle = getComputedStyle(document.documentElement);
 @Component({
@@ -46,7 +52,7 @@ export class CoverageToneComponent {
   toneByMediaChartOpts: any;
   coveragePiePlugins = [htmlLegendPlugin];
 
-  constructor(private store: Store<AppState>) {
+  constructor(private store: Store<AppState>, private router: Router) {
     this.analyzeState = this.store.select(selectAnalyzeState);
     this.filterState = this.store.select(selectFilterState);
   }
@@ -77,6 +83,7 @@ export class CoverageToneComponent {
     const negativeValues: number[] = [];
     const neutralValues: number[] = [];
     const positiveValues: number[] = [];
+    const mediaIds: number[] = [];
     toneByMedia.forEach((media) => {
       media.tones.forEach((tone) => {
         const key = Object.keys(tone)[0];
@@ -85,6 +92,7 @@ export class CoverageToneComponent {
         if (key === 'neutral') neutralValues.push(toneVal);
         if (key === 'positive') positiveValues.push(toneVal);
       });
+      mediaIds.push(media.media_id);
     });
     this.toneByMediaChartData = {
       labels,
@@ -94,18 +102,24 @@ export class CoverageToneComponent {
           label: 'Negative',
           backgroundColor: documentStyle.getPropertyValue('--negative-color'),
           data: negativeValues,
+          tone: NEGATIVE_TONE,
+          mediaIds,
         },
         {
           type: 'bar',
           label: 'Neutral',
           backgroundColor: documentStyle.getPropertyValue('--neutral-color'),
           data: neutralValues,
+          tone: NEUTRAL_TONE,
+          mediaIds,
         },
         {
           type: 'bar',
           label: 'Positive',
           backgroundColor: documentStyle.getPropertyValue('--positive-color'),
           data: positiveValues,
+          tone: POSITIVE_TONE,
+          mediaIds,
         },
       ],
     };
@@ -174,18 +188,21 @@ export class CoverageToneComponent {
           label: 'Negative',
           backgroundColor: documentStyle.getPropertyValue('--negative-color'),
           data: negativeValues,
+          tone: NEGATIVE_TONE,
         },
         {
           type: 'bar',
           label: 'Neutral',
           backgroundColor: documentStyle.getPropertyValue('--neutral-color'),
           data: neutralValues,
+          tone: NEUTRAL_TONE,
         },
         {
           type: 'bar',
           label: 'Positive',
           backgroundColor: documentStyle.getPropertyValue('--positive-color'),
           data: positiveValues,
+          tone: POSITIVE_TONE,
         },
       ],
     };
@@ -231,9 +248,9 @@ export class CoverageToneComponent {
     };
   };
 
-  initCoveragePie = (tones: Tones) => {
-    const { datasets, labels } = this.getCoveragePieData(tones);
-    this.coveragePieData = { labels, datasets };
+  initCoveragePie = (tonesRes: Tones) => {
+    const { datasets, labels, tones } = this.getCoveragePieData(tonesRes);
+    this.coveragePieData = { labels, datasets, tones };
     this.coveragePieOpts = {
       plugins: {
         legend: {
@@ -261,18 +278,21 @@ export class CoverageToneComponent {
           type: 'bar',
           label: 'Negative',
           backgroundColor: documentStyle.getPropertyValue('--negative-color'),
+          tone: NEGATIVE_TONE,
           data: negativeValues,
         },
         {
           type: 'bar',
           label: 'Neutral',
           backgroundColor: documentStyle.getPropertyValue('--neutral-color'),
+          tone: NEUTRAL_TONE,
           data: neutralValues,
         },
         {
           type: 'bar',
           label: 'Positive',
           backgroundColor: documentStyle.getPropertyValue('--positive-color'),
+          tone: POSITIVE_TONE,
           data: positiveValues,
         },
       ],
@@ -333,6 +353,7 @@ export class CoverageToneComponent {
       },
     ];
     const labels: string[] = ['Positive', 'Negative', 'Neutral'];
+    const toneValues: number[] = [POSITIVE_TONE, NEGATIVE_TONE, NEUTRAL_TONE];
 
     const totalTones = tones.chart_bar.reduce((prev, chart) => {
       return prev + chart.doc_count;
@@ -345,7 +366,7 @@ export class CoverageToneComponent {
       );
     });
 
-    return { labels, datasets };
+    return { labels, datasets, tones: toneValues };
   };
 
   getCoverageChartData = (tones: Tones) => {
@@ -365,6 +386,45 @@ export class CoverageToneComponent {
       moment(bucket.key_as_string).format('MM-DD-YYYY')
     );
     return { labels, negativeValues, positiveValues, neutralValues };
+  };
+
+  onDataSelect = (value: any, type: string) => {
+    let tone = null;
+    let mediaId = null;
+    let mediaName = null;
+    let categoryName = null;
+    console.log('value', value);
+
+    if (type === 'chart') {
+      const currentData =
+        this.coverageChartData.datasets[value.element.datasetIndex];
+      tone = currentData.tone;
+    } else if (type === 'pie_category') {
+      tone = this.coveragePieData.tones[value.element.datasetIndex];
+    } else if (type === 'media') {
+      const currentData =
+        this.toneByMediaChartData.datasets[value.element.datasetIndex];
+      const cMediaName = this.toneByMediaChartData.labels[value.element.index];
+      const cMediaId = currentData.mediaIds[value.element.index];
+      tone = currentData.tone;
+      mediaName = cMediaName;
+      mediaId = cMediaId;
+    } else if (type === 'bar_category') {
+      const currentData =
+        this.toneByCategChartData.datasets[value.element.datasetIndex];
+      categoryName =
+        this.toneByCategChartData.labels[value.element.datasetIndex];
+      tone = currentData.tone;
+    }
+
+    this.router.navigate(['/dashboard/articles-by-tone'], {
+      queryParams: {
+        tone,
+        mediaId,
+        mediaName,
+        categoryName,
+      },
+    });
   };
 
   onFilterChange = (filterState: FilterState) => {

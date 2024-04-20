@@ -11,6 +11,7 @@
             type="line"
             [data]="visibilityChartLineData"
             [options]="visibilityChartLineOpts"
+            (onDataSelect)="onVisibilityPieSelect($event, 'line')"
           ></p-chart>
           <div *ngIf="visibilityChartActionButton.toggle.value">
             <p-chart
@@ -18,6 +19,7 @@
               [data]="visibilityChartBarData"
               [options]="visibilityChartBarOpts"
               [plugins]="visibilityChartBarPlugins"
+              (onDataSelect)="onVisibilityPieSelect($event, 'bar')"
             ></p-chart>
           </div>
         </chart-card>
@@ -37,6 +39,7 @@
                 [data]="visibilityPieData"
                 [options]="visibilityPieOpts"
                 [plugins]="visibilityPiePlugins"
+                (onDataSelect)="onVisibilityPieSelect($event, 'pie')"
               ></p-chart>
             </div>
           </div>
@@ -46,6 +49,7 @@
               [data]="visibilityChartBarData"
               [options]="visibilityChartBarOpts"
               [plugins]="visibilityChartBarPlugins"
+              (onDataSelect)="onVisibilityPieSelect($event, 'bar')"
             ></p-chart>
           </div>
         </chart-card>

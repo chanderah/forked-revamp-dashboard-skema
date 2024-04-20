@@ -24,6 +24,7 @@ import {
 } from '../../../../../shared/utils/ChartUtils';
 import { SpinnerComponent } from '../../../../../core/components/spinner/spinner.component';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-media-visibility',
@@ -51,7 +52,7 @@ export class MediaVisibilityComponent {
   filterState: Observable<FilterState>;
   isLoading: boolean = false;
 
-  constructor(private store: Store<AppState>) {
+  constructor(private store: Store<AppState>, private router: Router) {
     this.analyzeState = this.store.select(selectAnalyzeState);
     this.filterState = this.store.select(selectFilterState);
 
@@ -111,6 +112,27 @@ export class MediaVisibilityComponent {
         datasets: visibilityBarDatasets,
       };
     }
+  };
+
+  onVisibilityPieSelect = (value: any, type: string) => {
+    let mediaLabel = null;
+    if (type === 'pie') {
+      const currentData =
+        this.visibilityPieData.datasets[value.element.datasetIndex];
+      mediaLabel = currentData.mediaIds[value.element.index];
+    } else if (type === 'bar') {
+      const currentData =
+        this.visibilityChartBarData.datasets[value.element.datasetIndex];
+      mediaLabel = currentData.label;
+    } else if (type === 'line') {
+      const currentData =
+        this.visibilityChartLineData.datasets[value.element.datasetIndex];
+      mediaLabel = currentData.label;
+    }
+
+    this.router.navigate(['/dashboard/articles-by-media'], {
+      queryParams: { mediaName: mediaLabel },
+    });
   };
 
   initChartOpts = () => {
@@ -216,7 +238,7 @@ export class MediaVisibilityComponent {
 
   getChartData = (mediaVisibility: MediaVisibility[]) => {
     const lineDatasets: any[] = [];
-    const pieDatasets: any = [{ data: [], percentages: [] }];
+    const pieDatasets: any = [{ data: [], percentages: [], mediaIds: [] }];
     const pieLabels: string[] = [];
     const totalTones = mediaVisibility.reduce((prev, chart) => {
       return prev + chart.doc_count;
@@ -236,6 +258,7 @@ export class MediaVisibilityComponent {
         ((media.doc_count / totalTones) * 100).toFixed(0)
       );
       pieDatasets[0].data.push(media.doc_count);
+      pieDatasets[0].mediaIds.push(media.key);
       lineDatasets.push(tmpData);
     });
 

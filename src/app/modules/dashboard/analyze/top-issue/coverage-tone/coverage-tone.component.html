@@ -6,6 +6,7 @@
           type="bar"
           [data]="coverageChartData"
           [options]="coverageChartOpts"
+          (onDataSelect)="onDataSelect($event, 'chart')"
         ></p-chart>
       </chart-card>
     </div>
@@ -21,6 +22,7 @@
               [data]="coveragePieData"
               [options]="coveragePieOpts"
               [plugins]="coveragePiePlugins"
+              (onDataSelect)="onDataSelect($event, 'pie_category')"
             ></p-chart>
           </div>
         </div>
@@ -32,6 +34,7 @@
           type="bar"
           [data]="toneByMediaChartData"
           [options]="toneByMediaChartOpts"
+          (onDataSelect)="onDataSelect($event, 'media')"
         ></p-chart>
       </chart-card>
     </div>
@@ -41,6 +44,7 @@
           type="bar"
           [data]="toneByCategChartData"
           [options]="toneByCategChartOpts"
+          (onDataSelect)="onDataSelect($event, 'bar_category')"
         ></p-chart>
       </chart-card>
     </div>
