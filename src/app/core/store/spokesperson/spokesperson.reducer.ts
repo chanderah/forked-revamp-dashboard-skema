@@ -19,12 +19,14 @@ export interface SpokespersonState {
     error: string | null;
     isLoading: boolean;
   };
+  selectedInfluencer: string | null;
 }
 
 export const initialState: SpokespersonState = {
   influencerCount: { data: [], error: null, isLoading: false },
   influencer: { data: [], error: null, isLoading: false },
   latestNews: { data: [], error: null, isLoading: false },
+  selectedInfluencer: null,
 };
 
 export const spokespersonReducer = createReducer(
@@ -66,5 +68,10 @@ export const spokespersonReducer = createReducer(
   on(SpokespersonActions.getLatestNewsError, (state, { error }) => ({
     ...state,
     latestNews: { data: [], error, isLoading: false },
+  })),
+
+  on(SpokespersonActions.setInfluencer, (state, { influencer }) => ({
+    ...state,
+    selectedInfluencer: influencer,
   }))
 );

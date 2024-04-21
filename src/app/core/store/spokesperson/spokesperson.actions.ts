@@ -41,3 +41,8 @@ export const getLatestNewsError = createAction(
   '[Spokesperson] Get Latest News Failure',
   props<{ error: string }>()
 );
+
+export const setInfluencer = createAction(
+  '[Spokesperson] Set Influencer',
+  props<{ influencer: string }>()
+);

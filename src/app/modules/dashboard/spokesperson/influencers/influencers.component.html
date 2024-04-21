@@ -11,10 +11,17 @@
       scrollHeight="740px"
     >
       <ng-template pTemplate="item" let-item let-options="options">
-        <div class="grid grid-nogutter">
+        <div
+          class="grid grid-nogutter cursor-pointer"
+          [ngClass]="{
+            ' border-left-3 border-primary bg-gray-100':
+              item.influencer_name === selectedInfluencer?.influencer_name
+          }"
+          (click)="onClick(item)"
+        >
           <div class="col-12">
             <div class="flex align-items-center py-1 gap-3">
-              <div class="w-4rem">
+              <div class="w-4rem pl-1">
                 <img
                   [src]="item.image"
                   [alt]="item.influencer_name"
