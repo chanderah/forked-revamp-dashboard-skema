@@ -4,12 +4,13 @@ import { HttpClient } from '@angular/common/http';
 import { FilterRequestPayload } from '../models/request.model';
 import { MediaVisibilityResponse } from '../models/media-visibility.model';
 import { TopIssueResponse } from '../models/issue.model';
+import { BASE_URL } from '../api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AnalyzeService {
-  private baseUrl = 'https://api.skema.co.id/api';
+  private baseUrl = BASE_URL;
   constructor(private http: HttpClient) {}
 
   getMediaVisibility(

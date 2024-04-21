@@ -1,0 +1,108 @@
+<section>
+  <div class="flex flex-column justify-content-center align-items-center gap-2">
+    <div class="text-2xl font-semibold">Search for Article</div>
+    <div>
+      Lorem ipsum is placeholder text commonly used in the graphic, print, and
+      publishing
+    </div>
+  </div>
+  <div
+    class="flex gap-5 mt-6 w-full p-6 align-items-end border-round"
+    style="background-color: #f1f4fa"
+  >
+    <div class="flex flex-column gap-2 w-4">
+      <label for="media" class="text-lg font-semibold">Select Media</label>
+      <p-dropdown
+        [(ngModel)]="selectedMedia"
+        [options]="mediaOptions"
+        optionLabel="name"
+        optionValue="value"
+        placeholder="All Media"
+        styleClass="w-full"
+        inputId="media"
+        [disabled]="isLoadingMediaOptions"
+      ></p-dropdown>
+    </div>
+    <div class="flex flex-column gap-2 w-4">
+      <label for="content" class="text-lg font-semibold"
+        >Select by Content</label
+      >
+      <p-dropdown
+        [(ngModel)]="selectedContent"
+        [options]="contentOptions"
+        optionLabel="name"
+        optionValue="value"
+        placeholder="Select type"
+        styleClass="w-full"
+        inputId="content"
+      ></p-dropdown>
+    </div>
+    <div class="flex flex-column gap-2">
+      <label for="searchTerm" class="text-lg font-semibold">Search</label>
+      <input [(ngModel)]="searchTerm" pInputText id="searchTerm" />
+    </div>
+    <div class="flex flex-column gap-2">
+      <label for="media" class="text-lg font-semibold">Custom Periodic</label>
+      <div class="flex gap-2 align-items-center">
+        <span>
+          <p-calendar
+            [(ngModel)]="startDate"
+            class="datepicker"
+            dateFormat="yy-m-d"
+            [showClear]="false"
+          ></p-calendar>
+        </span>
+        to
+        <span>
+          <p-calendar
+            [(ngModel)]="endDate"
+            class="datepicker"
+            dateFormat="yy-m-d"
+            [showClear]="false"
+          ></p-calendar>
+        </span>
+      </div>
+    </div>
+    <p-button
+      label="Search"
+      styleClass="mb-1 text-mg"
+      (onClick)="onSearch()"
+      [disabled]="!searchTerm"
+    ></p-button>
+  </div>
+  <div class="mt-5">
+    <spinner [spinning]="isLoading">
+      <div *ngIf="!hasSearched">
+        <div class="flex justify-content-center align-items-center h-20rem">
+          <div
+            class="flex flex-column align-items-center justify-content-center gap-3"
+          >
+            <icon-search></icon-search>
+            <div>Please search for Article</div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="hasSearched && totalRecords === 0">
+        <div class="flex justify-content-center align-items-center h-20rem">
+          <div
+            class="flex flex-column align-items-center justify-content-center gap-3"
+          >
+            <icon-article-notfound></icon-article-notfound>
+            <div>Article not found</div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="hasSearched && totalRecords !== 0">
+        <spinner [spinning]="isLoading">
+          <article-list
+            [articles]="articles"
+            [onPageChange]="onPageChange"
+            [first]="first"
+            [rows]="rows"
+            [totalRecords]="totalRecords"
+          ></article-list>
+        </spinner>
+      </div>
+    </spinner>
+  </div>
+</section>

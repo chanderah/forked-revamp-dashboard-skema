@@ -6,12 +6,13 @@ import {
   InfluencerCountResponse,
   InfluencerResponse,
 } from '../models/influencer.model';
+import { INFLUENCER_BASE_URL } from '../api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InfluencerService {
-  private baseUrl = 'https://api-influencer.skema.co.id/api';
+  private baseUrl = INFLUENCER_BASE_URL;
   constructor(private http: HttpClient) {}
 
   getInfluencerCount(

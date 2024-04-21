@@ -5,12 +5,13 @@ import { HighlightsResponse } from '../models/highlights.model';
 import { FilterRequestPayload } from '../models/request.model';
 import { Article, ArticleResponse } from '../models/article.model';
 import { CategoryResponse } from '../models/category.model';
+import { BASE_URL } from '../api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ArticleService {
-  private baseUrl = 'https://api.skema.co.id/api';
+  private baseUrl = BASE_URL;
   constructor(private http: HttpClient) {}
 
   getHighlights(filter: FilterRequestPayload): Observable<HighlightsResponse> {
@@ -158,6 +159,21 @@ export class ArticleService {
   getSubCategoriesDistinct(): Observable<CategoryResponse> {
     return this.http.get<CategoryResponse>(
       `${this.baseUrl}/v1/user/subcategories-distinct/`
+    );
+  }
+
+  searchArticles(
+    filter: FilterRequestPayload
+  ): Observable<{ totalItems: number; results: Article[] }> {
+    return this.http.post<{ totalItems: number; results: Article[] }>(
+      `${this.baseUrl}/v1/search/`,
+      {
+        category_id: 'all',
+        page: filter.page ?? 0,
+        maxSize: filter.maxSize ?? 8,
+        size: filter.size ?? 0,
+        ...filter,
+      }
     );
   }
 }

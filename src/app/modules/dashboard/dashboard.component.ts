@@ -135,6 +135,7 @@ export class DashboardComponent implements OnInit {
       'map-articles': 'Map Articles',
       articles: 'Article',
       share: 'Share',
+      search: 'Search',
     };
 
     this.router.events.subscribe((route) => {

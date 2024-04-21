@@ -5,12 +5,13 @@ import { FilterRequestPayload } from '../models/request.model';
 import { TonesResponse } from '../models/tone.model';
 import { ToneByCategoryResponse } from '../models/tone-by-category.model';
 import { ToneByMediaResponse } from '../models/tone-by-media.model';
+import { BASE_URL } from '../api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ToneService {
-  private baseUrl = 'https://api.skema.co.id/api';
+  private baseUrl = BASE_URL
   constructor(private http: HttpClient) {}
 
   getTones(filter: FilterRequestPayload): Observable<TonesResponse> {

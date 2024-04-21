@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { AllCount } from '../models/all-count.model';
 import { FilterRequestPayload } from '../models/request.model';
 import { ArticleResponse } from '../models/article.model';
+import { GEO_BASE_URL } from '../api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MapService {
-  baseUrl = 'https://api-geo.skema.co.id/api';
+  private baseUrl = GEO_BASE_URL;
 
   constructor(private http: HttpClient) {}
 

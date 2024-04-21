@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { WartawanMedia } from '../models/media.model';
+import { BASE_URL } from '../api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ShareService {
-  private baseUrl = 'https://api.skema.co.id/api';
+  private baseUrl = BASE_URL
   constructor(private http: HttpClient) {}
 
   getMedias(): Observable<{ results: WartawanMedia[] }> {

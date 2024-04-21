@@ -14,6 +14,7 @@ import { ArticlesByToneComponent } from './articles-by-tone/articles-by-tone.com
 import { NewsindexComponent } from './newsindex/newsindex.component';
 import { TopArticlesComponent } from './top-articles/top-articles.component';
 import { ArticlesByMediaComponent } from './articles-by-media/articles-by-media.component';
+import { SearchComponent } from './search/search.component';
 
 interface ChildrenRoute extends Route {
   withFilter?: boolean;
@@ -115,6 +116,12 @@ export const DashboardRoutes: DashboardRoutesProps[] = [
         path: 'articles/:id',
         title: 'Article Detail',
         component: ArticleDetailComponent,
+        withFilter: false,
+      },
+      {
+        path: 'search',
+        title: 'Search',
+        component: SearchComponent,
         withFilter: false,
       },
     ],

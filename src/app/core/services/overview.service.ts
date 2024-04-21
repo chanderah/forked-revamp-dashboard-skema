@@ -7,13 +7,14 @@ import { WordCloudResponse } from '../models/wordcloud.model';
 import { ToneByMediaResponse } from '../models/tone-by-media.model';
 import { HighlightsResponse } from '../models/highlights.model';
 import { FilterRequestPayload } from '../models/request.model';
+import { BASE_URL, GEO_BASE_URL } from '../api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OverviewService {
-  private baseUrl = 'https://api.skema.co.id/api';
-  private geoBaseUrl = 'https://api-geo.skema.co.id/api';
+  private baseUrl = BASE_URL;
+  private geoBaseUrl = GEO_BASE_URL;
   constructor(private http: HttpClient) {}
 
   getMediaCount(

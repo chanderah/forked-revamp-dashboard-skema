@@ -9,13 +9,14 @@ import {
 } from '../models/media.model';
 import { SpokepersonAlias } from '../models/influencer.model';
 import { Column } from '../models/file-export.model';
+import { BASE_URL, INFLUENCER_BASE_URL } from '../api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PreferenceService {
-  private baseUrl = 'https://api.skema.co.id/api';
-  private influenceBaseUrl = 'https://api-influencer.skema.co.id/api';
+  private baseUrl = BASE_URL;
+  private influenceBaseUrl = INFLUENCER_BASE_URL;
   constructor(private http: HttpClient) {}
 
   getCategories(): Observable<CategoryResponse> {
@@ -183,6 +184,14 @@ export class PreferenceService {
     return this.http.post<{ data: MediaGroup[] }>(
       `${this.baseUrl}/v1/user/media-groups/`,
       { user_media_type_id }
+    );
+  }
+
+  getMediaCategories(): Observable<{
+    results: { key: string; value: string }[];
+  }> {
+    return this.http.get<{ results: { key: string; value: string }[] }>(
+      `${this.baseUrl}/v1/media-categories/`
     );
   }
 
