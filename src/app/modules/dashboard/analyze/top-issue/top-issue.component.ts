@@ -13,7 +13,6 @@ import { CommonModule } from '@angular/common';
 import { MediaVisibilityComponent } from './media-visibility/media-visibility.component';
 import { CoverageToneComponent } from './coverage-tone/coverage-tone.component';
 import { IconPencilComponent } from '../../../../core/components/icons/pencil/pencil.component';
-import { ButtonModule } from 'primeng/button';
 import { ButtonSecondaryComponent } from '../../../../core/components/button-secondary/button-secondary.component';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { Store } from '@ngrx/store';
@@ -30,6 +29,7 @@ import { getTopIssue } from '../../../../core/store/analyze/analyze.actions';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 import { TabViewModule } from 'primeng/tabview';
+import html2canvas from 'html2canvas';
 
 Chart.register(TreemapController, TreemapElement);
 
@@ -69,6 +69,8 @@ export class TopIssueComponent {
   isLoading: boolean = false;
   isDataExist: boolean = false;
 
+  downloading = false
+
   constructor(private store: Store<AppState>) {
     this.analyzeState = this.store.select(selectAnalyzeState);
     this.filterState = this.store.select(selectFilterState);
@@ -88,9 +90,7 @@ export class TopIssueComponent {
     this.downloadItems = [
       {
         label: 'Powerpoint',
-        command: () => {
-          this.downloadActive = false;
-        },
+        command: () => this.downloadPpt(),
       },
       {
         label: 'Excel',
@@ -171,5 +171,37 @@ export class TopIssueComponent {
   onFilterChange = (filterState: FilterState) => {
     const filter = { ...filterState } as FilterRequestPayload;
     this.store.dispatch(getTopIssue({ filter }));
+  };
+
+  getImage = async (element: HTMLElement) => {
+    const canvas = await html2canvas(element!);
+    const imageData = canvas.toDataURL('image/png');
+    console.log('imageData', imageData);
+    return imageData;
+  };
+
+  downloadPpt = async () => {
+    this.downloading = true
+    const charts = [
+      { key: 'visibilityChart', label: 'Visibility Chart' },
+      { key: 'visibilityPie', label: 'Visibility Pie' },
+      { key: 'coverageTone', label: 'Coverage Tone' },
+      { key: 'coveragePie', label: 'Coverage Pie' },
+      { key: 'toneByMedia', label: 'Tone by Media Selection' },
+      { key: 'toneByCategory', label: 'Tone by Category' },
+    ];
+    const images = [];
+
+    for (const chart of charts) {
+      const captureElement: HTMLElement = document.getElementById(
+        chart.key
+      ) as HTMLElement;
+
+      const image = await this.getImage(captureElement);
+      images.push({ label: chart.label, image });
+    }
+
+    this.downloading = false
+    console.log('images', images);
   };
 }

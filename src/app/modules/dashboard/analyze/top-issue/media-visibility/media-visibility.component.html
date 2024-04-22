@@ -3,6 +3,7 @@
     <div class="grid">
       <div class="col-12">
         <chart-card
+          id="visibilityChart"
           title="Visibility Chart"
           [actionButton]="visibilityChartActionButton"
         >
@@ -27,13 +28,17 @@
       <div class="col-12">
         <chart-card
           title="Visibility Pie"
+          id="visibilityPie"
           [actionButton]="visibilityPieActionButton"
         >
           <div
             *ngIf="!visibilityPieActionButton.toggle.value"
             class="flex align-items-center justify-content-center gap-6"
           >
-            <div id="legend-container" class="flex flex-column justify-content-center align-items-center gap-6">
+            <div
+              id="legend-container"
+              class="flex flex-column justify-content-center align-items-center gap-6"
+            >
               <p-chart
                 type="pie"
                 [data]="visibilityPieData"
