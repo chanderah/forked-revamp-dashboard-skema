@@ -91,19 +91,29 @@ export class NewsindexComponent {
 
   updateToneItems: MenuItem[] = [
     {
+      label: 'Download pdf',
+      command: () => this.downloadAsPdf(),
+    },
+    {
+      label: 'Download Doc',
+      command: () => this.downloadAsDocs(),
+    },
+    {
       label: 'Update Tone',
-    },
-    {
-      label: 'Posivite',
-      command: () => this.updateTone(POSITIVE_TONE),
-    },
-    {
-      label: 'Neutral',
-      command: () => this.updateTone(NEUTRAL_TONE),
-    },
-    {
-      label: 'Negative',
-      command: () => this.updateTone(NEGATIVE_TONE),
+      items: [
+        {
+          label: 'Posivite',
+          command: () => this.updateTone(POSITIVE_TONE),
+        },
+        {
+          label: 'Neutral',
+          command: () => this.updateTone(NEUTRAL_TONE),
+        },
+        {
+          label: 'Negative',
+          command: () => this.updateTone(NEGATIVE_TONE),
+        },
+      ],
     },
   ];
 
@@ -302,6 +312,36 @@ export class NewsindexComponent {
       summary: article?.summary ?? '',
     });
     this.modalUpdateOpen = true;
+  };
+
+  downloadAsPdf = () => {
+    this.loading = true;
+    this.articleService
+      .downloadPdfs(this.selectedArticles)
+      .subscribe(({ data }) => {
+        if (data.link) {
+          window.open(data.link, '_blank');
+        }
+      })
+      .add(() => {
+        this.loading = false;
+        this.selectedArticles = [];
+      });
+  };
+
+  downloadAsDocs = () => {
+    this.loading = true;
+    this.articleService
+      .downloadDocs(this.selectedArticles)
+      .subscribe(({ data }) => {
+        if (data) {
+          window.open(data, '_blank');
+        }
+      })
+      .add(() => {
+        this.loading = false;
+        this.selectedArticles = [];
+      });
   };
 
   openPreview(article: Article) {

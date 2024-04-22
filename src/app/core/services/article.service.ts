@@ -176,4 +176,25 @@ export class ArticleService {
       }
     );
   }
+
+  downloadDocs(articles: Article[]): Observable<{ data: string }> {
+    return this.http.post<{ data: string }>(
+      `${this.baseUrl}/v1/user/download/docxs`,
+      {
+        articles,
+        logo_name: 'company/bpjs-kesehatan.png',
+      }
+    );
+  }
+
+  downloadPdfs(articles: Article[]): Observable<{ data: { link: string } }> {
+    return this.http.post<{ data: { link: string } }>(
+      `${this.baseUrl}/v1/user/download/pdfs`,
+      {
+        articles,
+        doc_type: 1,
+        logo_name: 'company/bpjs-kesehatan.png',
+      }
+    );
+  }
 }
