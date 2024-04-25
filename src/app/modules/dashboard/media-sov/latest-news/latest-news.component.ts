@@ -26,7 +26,7 @@ import { RouterLink } from '@angular/router';
     CommonModule,
     ImgFallbackDirective,
     SpinnerComponent,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './latest-news.component.html',
   styleUrl: './latest-news.component.scss',
@@ -59,7 +59,7 @@ export class LatestNewsComponent {
 
   ngOnInit() {
     this.filterService.subscribe((filter) => {
-      this.fetchData(filter as FilterRequestPayload);
+      this.fetchData({ ...filter, media_id: this.prevMedia?.media_id });
     });
     this.mediaSOVState.subscribe((data) => {
       if (!_.isEqual(data.media?.media_id, this.prevMedia?.media_id)) {

@@ -18,6 +18,11 @@ import { selectSpokespersonState } from '../../../../core/store/spokesperson/spo
 import { Article } from '../../../../core/models/article.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 import { RouterLink } from '@angular/router';
+import { InfluencerService } from '../../../../core/services/influencer.service';
+import { ArticleService } from '../../../../core/services/article.service';
+import { MediaSOVService } from '../../../../core/services/media-sov.service';
+import { FilterService } from '../../../../core/services/filter.service';
+import _ from 'lodash';
 
 @Component({
   selector: 'app-latest-news',
@@ -28,35 +33,49 @@ import { RouterLink } from '@angular/router';
     CommonModule,
     ImgFallbackDirective,
     SpinnerComponent,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './latest-news.component.html',
   styleUrl: './latest-news.component.scss',
 })
 export class LatestNewsComponent {
   spokespersonState: Observable<SpokespersonState>;
-  filterState: Observable<FilterState>;
   articles: Article[] = [];
   isLoading: boolean = false;
+  prevMedia: number | null = null;
 
-  constructor(private store: Store<AppState>) {
+  constructor(
+    private store: Store<AppState>,
+    private mediaSOVService: MediaSOVService,
+    private filterService: FilterService
+  ) {
     this.spokespersonState = this.store.select(selectSpokespersonState);
-    this.filterState = this.store.select(selectFilterState);
   }
+
+  fetchData = (filter: FilterRequestPayload) => {
+    this.isLoading = true;
+    this.mediaSOVService
+      .getLatestArticles(filter)
+      .subscribe(({ data }) => {
+        this.articles = data.data;
+      })
+      .add(() => {
+        this.isLoading = false;
+      });
+  };
 
   ngOnInit() {
     this.store.dispatch(
       getLatestNews({ filter: initialState as FilterRequestPayload })
     );
-    this.spokespersonState.subscribe(({ latestNews }) => {
-      this.isLoading = latestNews.isLoading;
-      this.articles = latestNews.data.slice(0, 6);
+    this.spokespersonState.subscribe(({ selectedMedia }) => {
+      if (!_.isEqual(selectedMedia, this.prevMedia)) {
+        this.prevMedia = selectedMedia;
+        this.fetchData({
+          ...this.filterService.filter,
+          media_id: selectedMedia,
+        });
+      }
     });
-    this.filterState.subscribe(this.onFilterChange);
   }
-
-  onFilterChange = (filterState: FilterState) => {
-    const filter = { ...filterState } as FilterRequestPayload;
-    this.store.dispatch(getLatestNews({ filter }));
-  };
 }
