@@ -9,13 +9,17 @@
     <icon-info></icon-info>
   </div>
   <spinner [spinning]="isLoading">
+    <div class="flex align-items-center"style="height: 600px;" *ngIf="!selectedInfluencer || !selectedMedia">
+      <div class="text-center">Select Spokeperson and Media share to see Statements data</div>
+    </div>
     <p-scroller
       [items]="influencer"
       [itemSize]="influencer.length + 1"
-      scrollHeight="500px"
+      scrollHeight="600px"
+      *ngIf="selectedInfluencer && selectedMedia"
     >
       <ng-template pTemplate="item" let-item let-options="options">
-        <div class="grid grid-nogutter">
+        <div class="grid grid-nogutter cursor-pointer" [routerLink]="'/dashboard/articles/' + item.article_id">
           <div class="col-12">
             <div
               class="flex flex-column xl:flex-row xl:align-items-start py-1 gap-3"
@@ -23,7 +27,7 @@
               <div class="w-4rem">
                 <img
                   [src]="item.image_url"
-                  [alt]="item.influencer_name"
+                  [alt]="item.spokesperson_name"
                   class="h-4rem w-full border-round"
                   style="object-fit: cover"
                   imgFallback="https://placehold.co/600x400?text=No+Image+Available"
@@ -37,7 +41,7 @@
                     class="text-xs font-semibold white-space-nowrap text-overflow-ellipsis overflow-hidden"
                     style="width: 220px"
                   >
-                    {{ item.influencer_name }}
+                    {{ item.spokesperson_name }}
                   </div>
                   <p
                     class="white-space-nowrap overflow-hidden text-overflow-ellipsis p-0 mt-0 mb-0"
@@ -45,19 +49,19 @@
                   >
                     {{ item.quotes }}
                   </p>
-                  <div class="flex gap-3 align-items-center">
+                  <div class="flex gap-2 align-items-center">
                     <div class="flex align-items-center gap-2">
                       <i class="pi pi-globe text-500 text-xs"></i>
                       <span
                         class="text-xs text-500 p-0 mt-0 white-space-nowrap overflow-hidden text-overflow-ellipsis"
                         style="width: 80px"
-                        >{{ item.media }}</span
+                        >{{ item.media_name }}</span
                       >
                     </div>
                     <div class="flex align-items-center gap-2">
                       <i class="pi pi-clock text-500 text-xs"></i>
                       <span class="text-xs text-500 p-0 mt-0">{{
-                        item.date
+                        item.date_time
                       }}</span>
                     </div>
                   </div>

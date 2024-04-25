@@ -20,6 +20,7 @@ export interface SpokespersonState {
     isLoading: boolean;
   };
   selectedInfluencer: string | null;
+  selectedMedia: number | null;
 }
 
 export const initialState: SpokespersonState = {
@@ -27,6 +28,7 @@ export const initialState: SpokespersonState = {
   influencer: { data: [], error: null, isLoading: false },
   latestNews: { data: [], error: null, isLoading: false },
   selectedInfluencer: null,
+  selectedMedia: null,
 };
 
 export const spokespersonReducer = createReducer(
@@ -73,5 +75,10 @@ export const spokespersonReducer = createReducer(
   on(SpokespersonActions.setInfluencer, (state, { influencer }) => ({
     ...state,
     selectedInfluencer: influencer,
+  })),
+
+  on(SpokespersonActions.setMedia, (state, { media }) => ({
+    ...state,
+    selectedMedia: media,
   }))
 );

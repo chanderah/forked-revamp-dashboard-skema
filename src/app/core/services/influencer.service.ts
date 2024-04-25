@@ -4,7 +4,9 @@ import { HttpClient } from '@angular/common/http';
 import { FilterRequestPayload } from '../models/request.model';
 import {
   InfluencerCountResponse,
+  InfluencerQuotes,
   InfluencerResponse,
+  MediaShare,
 } from '../models/influencer.model';
 import { INFLUENCER_BASE_URL } from '../api';
 
@@ -15,29 +17,74 @@ export class InfluencerService {
   private baseUrl = INFLUENCER_BASE_URL;
   constructor(private http: HttpClient) {}
 
-  getInfluencerCount(
+  getSpokepersons(
     filter: FilterRequestPayload
   ): Observable<InfluencerCountResponse> {
-    return this.http.post<InfluencerCountResponse>(
-      `${this.baseUrl}/v1/influencer-count-by-aliases/`,
+    const params = {
+      start_date: filter.start_date + ' 00:00:00' ?? '',
+      end_date: filter.end_date + ' 23:59:59' ?? '',
+      max_size: filter.max_size ?? 20,
+      page: 1,
+      media_id: filter.media_id ?? 0,
+      category_set: filter.category_set ?? '',
+      user_media_type_id: filter.user_media_type_id ?? '',
+      category_id: filter.category_id ?? 'all',
+    };
+
+    return this.http.get<InfluencerCountResponse>(
+      `${this.baseUrl}/v1/spokesperson/quotes/count`,
       {
-        ...filter,
-        media_id: 0,
-        limit: 20,
-        max_size: 20,
-        page: 0,
+        params,
       }
     );
   }
 
-  getInfluencer(filter: FilterRequestPayload): Observable<InfluencerResponse> {
-    return this.http.post<InfluencerResponse>(
-      `${this.baseUrl}/v1/influencer/`,
+  getSpokepersonMediaShares(
+    filter: FilterRequestPayload & { spokeperson_name?: string }
+  ): Observable<{
+    data: { media_shares: MediaShare[]; total_doc_count: number };
+  }> {
+    const params = {
+      start_date: filter.start_date + ' 00:00:00' ?? '',
+      end_date: filter.end_date + ' 23:59:59' ?? '',
+      max_size: filter.max_size ?? 20,
+      page: 1,
+      media_id: filter.media_id ?? 0,
+      category_set: filter.category_set ?? '',
+      user_media_type_id: filter.user_media_type_id ?? '',
+      category_id: filter.category_id ?? 'all',
+      spokesperson_name: filter.spokeperson_name ?? '',
+    };
+
+    return this.http.get<{
+      data: { media_shares: MediaShare[]; total_doc_count: number };
+    }>(`${this.baseUrl}/v1/spokesperson/quotes/media-shares`, {
+      params,
+    });
+  }
+
+  getSpokepersonQuotes(
+    filter: FilterRequestPayload & {
+      media_id?: number;
+      spokeperson_name?: string;
+    }
+  ): Observable<{ data: InfluencerQuotes[] }> {
+    const params = {
+      start_date: filter.start_date + ' 00:00:00' ?? '',
+      end_date: filter.end_date + ' 23:59:59' ?? '',
+      max_size: filter.max_size ?? 20,
+      page: 1,
+      category_set: filter.category_set ?? '',
+      user_media_type_id: filter.user_media_type_id ?? '',
+      category_id: filter.category_id ?? 'all',
+      media_id: filter.media_id ?? 0,
+      spokesperson_name: filter.spokeperson_name ?? '',
+    };
+
+    return this.http.get<{ data: InfluencerQuotes[] }>(
+      `${this.baseUrl}/v1/spokesperson/quotes`,
       {
-        ...filter,
-        media_id: 0,
-        max_size: 20,
-        page: 0,
+        params,
       }
     );
   }

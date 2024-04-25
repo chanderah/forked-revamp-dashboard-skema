@@ -19,9 +19,9 @@ export interface Influencer {
 }
 
 export interface InfluencerCount {
-  count: Count;
-  image: string;
-  influencer_name: string;
+  doc_count: number;
+  image_url: string;
+  spokesperson_name: string;
 }
 
 export interface Count {
@@ -42,4 +42,20 @@ export interface SpokepersonAlias {
   aliases: string[];
   image: string;
   influencer: string;
+}
+
+export interface MediaShare {
+  doc_count: number;
+  media_id: number;
+  media_name: string;
+}
+
+export interface InfluencerQuotes {
+  article_id: number;
+  spokesperson_name: string;
+  quotes: string;
+  date_time: string;
+  media_name: string;
+  tone: number;
+  image_url: string;
 }

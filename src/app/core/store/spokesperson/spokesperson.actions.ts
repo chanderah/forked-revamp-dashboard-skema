@@ -46,3 +46,8 @@ export const setInfluencer = createAction(
   '[Spokesperson] Set Influencer',
   props<{ influencer: string }>()
 );
+
+export const setMedia = createAction(
+  '[Spokesperson] Set Media',
+  props<{ media: number }>()
+);

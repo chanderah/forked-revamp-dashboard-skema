@@ -2,7 +2,10 @@ import { Component } from '@angular/core';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { Influencer } from '../../../../core/models/influencer.model';
+import {
+  Influencer,
+  InfluencerQuotes,
+} from '../../../../core/models/influencer.model';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { AppState } from '../../../../core/store';
 import {
@@ -18,6 +21,9 @@ import { CommonModule } from '@angular/common';
 import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 import { IconDialogueComponent } from '../../../../core/components/icons/dialogue/dialogue.component';
+import { FilterService } from '../../../../core/services/filter.service';
+import { InfluencerService } from '../../../../core/services/influencer.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-statements',
@@ -29,34 +35,60 @@ import { IconDialogueComponent } from '../../../../core/components/icons/dialogu
     CommonModule,
     ImgFallbackDirective,
     SpinnerComponent,
+    RouterLink
   ],
   templateUrl: './statements.component.html',
   styleUrl: './statements.component.scss',
 })
 export class StatementsComponent {
   spokespersonState: Observable<SpokespersonState>;
-  filterState: Observable<FilterState>;
-  influencer: Influencer[] = [];
+  influencer: InfluencerQuotes[] = [];
   isLoading: boolean = false;
+  selectedMedia: number | null = null;
+  selectedInfluencer: string | null = null;
 
-  constructor(private store: Store<AppState>) {
+  constructor(
+    private store: Store<AppState>,
+    private filterService: FilterService,
+    private influencerService: InfluencerService
+  ) {
     this.spokespersonState = this.store.select(selectSpokespersonState);
-    this.filterState = this.store.select(selectFilterState);
   }
+
+  fetchData = (
+    filter: FilterRequestPayload & {
+      media_id?: number;
+      spokeperson_name?: string;
+    }
+  ) => {
+    if (!filter.media_id || !filter.spokeperson_name) return;
+    this.isLoading = true;
+    this.influencerService
+      .getSpokepersonQuotes({ ...filter, max_size: '20' })
+      .subscribe(({ data }) => {
+        this.influencer = data;
+      })
+      .add(() => {
+        this.isLoading = false;
+      });
+  };
 
   ngOnInit() {
-    this.store.dispatch(
-      getInfluencer({ filter: initialState as FilterRequestPayload })
-    );
-    this.spokespersonState.subscribe(({ influencer }) => {
-      this.isLoading = influencer.isLoading;
-      this.influencer = influencer.data;
+    this.filterService.subscribe((filter) => {
+      this.fetchData({
+        ...filter,
+        media_id: this.selectedMedia!,
+        spokeperson_name: this.selectedInfluencer!,
+      });
     });
-    this.filterState.subscribe(this.onFilterChange);
+    this.spokespersonState.subscribe((data) => {
+      this.selectedInfluencer = data.selectedInfluencer
+      this.selectedMedia = data.selectedMedia
+      this.fetchData({
+        ...this.filterService.filter,
+        media_id: data.selectedMedia!,
+        spokeperson_name: data.selectedInfluencer!,
+      });
+    });
   }
-
-  onFilterChange = (filterState: FilterState) => {
-    const filter = { ...filterState } as FilterRequestPayload;
-    this.store.dispatch(getInfluencer({ filter }));
-  };
 }

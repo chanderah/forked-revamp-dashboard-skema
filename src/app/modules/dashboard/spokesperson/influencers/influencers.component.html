@@ -15,7 +15,7 @@
           class="grid grid-nogutter cursor-pointer"
           [ngClass]="{
             ' border-left-3 border-primary bg-gray-100':
-              item.influencer_name === selectedInfluencer?.influencer_name
+              item.spokesperson_name === selectedInfluencer?.spokesperson_name
           }"
           (click)="onClick(item)"
         >
@@ -23,8 +23,8 @@
             <div class="flex align-items-center py-1 gap-3">
               <div class="w-4rem pl-1">
                 <img
-                  [src]="item.image"
-                  [alt]="item.influencer_name"
+                  [src]="item.image_url"
+                  [alt]="item.spokesperson_name"
                   class="h-4rem w-full border-round"
                   style="object-fit: cover"
                   imgFallback="https://placehold.co/600x400?text=No+Image+Available"
@@ -38,13 +38,13 @@
                     class="text-sm font-semibold white-space-nowrap text-overflow-ellipsis overflow-hidden"
                     style="width: 140px"
                   >
-                    {{ item.influencer_name }}
+                    {{ item.spokesperson_name }}
                   </div>
                   <p
                     class="white-space-nowrap overflow-hidden text-overflow-ellipsis p-0 mt-1"
                     style="width: 140px"
                   >
-                    {{ item.count.all }}
+                    {{ item.doc_count }}
                     <span class="text-color-secondary">Statement</span>
                   </p>
                 </div>

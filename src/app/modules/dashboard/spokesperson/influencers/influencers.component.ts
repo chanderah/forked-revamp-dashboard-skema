@@ -55,7 +55,7 @@ export class InfluencersComponent {
   fetchData = (filter: FilterRequestPayload) => {
     this.isLoading = true;
     this.influencerService
-      .getInfluencerCount(filter)
+      .getSpokepersons(filter)
       .subscribe(({ data }) => {
         this.influencerCount = data;
       })
@@ -73,7 +73,7 @@ export class InfluencersComponent {
   onClick(selectedInfluencer: InfluencerCount) {
     this.selectedInfluencer = selectedInfluencer;
     this.store.dispatch(
-      setInfluencer({ influencer: selectedInfluencer.influencer_name })
+      setInfluencer({ influencer: selectedInfluencer.spokesperson_name })
     );
   }
 }

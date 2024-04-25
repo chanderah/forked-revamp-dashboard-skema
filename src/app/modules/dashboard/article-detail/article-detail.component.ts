@@ -61,14 +61,12 @@ export class ArticleDetailComponent {
         this.isLoading = false;
         const articleData = articleResp.data;
         this.filterService.subscribe((filter) => {
-          if (filter.category_set !== 0) {
-            const hightligtedWords = highlightKeywords(
-              articleData.content,
-              articleData?.keywords ?? []
-            );
-            this.sanitizedContent =
-              this.sanitizer.bypassSecurityTrustHtml(hightligtedWords);
-          }
+          const hightligtedWords = highlightKeywords(
+            articleData.content,
+            articleData?.keywords ?? []
+          );
+          this.sanitizedContent =
+            this.sanitizer.bypassSecurityTrustHtml(hightligtedWords);
         });
         this.article = {
           ...articleData,
