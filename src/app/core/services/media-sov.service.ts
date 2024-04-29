@@ -15,8 +15,8 @@ export class MediaSOVService {
 
   getMedias(filter: FilterRequestPayload): Observable<{ data: MediaSOV[] }> {
     const params = {
-      start_date: filter.start_date ?? '',
-      end_date: filter.end_date ?? '',
+      start_date: filter.start_date ? filter.start_date + ' 00:00:00' : '',
+      end_date: filter.end_date ? filter.end_date + ' 23:59:59' : '',
       max_size: filter.max_size ?? 20,
       page: 1,
       media_id: filter.media_id ?? '',
@@ -25,43 +25,42 @@ export class MediaSOVService {
     };
 
     return this.http.get<{ data: MediaSOV[] }>(
-      `${this.baseUrl}/v1/media-sov/media-list`,
+      `${this.baseUrl}/v3/media-sov/media-list`,
       { params }
     );
   }
 
   getLatestArticles(
     filter: FilterRequestPayload
-  ): Observable<{ data: { data: Article[] } }> {
+  ): Observable<{ data: Article[] }> {
     const params = {
-      start_date: filter.start_date ?? '',
-      end_date: filter.end_date ?? '',
+      start_date: filter.start_date ? filter.start_date + ' 00:00:00' : '',
+      end_date: filter.end_date ? filter.end_date + ' 23:59:59' : '',
       max_size: filter.max_size ?? 6,
       page: 1,
       media_id: filter.media_id ?? '',
       category_set: filter.category_set ?? '',
       user_media_type_id: filter.user_media_type_id ?? '',
-      orderBy: filter.order_by ?? '',
       tone: filter.tone ?? '',
     };
 
-    return this.http.get<{ data: { data: Article[] } }>(
-      `${this.baseUrl}/v1/media-sov/latest-articles`,
+    return this.http.get<{ data: Article[] }>(
+      `${this.baseUrl}/v3/media-sov/latest-articles`,
       { params }
     );
   }
 
   getMediaTones(filter: FilterRequestPayload): Observable<{ data: MediaTone }> {
     const params = {
-      start_date: filter.start_date ?? '',
-      end_date: filter.end_date ?? '',
+      start_date: filter.start_date ? filter.start_date + ' 00:00:00' : '',
+      end_date: filter.end_date ? filter.end_date + ' 23:59:59' : '',
       media_id: filter.media_id ?? '',
       category_set: filter.category_set ?? '',
       user_media_type_id: filter.user_media_type_id ?? '',
     };
 
     return this.http.get<{ data: MediaTone }>(
-      `${this.baseUrl}/v1/media-sov/media-tones`,
+      `${this.baseUrl}/v3/media-sov/media-tones`,
       { params }
     );
   }

@@ -6,7 +6,7 @@
   </div>
   <spinner [spinning]="isLoading">
     <div
-      *ngIf="articles.length === 0"
+      *ngIf="articles?.length === 0"
       class="w-full h-10rem flex align-items-center justify-content-center bg-gray-100"
     >
       <span>No News Available.</span>

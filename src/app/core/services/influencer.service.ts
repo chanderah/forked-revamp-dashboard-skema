@@ -21,8 +21,8 @@ export class InfluencerService {
     filter: FilterRequestPayload
   ): Observable<InfluencerCountResponse> {
     const params = {
-      start_date: filter.start_date + ' 00:00:00' ?? '',
-      end_date: filter.end_date + ' 23:59:59' ?? '',
+      start_date: filter.start_date ? filter.start_date + ' 00:00:00' : '',
+      end_date: filter.end_date ? filter.end_date + ' 23:59:59' : '',
       max_size: filter.max_size ?? 20,
       page: 1,
       media_id: filter.media_id ?? 0,
@@ -45,8 +45,8 @@ export class InfluencerService {
     data: { media_shares: MediaShare[]; total_doc_count: number };
   }> {
     const params = {
-      start_date: filter.start_date + ' 00:00:00' ?? '',
-      end_date: filter.end_date + ' 23:59:59' ?? '',
+      start_date: filter.start_date ? filter.start_date + ' 00:00:00' : '',
+      end_date: filter.end_date ? filter.end_date + ' 23:59:59' : '',
       max_size: filter.max_size ?? 20,
       page: 1,
       media_id: filter.media_id ?? 0,
@@ -70,8 +70,8 @@ export class InfluencerService {
     }
   ): Observable<{ data: InfluencerQuotes[] }> {
     const params = {
-      start_date: filter.start_date + ' 00:00:00' ?? '',
-      end_date: filter.end_date + ' 23:59:59' ?? '',
+      start_date: filter.start_date ? filter.start_date + ' 00:00:00' : '',
+      end_date: filter.end_date ? filter.end_date + ' 23:59:59' : '',
       max_size: filter.max_size ?? 20,
       page: 1,
       category_set: filter.category_set ?? '',

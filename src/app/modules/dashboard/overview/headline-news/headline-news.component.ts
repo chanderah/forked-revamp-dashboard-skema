@@ -53,7 +53,7 @@ export class HeadlineNewsComponent {
     this.mediaSOVService
       .getLatestArticles(filter)
       .subscribe(({ data }) => {
-        this.articles = data.data.map((article) => {
+        this.articles = data.map((article) => {
           return { ...article, toneLabel: TONE_MAP[article?.tone ?? ''] };
         });
       })

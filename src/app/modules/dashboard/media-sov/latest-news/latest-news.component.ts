@@ -50,7 +50,7 @@ export class LatestNewsComponent {
     this.mediaSOVService
       .getLatestArticles(filter)
       .subscribe(({ data }) => {
-        this.articles = data.data;
+        this.articles = data ?? [];
       })
       .add(() => {
         this.isLoading = false;

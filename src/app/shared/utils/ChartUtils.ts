@@ -43,7 +43,7 @@ export const htmlLegendPlugin = {
       li.style.display = 'flex';
       li.style.flexDirection = flexDirection ?? 'column';
       li.style.marginLeft = '10px';
-      li.style.gap = '2px';
+      li.style.gap = '7px';
 
       li.onclick = () => {
         const { type } = chart.config;
@@ -86,11 +86,11 @@ export const htmlLegendPlugin = {
       labelContainer.style.alignItems = 'center';
       labelContainer.appendChild(boxSpan);
       labelContainer.appendChild(textContainer);
-
+      
       const valueContainer = document.createElement('div');
       valueContainer.style.display = 'flex';
       valueContainer.style.alignItems = 'baseline';
-      valueContainer.classList.add('gap-1');
+      // valueContainer.classList.add('gap-3');
 
       const value = document.createElement('div');
       value.style.textDecoration = item.hidden ? 'line-through' : '';

@@ -59,7 +59,7 @@ export class StatementsComponent {
     this.mediaSOVService
       .getLatestArticles({ ...filter, max_size: '20' })
       .subscribe(({ data }) => {
-        this.articles = data.data.map((article) => {
+        this.articles = data.map((article) => {
           return { ...article, toneLabel: TONE_MAP[article?.tone ?? ''] };
         });
       })
