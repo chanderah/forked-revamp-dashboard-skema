@@ -31,6 +31,7 @@ import { TieredMenuModule } from 'primeng/tieredmenu';
 import { IconGlobeComponent } from '../../core/components/icons/globe/globe.component';
 import { IconNewspaperComponent } from '../../core/components/icons/newspaper/newspaper.component';
 import { ToastModule } from 'primeng/toast';
+import { DashboardService } from '../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -70,10 +71,14 @@ export class DashboardComponent implements OnInit {
   breadCrumbsItems: MenuItem[] | undefined;
   profileItems: MenuItem[] | undefined;
   showFilter: boolean = true;
+  image: any;
 
   user: User | null = getUserFromLocalStorage();
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private dashboardService: DashboardService
+  ) {
     this.router.events.subscribe(() => {
       let currentRoute = this.router.routerState.root;
       while (currentRoute.firstChild) {
@@ -86,6 +91,10 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.dashboardService.getLogo().subscribe((data) => {
+      this.image = data;
+    });
+
     const currentLocation = window.location.href.split('/').pop();
     this.navActiveItem = currentLocation;
     this.navItems = [
