@@ -3,11 +3,16 @@
     <ng-template pTemplate="start">
       <img src="../../../assets/skema-logo.png" height="20" class="mr-2" />
       <p-divider
-        *ngIf="image"
+        *ngIf="user?.comp_icon"
         layout="vertical"
         class="logo-divider"
       ></p-divider>
-      <img *ngIf="image" [src]="image" height="50" class="mr-2" />
+      <img
+        *ngIf="user?.comp_icon"
+        [src]="'https://api.skema.co.id/media/' + user?.comp_icon"
+        height="30"
+        class="mr-2"
+      />
     </ng-template>
     <ng-template pTemplate="center">
       <p-tabMenu

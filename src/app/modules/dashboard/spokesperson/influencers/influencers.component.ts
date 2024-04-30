@@ -58,6 +58,9 @@ export class InfluencersComponent {
       .getSpokepersons(filter)
       .subscribe(({ data }) => {
         this.influencerCount = data;
+        this.store.dispatch(
+          setInfluencer({ influencer: data[0].spokesperson_name })
+        );
       })
       .add(() => {
         this.isLoading = false;

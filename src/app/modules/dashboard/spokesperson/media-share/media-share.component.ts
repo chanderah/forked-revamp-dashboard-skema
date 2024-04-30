@@ -12,11 +12,12 @@ import { selectSpokespersonState } from '../../../../core/store/spokesperson/spo
 import { MediaShare } from '../../../../core/models/influencer.model';
 import { CommonModule } from '@angular/common';
 import { setMedia } from '../../../../core/store/spokesperson/spokesperson.actions';
+import _ from 'lodash';
 
 @Component({
   selector: 'app-media-share',
   standalone: true,
-  imports: [ChartModule,CommonModule],
+  imports: [ChartModule, CommonModule],
   templateUrl: './media-share.component.html',
   styleUrl: './media-share.component.scss',
 })
@@ -44,6 +45,9 @@ export class MediaShareComponent {
     this.influencerService
       .getSpokepersonMediaShares(filter)
       .subscribe((data) => {
+        this.store.dispatch(
+          setMedia({ media: data.data.media_shares[0].media_id })
+        );
         this.initChartData(data.data.media_shares, data.data.total_doc_count);
       })
       .add(() => {
@@ -58,11 +62,14 @@ export class MediaShareComponent {
     this.spokepersonState
       .pipe(pluck('selectedInfluencer'))
       .subscribe((data) => {
-        this.selectedInfluencer = data;
-        this.fetchData({
-          ...this.filterService.filter,
-          spokeperson_name: data!!,
-        });
+        if (!_.isEqual(data, this.selectedInfluencer)) {
+          console.log('data', data);
+          this.selectedInfluencer = data;
+          this.fetchData({
+            ...this.filterService.filter,
+            spokeperson_name: data!!,
+          });
+        }
       });
 
     const documentStyle = getComputedStyle(document.documentElement);

@@ -106,12 +106,12 @@ export class FilterComponent {
     );
   };
 
-  getSubCategoriesOptions = () => {
-    this.preferenceService.getSubCategories().subscribe(
+  getSubCategoriesOptions = (category = this.selectedCategory) => {
+    this.preferenceService.getSubCategories(category).subscribe(
       (response) => {
         const subCategoryOptions = response.results.map((category) => ({
-          name: category.descriptionz,
-          value: category.category_set,
+          name: category.category_id,
+          value: category.category_id,
         }));
         this.subCategoryOptions = [
           ...this.subCategoryOptions,
@@ -143,6 +143,10 @@ export class FilterComponent {
         this.isLoadingMediaOptions = false;
       }
     );
+  };
+
+  onChangeCategory = (data: any) => {
+    this.getSubCategoriesOptions(data)
   };
 
   onSetFilter() {

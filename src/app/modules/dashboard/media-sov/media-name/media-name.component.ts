@@ -23,7 +23,7 @@ import { setMedia } from '../../../../core/store/media-sov/media-sov.actions';
     CommonModule,
     ImgFallbackDirective,
     SpinnerComponent,
-    CommonModule
+    CommonModule,
   ],
   templateUrl: './media-name.component.html',
   styleUrl: './media-name.component.scss',
@@ -45,6 +45,7 @@ export class MediaNameComponent {
       .getMedias(filter)
       .subscribe(({ data }) => {
         this.medias = data;
+        this.store.dispatch(setMedia({ media: data[0] }));
       })
       .add(() => {
         this.isLoading = false;

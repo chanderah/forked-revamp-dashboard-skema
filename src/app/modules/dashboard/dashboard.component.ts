@@ -71,14 +71,10 @@ export class DashboardComponent implements OnInit {
   breadCrumbsItems: MenuItem[] | undefined;
   profileItems: MenuItem[] | undefined;
   showFilter: boolean = true;
-  image: any;
 
   user: User | null = getUserFromLocalStorage();
 
-  constructor(
-    private router: Router,
-    private dashboardService: DashboardService
-  ) {
+  constructor(private router: Router) {
     this.router.events.subscribe(() => {
       let currentRoute = this.router.routerState.root;
       while (currentRoute.firstChild) {
@@ -91,10 +87,6 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dashboardService.getLogo().subscribe((data) => {
-      this.image = data;
-    });
-
     const currentLocation = window.location.href.split('/').pop();
     this.navActiveItem = currentLocation;
     this.navItems = [

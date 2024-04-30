@@ -2,7 +2,9 @@
   <spinner [spinning]="isLoading">
     <div class="flex flex-column gap-2">
       <div class="text-sm flex gap-3 align-items-center">
-        <div class="cursor-pointer" (click)="goBack()"><i class="pi pi-arrow-left"></i></div>
+        <div class="cursor-pointer" (click)="goBack()">
+          <i class="pi pi-arrow-left"></i>
+        </div>
         <div>
           <span class="font-semibold">Posted:</span> {{ article?.datee ?? "-" }}
         </div>
@@ -41,6 +43,9 @@
           <div>
             <span class="font-semibold">Ad Value:</span>
             {{ article?.advalue_fc ?? 0 | formatAmount }}
+          </div>
+          <div>
+            <a class="font-semibold" [href]="article?.file_pdf" target="_blank">Source</a>
           </div>
         </div>
       </div>

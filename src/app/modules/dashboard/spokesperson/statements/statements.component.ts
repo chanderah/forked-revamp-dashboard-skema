@@ -61,7 +61,6 @@ export class StatementsComponent {
       spokeperson_name?: string;
     }
   ) => {
-    if (!filter.media_id || !filter.spokeperson_name) return;
     this.isLoading = true;
     this.influencerService
       .getSpokepersonQuotes({ ...filter, max_size: '20' })

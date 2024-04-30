@@ -68,9 +68,9 @@ export class PreferenceService {
     );
   }
 
-  getSubCategories(): Observable<CategoryResponse> {
+  getSubCategories(categoryId: number): Observable<CategoryResponse> {
     return this.http.get<CategoryResponse>(
-      `${this.baseUrl}/v1/user/subcategories/0`
+      `${this.baseUrl}/v1/user/subcategories/${categoryId}`
     );
   }
 
