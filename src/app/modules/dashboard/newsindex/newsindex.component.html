@@ -111,9 +111,9 @@
                     [content]="getToneLabel(article.tone)"
                     [type]="article.tone ?? 0"
                   ></tag>
-                  <div>
+                  <a [href]="article.file_pdf" target="_blank" class="text-primary">
                     {{ article.media_name }}
-                  </div>
+                  </a>
                 </div>
               </td>
               <td>{{ article.title }}</td>
