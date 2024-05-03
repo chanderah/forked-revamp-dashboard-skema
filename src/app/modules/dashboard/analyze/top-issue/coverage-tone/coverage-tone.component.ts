@@ -393,7 +393,6 @@ export class CoverageToneComponent {
     let mediaId = null;
     let mediaName = null;
     let categoryName = null;
-    console.log('value', value);
 
     if (type === 'chart') {
       const currentData =

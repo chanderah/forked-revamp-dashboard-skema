@@ -30,6 +30,15 @@ import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 import { TabViewModule } from 'primeng/tabview';
 import html2canvas from 'html2canvas';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { FormsModule } from '@angular/forms';
+import { AnalyzeService } from '../../../../core/services/analyze.service';
+import { PreferenceService } from '../../../../core/services/preference.service';
+import { Column } from '../../../../core/models/file-export.model';
+import { Category } from '../../../../core/models/category.model';
+import { ListboxModule } from 'primeng/listbox';
+import { FilterService } from '../../../../core/services/filter.service';
 
 Chart.register(TreemapController, TreemapElement);
 
@@ -50,6 +59,10 @@ Chart.register(TreemapController, TreemapElement);
     TieredMenuModule,
     SpinnerComponent,
     TabViewModule,
+    DialogModule,
+    ButtonModule,
+    FormsModule,
+    ListboxModule,
   ],
   templateUrl: './top-issue.component.html',
   styleUrl: './top-issue.component.scss',
@@ -69,9 +82,26 @@ export class TopIssueComponent {
   isLoading: boolean = false;
   isDataExist: boolean = false;
 
-  downloading = false
+  downloadConfirmModalOpen = false;
+  isConvertingImages = false;
+  isDownloading = false;
+  images: any[] = [];
 
-  constructor(private store: Store<AppState>) {
+  downloadExcelConfirmModalOpen = false;
+  isDownloadingExcel = false;
+  selectedColumns: any[] = [];
+  selectedCategories: any[] = [];
+  columnsOptions: { label: string; value: string }[] = [];
+  categoriesOptions: { label: string; value: number }[] = [];
+  isSelectAllColumns = false;
+  isSelectAllCategories = false;
+
+  constructor(
+    private store: Store<AppState>,
+    private analyzeService: AnalyzeService,
+    private preferenceService: PreferenceService,
+    private filterService: FilterService
+  ) {
     this.analyzeState = this.store.select(selectAnalyzeState);
     this.filterState = this.store.select(selectFilterState);
     this.tabItems = [
@@ -90,13 +120,11 @@ export class TopIssueComponent {
     this.downloadItems = [
       {
         label: 'Powerpoint',
-        command: () => this.downloadPpt(),
+        command: () => this.getImagesFromCharts(),
       },
       {
         label: 'Excel',
-        command: () => {
-          this.downloadActive = false;
-        },
+        command: () => this.openDownloadExcelModal(),
       },
     ];
   }
@@ -174,14 +202,14 @@ export class TopIssueComponent {
   };
 
   getImage = async (element: HTMLElement) => {
+    await new Promise((resolve) => setTimeout(resolve, 400));
     const canvas = await html2canvas(element!);
     const imageData = canvas.toDataURL('image/png');
-    console.log('imageData', imageData);
     return imageData;
   };
 
-  downloadPpt = async () => {
-    this.downloading = true
+  getImagesFromCharts = async () => {
+    this.isConvertingImages = true;
     const charts = [
       { key: 'visibilityChart', label: 'Visibility Chart' },
       { key: 'visibilityPie', label: 'Visibility Pie' },
@@ -201,7 +229,92 @@ export class TopIssueComponent {
       images.push({ label: chart.label, image });
     }
 
-    this.downloading = false
-    console.log('images', images);
+    this.isConvertingImages = false;
+    this.images = images;
+    this.downloadConfirmModalOpen = true;
+  };
+
+  downloadPpt = () => {
+    this.isDownloading = true;
+    this.analyzeService
+      .downloadPPT(this.images.map((image) => image.image))
+      .subscribe(({ data }) => {
+        window.open(data, '_blank')?.focus();
+      })
+      .add(() => (this.isDownloading = false));
+  };
+
+  onChangeColumn(event: any) {
+    const { value } = event;
+    if (value)
+      this.isSelectAllColumns = value.length === this.columnsOptions.length;
+  }
+
+  onChangeCategory(event: any) {
+    const { value } = event;
+    if (value)
+      this.isSelectAllCategories =
+        value.length === this.categoriesOptions.length;
+  }
+
+  onSelectAllColumnsChange = (event: any) => {
+    this.selectedColumns = event.checked ? [...this.columnsOptions] : [];
+    this.isSelectAllColumns = event.checked;
+    event.updateModel(this.selectedColumns, event.originalEvent);
+  };
+
+  onSelectAllCategoryChange = (event: any) => {
+    this.selectedCategories = event.checked ? [...this.categoriesOptions] : [];
+    this.isSelectAllCategories = event.checked;
+    event.updateModel(this.selectedCategories, event.originalEvent);
+  };
+
+  openDownloadExcelModal = async () => {
+    const columns = await this.preferenceService.getColumns().toPromise();
+    const categories = await this.preferenceService.getCategories().toPromise();
+    if (columns?.data) {
+      this.columnsOptions = columns.data.map((col) => ({
+        label: col.name,
+        value: col.name,
+      }));
+    }
+    if (categories?.results) {
+      const categoriesOpts = categories.results.map((category) => ({
+        label: category.descriptionz,
+        value: category.category_set,
+      }));
+      this.categoriesOptions = categoriesOpts;
+      this.selectedCategories = categoriesOpts;
+      this.isSelectAllCategories = categoriesOpts.length ? true : false;
+    }
+
+    this.downloadExcelConfirmModalOpen = true;
+  };
+
+  downloadExcel = () => {
+    this.isDownloadingExcel = true;
+    const columns = this.selectedColumns.map(({ value }) => value);
+    const categories = this.selectedCategories
+      .map(({ value }) => value)
+      .join(',');
+
+    const { category_id, date_type, end_date, start_date, user_media_type_id } =
+      this.filterService.filter;
+    const payload = {
+      columns,
+      category_set: categories,
+      category_id,
+      date_type,
+      end_date,
+      start_date,
+      user_media_type_id,
+      url: false,
+    };
+    this.analyzeService
+      .downloadExcel(payload)
+      .subscribe(({ data }) => {
+        window.open(data, '_blank')?.focus();
+      })
+      .add(() => (this.isDownloadingExcel = false));
   };
 }

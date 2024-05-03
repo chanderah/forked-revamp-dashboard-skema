@@ -1,5 +1,5 @@
 import { ApplicationConfig } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withHashLocation } from '@angular/router';
 import { routes } from './app.routes';
 import { provideStore } from '@ngrx/store';
 import { reducers, effects } from './core/store';
@@ -10,7 +10,7 @@ import { authInterceptor } from './core/interceptors/jwt.interceptors';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes),
+    provideRouter(routes, withHashLocation()),
     provideStore(reducers),
     provideEffects(effects),
     provideAnimations(),

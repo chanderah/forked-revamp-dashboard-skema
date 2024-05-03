@@ -34,4 +34,18 @@ export class AnalyzeService {
       }
     );
   }
+
+  downloadPPT(images: string[]): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}/v1/user/downloads/pptx`,
+      images
+    );
+  }
+
+  downloadExcel(payload: any): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}/v1/dashboard/download-excel`,
+      payload
+    );
+  }
 }

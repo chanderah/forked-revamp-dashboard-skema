@@ -75,11 +75,6 @@
           <i class="pi pi-search font-bold"></i>
         </div>
         <div class="flex cursor-pointer" (click)="menu.toggle($event)">
-          <p-avatar
-            shape="circle"
-            image="../../../assets/default_avatar.png"
-            styleClass="mr-2"
-          ></p-avatar>
           <div class="flex flex-column">
             <div class="m-0 text-sm white-space-nowrap">
               {{ user?.usr_comp_name ?? "-" }}
@@ -97,7 +92,7 @@
     </ng-template>
   </p-toolbar>
 </header>
-<main class="container">
+<main class="container" style="background-color: var(--bg-color);">
   <p-breadcrumb class="breadcrumb" [model]="breadCrumbsItems">
     <ng-template pTemplate="item" let-item>
       <div [ngClass]="{ 'text-color-secondary': item.label === 'Dashboard' }">

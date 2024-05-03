@@ -3,15 +3,17 @@
     padding: 4px 30px 4px 30px;
     border: 0;
     border-radius: 0;
-    background-color: white;
+    background-color: var(--bg-color);
   }
 
   ::ng-deep .nav .p-tabmenu-nav {
     border: none;
+    background-color: var(--bg-color);
   }
 
   ::ng-deep .nav .p-menuitem-link {
-    border-color: white;
+    border-color: var(--bg-color);
+    background-color: var(--bg-color);
     padding: 12px 0;
     margin: 0 12px;
   }
@@ -40,9 +42,7 @@
     border: none;
     font-size: small;
     padding: 1rem 0;
+    background-color: var(--bg-color);
   }
 
-  ::ng-deep .breadcrumb .p-menuitem:first-child {
-    border: 1px solid red;
-  }
 }

@@ -21,16 +21,19 @@
     position: absolute;
     z-index: 9;
     left: 9px;
+    fill: white;
   }
 
   .icon-moon {
+    fill: white;
     position: absolute;
     z-index: 9;
     right: 9px;
   }
 
   .checkbox-label .ball {
-    background-color: #d4dceb;
+    background-color: var(--primary-color);
+    color: white;
     width: 24px;
     height: 24px;
     position: absolute;
