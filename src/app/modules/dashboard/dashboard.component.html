@@ -76,23 +76,23 @@
         </div>
         <div class="flex cursor-pointer" (click)="menu.toggle($event)">
           <div class="flex flex-column">
-            <div class="m-0 text-sm white-space-nowrap">
+            <div class="m-0 text-sm">
               {{ user?.usr_comp_name ?? "-" }}
             </div>
             <div class="m-0 text-gray-500 text-xs">Admin</div>
           </div>
+          <p-tieredMenu
+            #menu
+            [model]="profileItems"
+            [popup]="true"
+            styleClass="text-sm"
+          ></p-tieredMenu>
         </div>
-        <p-tieredMenu
-          #menu
-          [model]="profileItems"
-          [popup]="true"
-          styleClass="text-sm"
-        ></p-tieredMenu>
       </div>
     </ng-template>
   </p-toolbar>
 </header>
-<main class="container" style="background-color: var(--bg-color);">
+<main class="container" style="background-color: var(--bg-color)">
   <p-breadcrumb class="breadcrumb" [model]="breadCrumbsItems">
     <ng-template pTemplate="item" let-item>
       <div [ngClass]="{ 'text-color-secondary': item.label === 'Dashboard' }">
