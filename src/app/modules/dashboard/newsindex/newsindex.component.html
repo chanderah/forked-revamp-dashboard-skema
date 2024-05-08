@@ -111,12 +111,26 @@
                     [content]="getToneLabel(article.tone)"
                     [type]="article.tone ?? 0"
                   ></tag>
-                  <a [href]="article.file_pdf" target="_blank" class="text-primary">
+                  <a
+                    [href]="article.file_pdf"
+                    target="_blank"
+                    class="text-primary"
+                  >
                     {{ article.media_name }}
                   </a>
                 </div>
               </td>
-              <td>{{ article.title }}</td>
+              <td>
+                <div class="flex align-items-center gap-2">
+                  <i
+                    *ngIf="article.act_id"
+                    class="pi pi-info-circle text-primary"
+                    pTooltip="User Change This Article Tone"
+                    tooltipPosition="top"
+                  ></i>
+                  {{ article.title }}
+                </div>
+              </td>
               <td>
                 <div class="flex gap-2">
                   <p-button

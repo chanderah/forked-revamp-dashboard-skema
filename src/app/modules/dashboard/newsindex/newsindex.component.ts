@@ -35,6 +35,7 @@ import { ChipModule } from 'primeng/chip';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { Category } from '../../../core/models/category.model';
 import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
 import _ from 'lodash';
 
 @Component({
@@ -63,6 +64,7 @@ import _ from 'lodash';
     ChipModule,
     MultiSelectModule,
     ToastModule,
+    TooltipModule
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './newsindex.component.html',
