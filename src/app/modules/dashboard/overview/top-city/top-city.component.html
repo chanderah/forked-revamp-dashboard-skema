@@ -33,7 +33,7 @@
     </div>
   </spinner>
   <spinner [spinning]="isWordCloudLoading">
-    <div class="bg-gray-100">
+    <div style="background-color: var(--card-color);" class="border-1 border-200">
       <angular-d3-cloud
         [data]="wordCloud"
         [width]="520"

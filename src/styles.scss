@@ -122,24 +122,38 @@ button {
 
 body {
   --bg-color: var(--surface-0);
+  --card-color: var(--surface-0);
   background-color: var(--bg-color);
-  
-  // div,
+
+  div,
   // span,
-  // h1,
-  // h2,
-  // h3,
-  // h4,
-  // h5,
-  // h6,
-  // p {
-  //   color: var(--text-color);
-  // }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p {
+    color: var(--text-color);
+  }
 }
 
 body.dark {
   --bg-color: #060619;
+  --card-color: #19182b;
   background-color: var(--bg-color);
+
+  .border-200 {
+    border-color: #464255 !important;
+  }
+
+  .p-divider.p-divider-vertical:before {
+    border-left: 1px solid #464255 !important;
+  }
+
+  .p-divider.p-divider-horizontal:before {
+    border-top: 1px solid #464255 !important;
+  }
 
   div,
   span,
