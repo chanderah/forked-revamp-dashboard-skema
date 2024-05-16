@@ -25,13 +25,11 @@ import { IconNotesComponent } from '../../core/components/icons/notes/notes.comp
 import { IconPeopleComponent } from '../../core/components/icons/people/people.component';
 import { IconPreferenceComponent } from '../../core/components/icons/preference/preference.component';
 import { User } from '../../core/models/user.model';
-import { getUserFromLocalStorage, logout } from '../../shared/utils/AuthUtils';
+import { USER_KEY, getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
 import { ToggleDarkmodeComponent } from './components/toggle-darkmode/toggle-darkmode.component';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { IconGlobeComponent } from '../../core/components/icons/globe/globe.component';
 import { IconNewspaperComponent } from '../../core/components/icons/newspaper/newspaper.component';
-import { ToastModule } from 'primeng/toast';
-import { DashboardService } from '../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -169,7 +167,10 @@ export class DashboardComponent implements OnInit {
       {
         label: 'Logout',
         icon: 'pi pi-power-off',
-        command: () => logout(),
+        command: () => {
+          window.localStorage.removeItem(USER_KEY);
+          this.router.navigateByUrl('login')
+        },
       },
     ];
   }
