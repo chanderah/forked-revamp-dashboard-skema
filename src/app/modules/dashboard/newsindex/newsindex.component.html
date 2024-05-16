@@ -63,7 +63,7 @@
           <ng-template pTemplate="header">
             <tr class="text-sm font-medium">
               <th style="width: 8px"></th>
-              <th class="w-8rem pl-0">
+              <th class="w-12rem pl-0">
                 <div class="flex align-items-center gap-2">
                   <p-tableHeaderCheckbox class="offs"></p-tableHeaderCheckbox>
                   <span>Date</span>
@@ -102,7 +102,7 @@
               <td class="pl-0">
                 <div class="flex align-items-center gap-2">
                   <p-tableCheckbox [value]="article"></p-tableCheckbox>
-                  {{ article.datee.split(" ")[0] }}
+                  {{ article.datee }}
                 </div>
               </td>
               <td>
