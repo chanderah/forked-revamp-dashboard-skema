@@ -1,7 +1,7 @@
 <section>
   <div class="mb-4">
     <div class="text-xl font-semibold" appTitleCase>
-      Article of {{ mediaName }}
+      Article of {{ mediaName ?? topic }}
     </div>
   </div>
   <spinner [spinning]="isLoading">

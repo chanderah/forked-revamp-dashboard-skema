@@ -19,8 +19,10 @@ import { TONE_MAP } from '../../../shared/utils/Constants';
 export class ArticlesByMediaComponent {
   mediaId: number | null = null;
   mediaName: string | null = null;
+  topic: string | null = null;
   tone: number | null = null;
   toneLabel: string | null = null;
+  isTopic: boolean = false;
 
   articles: Article[] = [];
   page: number = 0;
@@ -36,9 +38,16 @@ export class ArticlesByMediaComponent {
     private filterService: FilterService
   ) {
     const mediaName = this.route.snapshot.queryParamMap.get('mediaName')!;
+    const topic = this.route.snapshot.queryParamMap.get('topic')!;
 
     if (mediaName) {
       this.mediaName = mediaName;
+      this.filterService.subscribe((filter) => {
+        this.fetchArticlesPlus(filter);
+      });
+    } else if (topic) {
+      this.topic = topic;
+      this.isTopic = true;
       this.filterService.subscribe((filter) => {
         this.fetchArticles(filter);
       });
@@ -47,7 +56,7 @@ export class ArticlesByMediaComponent {
     }
   }
 
-  fetchArticles = (filter: FilterRequestPayload) => {
+  fetchArticlesPlus = (filter: FilterRequestPayload) => {
     const req = {
       ...filter,
       category_id: this.mediaName,
@@ -62,14 +71,37 @@ export class ArticlesByMediaComponent {
       });
   };
 
+  fetchArticles = (filter: FilterRequestPayload) => {
+    const req = {
+      ...filter,
+      topic: this.topic ?? undefined,
+    };
+    this.isLoading = true;
+    this.articleService
+      .getUserEditing(req as FilterRequestPayload)
+      .subscribe((data) => {
+        this.isLoading = false;
+        this.articles = data.data;
+        this.totalRecords = data.recordsTotal;
+      });
+  };
+
   onPageChange = (event: any) => {
     this.page = event.page;
     this.rows = event.rows;
     this.first = event.first;
-    this.fetchArticles({
-      ...this.filterService.filter,
-      page: event.page,
-      size: event.rows,
-    });
+    if (this.isTopic) {
+      this.fetchArticles({
+        ...this.filterService.filter,
+        page: event.page,
+        size: event.rows,
+      });
+    } else {
+      this.fetchArticlesPlus({
+        ...this.filterService.filter,
+        page: event.page,
+        size: event.rows,
+      });
+    }
   };
 }

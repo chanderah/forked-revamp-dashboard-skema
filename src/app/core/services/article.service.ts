@@ -34,7 +34,7 @@ export class ArticleService {
         media_id: 0,
         maxSize: 20,
         page: filter.page ?? 0,
-        size: filter.size ?? 0,
+        size: filter.size ?? 10,
       }
     );
   }
@@ -43,7 +43,8 @@ export class ArticleService {
     return this.http.post<ArticleResponse>(`${this.baseUrl}/v1/user/editing/`, {
       ...filter,
       media_id: 0,
-      maxSize: 10,
+      maxSize:  filter.size ?? 16,
+      page: filter.page ?? 0,
     });
   }
 
@@ -55,7 +56,7 @@ export class ArticleService {
         media_id: filter.media_id ?? 0,
         page: filter.page ?? 0,
         maxSize: filter.maxSize ?? undefined,
-        size: filter.size ?? 0,
+        size: filter.size ?? 10,
       }
     );
   }

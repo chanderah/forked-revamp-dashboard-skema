@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { IconNewspaperComponent } from '../../../../core/components/icons/newspaper/newspaper.component';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import Chart from 'chart.js/auto';
-import { color } from 'chart.js/helpers';
+import { color, getRelativePosition } from 'chart.js/helpers';
 import { TreemapController, TreemapElement } from 'chartjs-chart-treemap';
 import { ChartModule } from 'primeng/chart';
 import { TabMenuModule } from 'primeng/tabmenu';
@@ -35,10 +35,9 @@ import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
 import { AnalyzeService } from '../../../../core/services/analyze.service';
 import { PreferenceService } from '../../../../core/services/preference.service';
-import { Column } from '../../../../core/models/file-export.model';
-import { Category } from '../../../../core/models/category.model';
 import { ListboxModule } from 'primeng/listbox';
 import { FilterService } from '../../../../core/services/filter.service';
+import { Router } from '@angular/router';
 
 Chart.register(TreemapController, TreemapElement);
 
@@ -96,11 +95,14 @@ export class TopIssueComponent {
   isSelectAllColumns = false;
   isSelectAllCategories = false;
 
+  chart: any;
+
   constructor(
     private store: Store<AppState>,
     private analyzeService: AnalyzeService,
     private preferenceService: PreferenceService,
-    private filterService: FilterService
+    private filterService: FilterService,
+    private router: Router
   ) {
     this.analyzeState = this.store.select(selectAnalyzeState);
     this.filterState = this.store.select(selectFilterState);
@@ -147,8 +149,15 @@ export class TopIssueComponent {
         plugins: {
           legend: { display: false },
         },
+        onClick: (_, elements) => {
+          const datasetIndex = elements[0].datasetIndex;
+          const index = elements[0].index;
+          const value = this.chart.data.datasets[datasetIndex].data[index];
+          this.router.navigateByUrl(`/dashboard/articles-by-media?topic=${value._data.key}`)
+        },
       },
     });
+    this.chart = chart;
 
     this.store.dispatch(
       getTopIssue({ filter: initialState as FilterRequestPayload })
@@ -156,17 +165,22 @@ export class TopIssueComponent {
 
     this.analyzeState.subscribe(({ topIssue }) => {
       this.isLoading = topIssue.isLoading;
-      this.isDataExist = Object.keys(topIssue.data?.top_issue ?? {}).length > 0;
-      const transformedData =
-        Object.entries(topIssue.data?.top_issue ?? {})
-          .sort((a, b) => b[1] - a[1])
-          .map(([key, value]) => ({ key, value })) ?? [];
+      this.isDataExist = Object.keys(topIssue.data ?? {}).length > 0;
+
+      const dataArray = Object.entries(topIssue.data ?? {}).map(
+        ([key, value]) => ({
+          key,
+          value,
+        })
+      );
+      dataArray.sort((a, b) => (b?.value ?? 0) - (a?.value ?? 0));
 
       chart.data = {
         datasets: [
           // @ts-ignore
           {
-            tree: transformedData,
+            // @ts-ignore
+            tree: dataArray,
             key: 'value',
             borderWidth: 1,
             spacing: 0.4,
