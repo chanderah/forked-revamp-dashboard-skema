@@ -6,9 +6,9 @@
   </div>
   <spinner [spinning]="isAllCountLoading">
     <div class="mb-4">
-      <p-table [value]="cities" [scrollable]="true" scrollHeight="300px">
+      <p-table [value]="cities" [scrollable]="true" scrollHeight="300px" [tableStyle]="{backgroundColor: 'red'}">
         <ng-template pTemplate="header">
-          <tr class="bg-white">
+          <tr style="background-color: red;">
             <th class="font-semibold"><p>City</p></th>
             <th class="text-right">
               <p>Total Article: {{ totalArticles }}</p>
@@ -33,7 +33,10 @@
     </div>
   </spinner>
   <spinner [spinning]="isWordCloudLoading">
-    <div style="background-color: var(--card-color);" class="border-1 border-200">
+    <div
+      style="background-color: var(--card-color)"
+      class="border-1 border-200"
+    >
       <angular-d3-cloud
         [data]="wordCloud"
         [width]="520"

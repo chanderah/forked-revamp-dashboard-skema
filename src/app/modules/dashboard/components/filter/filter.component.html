@@ -6,6 +6,8 @@
       optionLabel="name"
       optionValue="value"
       placeholder="Yesterday"
+      styleClass="border-200"
+      [style]="{backgroundColor: 'var(--bg-color)'}"
       [disabled]="isCustom"
     ></p-dropdown>
     <label>Periodic</label>
@@ -18,6 +20,7 @@
       optionLabel="name"
       optionValue="value"
       placeholder="All Category"
+      styleClass="border-200"
       [style]="{backgroundColor: 'var(--bg-color)'}"
       inputId="category"
       [disabled]="isLoadingCategoryOptions"
@@ -30,6 +33,8 @@
       [options]="subCategoryOptions"
       optionLabel="name"
       optionValue="value"
+      styleClass="border-200"
+      [style]="{backgroundColor: 'var(--bg-color)'}"
       placeholder="All Sub Category"
       inputId="subCategory"
       [disabled]="isLoadingSubCategoryOptions"
@@ -43,6 +48,8 @@
       optionLabel="name"
       optionValue="value"
       placeholder="All Media"
+      styleClass="border-200"
+      [style]="{backgroundColor: 'var(--bg-color)'}"
       inputId="media"
       [disabled]="isLoadingMediaOptions"
     ></p-dropdown>
@@ -62,6 +69,8 @@
               styleClass="w-full"
               dateFormat="yy-m-d"
               [showButtonBar]="true"
+              styleClass="border-200"
+              [inputStyle]="{backgroundColor: 'var(--bg-color)'}"
             ></p-calendar>
             <label for="startDate">Start Date</label>
           </span>
@@ -70,6 +79,8 @@
               [(ngModel)]="startTime"
               inputId="startDate"
               class="datepicker"
+              styleClass="border-200"
+              [inputStyle]="{backgroundColor: 'var(--bg-color)'}"
               styleClass="w-full"
               [showButtonBar]="true"
               [timeOnly]="true"
@@ -86,7 +97,8 @@
               [(ngModel)]="endDate"
               inputId="endDate"
               class="datepicker"
-              styleClass="w-full"
+              styleClass="w-full border-200"
+              [inputStyle]="{backgroundColor: 'var(--bg-color)'}"
               dateFormat="yy-m-d"
               [showButtonBar]="true"
             ></p-calendar>
@@ -97,7 +109,8 @@
               [(ngModel)]="endTime"
               inputId="endDate"
               class="datepicker"
-              styleClass="w-full"
+              styleClass="w-full border-200"
+              [inputStyle]="{backgroundColor: 'var(--bg-color)'}"
               [showButtonBar]="true"
               [timeOnly]="true"
             ></p-calendar>
