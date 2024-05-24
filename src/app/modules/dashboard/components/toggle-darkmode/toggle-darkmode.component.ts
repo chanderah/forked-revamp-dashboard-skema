@@ -19,7 +19,8 @@ export class ToggleDarkmodeComponent {
     if (data) {
       const checked = JSON.parse(data);
       this.checked = checked
-      if (checked) window.document.body.classList.toggle('dark');
+      if (checked) window.document.body.classList.add('dark');
+      else window.document.body.classList.remove('dark');
     }
   }
 

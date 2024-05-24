@@ -56,7 +56,8 @@ export class LoginComponent implements OnInit {
     const data = window.localStorage.getItem('useDarkMode');
     if (data) {
       const checked = JSON.parse(data);
-      if (checked) window.document.body.classList.toggle('dark');
+      if (checked) window.document.body.classList.add('dark');
+      else window.document.body.classList.remove('dark')
     }
   }
 
