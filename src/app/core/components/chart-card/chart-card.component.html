@@ -17,6 +17,7 @@
       </ng-container>
       <ng-container *ngIf="actionButton && actionButton.type === 'toggle'">
         <p-toggleButton
+          class="chart-card-custom"
           [(ngModel)]="actionButton.toggle.value"
           [onIcon]="'pi ' + actionButton.toggle.onIcon"
           [offIcon]="'pi ' + actionButton.toggle.offIcon"

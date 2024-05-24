@@ -53,6 +53,11 @@ export class LoginComponent implements OnInit {
     private messageService: MessageService
   ) {
     this.authState = this.store.select(selectAuthState);
+    const data = window.localStorage.getItem('useDarkMode');
+    if (data) {
+      const checked = JSON.parse(data);
+      if (checked) window.document.body.classList.toggle('dark');
+    }
   }
 
   ngOnInit(): void {

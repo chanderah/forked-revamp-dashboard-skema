@@ -6,6 +6,7 @@
     > div {
       width: 33%;
       border: 1px solid #d1d5db;
+      background-color: var(--bg-color);
       border-radius: 4px;
 
       > span {
@@ -14,8 +15,10 @@
       }
 
       &.p-button.p-highlight {
-        background-color: white;
-        color: var(--text-color);
+        background-color: var(--bg-color);
+        span {
+          color: var(--primary-color) !important;
+        }
         border: 2px solid var(--primary-color);
       }
     }

@@ -6,9 +6,13 @@
   </div>
   <spinner [spinning]="isAllCountLoading">
     <div class="mb-4">
-      <p-table [value]="cities" [scrollable]="true" scrollHeight="300px" [tableStyle]="{backgroundColor: 'red'}">
+      <p-table
+        [value]="cities"
+        [scrollable]="true"
+        scrollHeight="300px"
+      >
         <ng-template pTemplate="header">
-          <tr style="background-color: red;">
+          <tr>
             <th class="font-semibold"><p>City</p></th>
             <th class="text-right">
               <p>Total Article: {{ totalArticles }}</p>

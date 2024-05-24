@@ -112,6 +112,8 @@ export class MediaSentimentComponent {
       '--text-color-secondary'
     );
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+    const isDarkModeStorage = window.localStorage.getItem('useDarkMode');
+    const isDarkMode = isDarkModeStorage ? JSON.parse(isDarkModeStorage) : false
 
     this.options = {
       maintainAspectRatio: false,
@@ -124,7 +126,7 @@ export class MediaSentimentComponent {
             padding: 32,
             boxWidth: 14,
             boxHeight: 5,
-            color: textColor,
+            color: isDarkMode ? 'white' : textColor,
           },
         },
       },

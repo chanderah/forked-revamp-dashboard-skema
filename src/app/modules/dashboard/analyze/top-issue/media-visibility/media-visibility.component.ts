@@ -142,6 +142,8 @@ export class MediaVisibilityComponent {
       '--text-color-secondary'
     );
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+    const isDarkModeStorage = window.localStorage.getItem('useDarkMode');
+    const isDarkMode = isDarkModeStorage ? JSON.parse(isDarkModeStorage) : false
 
     this.visibilityPieOpts = {
       plugins: {
@@ -170,7 +172,7 @@ export class MediaVisibilityComponent {
             padding: 32,
             boxWidth: 14,
             boxHeight: 5,
-            color: documentStyle.getPropertyValue('--text-color'),
+            color: isDarkMode ? 'white' : documentStyle.getPropertyValue('--text-color'),
           },
         },
       },
@@ -207,7 +209,7 @@ export class MediaVisibilityComponent {
           align: 'center',
           labels: {
             font: { size: 10 },
-            color: textColor,
+            color: isDarkMode ? 'white' : documentStyle.getPropertyValue('--text-color'),
             boxWidth: 10,
             boxHeight: 5,
             filter: function (legendItem: any, chartData: any) {

@@ -13,7 +13,7 @@
       >
         <div class="flex gap-2 align-items-center">
           <i class="pi pi-plus text-primary"></i>
-          <div class="text-color text-sm">Add Media</div>
+          <div class="text-sm" style="color: #464255 !important;">Add Media</div>
         </div>
       </p-button>
     </div>
@@ -49,7 +49,7 @@
                 ></i>
               </div>
             </th>
-            <th style="width: 4rem" class="text-center">Action</th>
+            <th style="width: 4rem" class="text-center"><div>Action</div></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-media let-expanded="expanded">
@@ -72,7 +72,7 @@
                   [outlined]="true"
                   [text]="true"
                   size="small"
-                  styleClass="p-2 border-1 border-200"
+                  styleClass="p-2 border-1 border-200 bg-white"
                   (onClick)="openEditModal(media)"
                 >
                   <icon-pencil class="fill-text-color"></icon-pencil>
@@ -81,7 +81,7 @@
                   [outlined]="true"
                   [text]="true"
                   size="small"
-                  styleClass="p-2 border-1 border-200"
+                  styleClass="p-2 border-1 border-200 bg-white"
                   (onClick)="deleteMedia(media)"
                 >
                   <i class="pi pi-trash text-red-500"></i>

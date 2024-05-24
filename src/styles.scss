@@ -179,6 +179,13 @@ body.dark {
     }
   }
 
+  .p-tabmenu-nav,
+  .p-menuitem-link {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-width: 0 0 2px 0;
+  }
+
   div,
   span,
   h1,
@@ -189,5 +196,66 @@ body.dark {
   h6,
   p {
     color: var(--surface-0) !important;
+  }
+
+  p-card div div.p-card-header.ng-star-inserted div p-togglebutton div span {
+    color: var(--text-color) !important;
+  }
+
+  .p-datatable .p-datatable-thead > tr > th {
+    background: var(--bg-color);
+    padding: 0 20px 0 0;
+    border: 0;
+  }
+
+  .p-datatable .p-datatable-tbody > tr {
+    background: var(--bg-color);
+    td {
+      border-color: var(--border-color);
+    }
+  }
+
+  .p-paginator {
+    background-color: var(--bg-color);
+  }
+  .p-paginator .p-paginator-pages .p-paginator-page {
+    color: white;
+  }
+  .p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    color: blue;
+  }
+
+  .p-tabview-panels {
+    background-color: var(--bg-color);
+  }
+  
+  .p-tabview-nav, .p-tabview-nav-link {
+    background-color: var(--bg-color);
+  }
+
+  input.p-inputtext,
+  textarea.p-inputtext {
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    color: white;
+  }
+
+  .p-dialog-header,
+  .p-dialog-content,
+  .p-dialog-footer {
+    background-color: var(--bg-color);
+  }
+
+  .p-multiselect-panel
+    .p-multiselect-items
+    .p-multiselect-item:not(.p-highlight):not(.p-disabled).p-focus,
+  .p-multiselect-panel
+    .p-multiselect-items
+    .p-multiselect-item:not(.p-highlight):not(.p-disabled):hover {
+    color: #464255;
+    background-color: var(--card-color);
+  }
+  .p-multiselect-header {
+    background-color: var(--bg-color);
   }
 }

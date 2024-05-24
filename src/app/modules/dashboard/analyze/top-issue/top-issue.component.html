@@ -28,6 +28,7 @@
           [model]="tabItems"
           [activeItem]="activeTab"
           (activeItemChange)="onActiveItemChange($event)"
+          [style]="{ backgroundColor: 'var(--bg-color)' }"
         >
           <ng-template pTemplate="item" let-item>
             <div

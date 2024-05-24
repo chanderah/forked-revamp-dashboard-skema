@@ -46,7 +46,9 @@
           optionLabel="media_name"
           optionValue="media_name"
           placeholder="Select Media"
-          styleClass="w-full"
+          [style]="{ backgroundColor: 'var(--bg-color)' }"
+          styleClass="w-full border-1 border-200"
+          [panelStyle]="{ backgroundColor: 'var(--bg-color)' }"
           [virtualScroll]="true"
           [virtualScrollItemSize]="38"
         ></p-multiSelect>

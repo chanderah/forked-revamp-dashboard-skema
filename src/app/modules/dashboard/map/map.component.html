@@ -13,6 +13,8 @@
         [options]="filterOptions"
         [(ngModel)]="selectedFilter"
         (ngModelChange)="onFilterTypeChange($event)"
+        [style]="{backgroundColor: 'var(--bg-color)'}"
+        styleClass="border-200"
         dataKey="value"
         optionLabel="name"
         optionValue="value"
@@ -24,7 +26,8 @@
   <spinner [spinning]="this.isLoadingArticles">
     <div class="w-full h-30rem overflow-hidden">
       <div
-        class="h-full bg-white"
+        class="h-full"
+        style="background-color: var(--bg-color);"
         leaflet
         (leafletMapReady)="onMapReady($event)"
         [leafletOptions]="options"
