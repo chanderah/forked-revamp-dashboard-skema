@@ -13,7 +13,7 @@
       >
         <div class="flex gap-2 align-items-center">
           <i class="pi pi-plus text-primary"></i>
-          <div class="text-sm" style="color: #464255 !important;">Add Media</div>
+          <div class="text-sm" style="color: #464255 !important">Add Media</div>
         </div>
       </p-button>
     </div>
@@ -172,7 +172,7 @@
   <div class="mt-4">
     <p-treeSelect
       class="w-full md:w-20rem"
-      containerStyleClass="w-full"
+      containerStyleClass="w-full border-200"
       [(ngModel)]="selectedMediaGroups"
       [options]="mediaGroupsOptions"
       [filter]="true"
@@ -180,6 +180,7 @@
       [metaKeySelection]="false"
       [virtualScroll]="true"
       [virtualScrollItemSize]="46"
+      [containerStyle]="{ backgroundColor: 'var(--bg-color)' }"
       [virtualScrollOptions]="{ scrollHeight: '320px' }"
       placeholder="Select"
       appendTo="body"

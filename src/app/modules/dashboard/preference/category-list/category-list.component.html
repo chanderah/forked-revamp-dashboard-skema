@@ -166,7 +166,7 @@
   <div class="mt-4">
     <p-treeSelect
       class="w-full md:w-20rem"
-      containerStyleClass="w-full"
+      containerStyleClass="w-full border-200"
       [(ngModel)]="selectedSubCategories"
       [options]="subCategoryOptions"
       [filter]="true"
@@ -175,6 +175,7 @@
       [virtualScroll]="true"
       [virtualScrollItemSize]="46"
       [virtualScrollOptions]="{ scrollHeight: '320px' }"
+      [containerStyle]="{ backgroundColor: 'var(--bg-color)' }"
       placeholder="Select"
       appendTo="body"
       selectionMode="checkbox"

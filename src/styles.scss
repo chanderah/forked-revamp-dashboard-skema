@@ -228,8 +228,9 @@ body.dark {
   .p-tabview-panels {
     background-color: var(--bg-color);
   }
-  
-  .p-tabview-nav, .p-tabview-nav-link {
+
+  .p-tabview-nav,
+  .p-tabview-nav-link {
     background-color: var(--bg-color);
   }
 
@@ -243,7 +244,7 @@ body.dark {
   .p-dialog-header,
   .p-dialog-content,
   .p-dialog-footer {
-    background-color: var(--bg-color);
+    background-color: var(--card-color);
   }
 
   .p-multiselect-panel
@@ -257,5 +258,12 @@ body.dark {
   }
   .p-multiselect-header {
     background-color: var(--bg-color);
+  }
+
+  .p-tree, .p-treeselect-header {
+    background-color: var(--bg-color);
+    .p-treenode-content {
+      background-color: var(--bg-color);
+    }
   }
 }

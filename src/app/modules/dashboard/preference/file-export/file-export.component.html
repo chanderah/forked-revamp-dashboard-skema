@@ -12,7 +12,7 @@
       >
         <div class="flex gap-2 align-items-center">
           <i class="pi pi-plus text-primary"></i>
-          <div class="text-sm" style="color: #464255 !important;">Column</div>
+          <div class="text-sm" style="color: #464255 !important">Column</div>
         </div>
       </p-button>
     </div>
@@ -131,7 +131,8 @@
       <label for="autoCheck" class="font-semibold text-sm">Status</label>
       <p-dropdown
         formControlName="autoCheck"
-        styleClass="w-full"
+        styleClass="w-full border-200"
+        [style]="{ backgroundColor: 'var(--bg-color)' }"
         [options]="statusOptions"
         optionLabel="label"
         optionValue="value"
@@ -181,7 +182,8 @@
       <label for="autoCheck" class="font-semibold text-sm">Status</label>
       <p-dropdown
         formControlName="autoCheck"
-        styleClass="w-full"
+        styleClass="w-full border-200"
+        [style]="{ backgroundColor: 'var(--bg-color)' }"
         [options]="statusOptions"
         optionLabel="label"
         optionValue="value"
