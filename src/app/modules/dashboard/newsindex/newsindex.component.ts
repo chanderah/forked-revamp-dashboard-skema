@@ -37,6 +37,13 @@ import { Category } from '../../../core/models/category.model';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import _ from 'lodash';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
+const highlightKeywords = (content: string, keywords: string[]): string => {
+  const cleanedKeywords = keywords.map((keyword) => keyword.replace(/"/g, ''));
+  const regex = new RegExp(cleanedKeywords.join('|'), 'gi');
+  return content.replace(regex, (match) => `<mark>${match}</mark>`);
+};
 
 @Component({
   selector: 'app-newsindex',
@@ -64,7 +71,7 @@ import _ from 'lodash';
     ChipModule,
     MultiSelectModule,
     ToastModule,
-    TooltipModule
+    TooltipModule,
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './newsindex.component.html',
@@ -118,24 +125,26 @@ export class NewsindexComponent {
       ],
     },
   ];
+  sanitizedContent: SafeHtml | null = null;
 
   constructor(
     private articleService: ArticleService,
     private filterService: FilterService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit() {
     this.filterService.subscribe((filter) => {
-      this.fetchData({ ...filter, page: this.page, maxSize: 10 });
+      this.fetchData({ ...filter, page: this.page, size: this.rows });
     });
     this.searchText$
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value) => {
         this.page = 0;
         this.first = 0;
-        this.fetchData({ page: 0, term: value });
+        this.fetchData({ page: 0, term: value, size: this.rows });
       });
   }
 
@@ -158,7 +167,7 @@ export class NewsindexComponent {
     this.page = event.page;
     this.rows = event.rows;
     this.first = event.first;
-    this.fetchData({ page: event.page });
+    this.fetchData({ page: event.page, size: event.rows });
   };
 
   deleteArticle = (event: Event) => {
@@ -177,7 +186,11 @@ export class NewsindexComponent {
     }));
 
     this.articleService.deleteArticle(articleIds).subscribe(() => {
-      this.fetchData({ ...this.filterService.filter, page: 0 });
+      this.fetchData({
+        ...this.filterService.filter,
+        page: 0,
+        size: this.rows,
+      });
       this.selectedArticles = [];
     });
   };
@@ -197,7 +210,11 @@ export class NewsindexComponent {
       })
       .subscribe(() => {
         this.selectedArticles = [];
-        this.fetchData({ ...this.filterService.filter, page: 0 });
+        this.fetchData({
+          ...this.filterService.filter,
+          page: 0,
+          size: this.rows,
+        });
       });
   };
 
@@ -275,7 +292,11 @@ export class NewsindexComponent {
 
       this.isUpdating = true;
       await Promise.allSettled(promises);
-      this.fetchData({ ...this.filterService.filter, page: 0 });
+      this.fetchData({
+        ...this.filterService.filter,
+        page: 0,
+        size: this.rows,
+      });
       this.messageService.add({
         severity: 'success',
         summary: 'Updated',
@@ -303,6 +324,18 @@ export class NewsindexComponent {
     const categoriesResp = await this.articleService
       .getSubCategoriesDistinct()
       .toPromise();
+
+    const keywordRes = await this.articleService
+      .getKeywordsByArticleId(article.article_id)
+      .toPromise();
+
+    const hightligtedWords = highlightKeywords(
+      article.content,
+      keywordRes?.data ?? []
+    );
+    this.sanitizedContent =
+      this.sanitizer.bypassSecurityTrustHtml(hightligtedWords);
+
     this.availableCategories = categoriesResp?.results ?? [];
     this.editedArticle = article;
     this.editedCategories = article.categories.map((val) => ({

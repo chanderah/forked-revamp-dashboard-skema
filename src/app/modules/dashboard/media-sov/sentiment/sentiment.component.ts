@@ -92,7 +92,7 @@ export class SentimentComponent {
           getPercentage(negative),
           getPercentage(neutral),
         ],
-        backgroundColor: [positiveColor, negativeColor, neutralColor],
+        backgroundColor: [positiveColor, negativeColor, 'gray'],
       },
     ];
     const pieLabels: string[] = ['Positive', 'Negative', 'Neutral'];

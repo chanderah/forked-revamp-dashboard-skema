@@ -1,4 +1,9 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import { IconNewspaperComponent } from '../../../../core/components/icons/newspaper/newspaper.component';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import Chart from 'chart.js/auto';
@@ -102,7 +107,8 @@ export class TopIssueComponent {
     private analyzeService: AnalyzeService,
     private preferenceService: PreferenceService,
     private filterService: FilterService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.analyzeState = this.store.select(selectAnalyzeState);
     this.filterState = this.store.select(selectFilterState);
@@ -132,9 +138,10 @@ export class TopIssueComponent {
   }
 
   colorFromRaw(ctx: any, border: boolean) {
+    this.cdr.detectChanges();
     if (ctx.type !== 'data') return 'transparent';
     const value = ctx.raw.v;
-    let alpha = (1 + Math.log(value)) / 5;
+    let alpha = (1 + Math.log(value)) / 10;
     const bgColor = '#8ccced';
     if (border) alpha += 0.5;
     return color(bgColor).alpha(alpha).rgbString();
@@ -153,7 +160,9 @@ export class TopIssueComponent {
           const datasetIndex = elements[0].datasetIndex;
           const index = elements[0].index;
           const value = this.chart.data.datasets[datasetIndex].data[index];
-          this.router.navigateByUrl(`/dashboard/articles-by-media?topic=${value._data.key}`)
+          this.router.navigateByUrl(
+            `/dashboard/articles-by-media?topic=${value._data.key}`
+          );
         },
       },
     });
@@ -185,7 +194,10 @@ export class TopIssueComponent {
             borderWidth: 1,
             spacing: 0.4,
             borderColor: (ctx) => this.colorFromRaw(ctx, true),
-            backgroundColor: (ctx) => this.colorFromRaw(ctx, false),
+            backgroundColor: (ctx) => {
+              this.cdr.detectChanges();
+              return this.colorFromRaw(ctx, false);
+            },
             labels: {
               align: 'left',
               display: true,
@@ -201,8 +213,11 @@ export class TopIssueComponent {
           },
         ],
       };
+      
+      this.cdr.detectChanges();
       chart.update();
     });
+    this.cdr.detectChanges();
     this.filterState.subscribe(this.onFilterChange);
   }
 

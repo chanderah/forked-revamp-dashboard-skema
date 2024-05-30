@@ -260,10 +260,16 @@ body.dark {
     background-color: var(--bg-color);
   }
 
-  .p-tree, .p-treeselect-header {
+  .p-tree,
+  .p-treeselect-header {
     background-color: var(--bg-color);
     .p-treenode-content {
       background-color: var(--bg-color);
     }
+  }
+
+  .p-paginator-rpp-options {
+    background-color: var(--card-color);
+    border: 1px solid var(--border-color);
   }
 }

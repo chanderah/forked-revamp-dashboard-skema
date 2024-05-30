@@ -40,6 +40,8 @@ export class InfluencersComponent {
   filterState: Observable<FilterState>;
   influencerCount: InfluencerCount[] = [];
   isLoading: boolean = false;
+  page = 1;
+  total = 0;
 
   selectedInfluencer: InfluencerCount | null = null;
 
@@ -56,11 +58,16 @@ export class InfluencersComponent {
     this.isLoading = true;
     this.influencerService
       .getSpokepersons(filter)
-      .subscribe(({ data }) => {
-        this.influencerCount = data;
-        this.store.dispatch(
-          setInfluencer({ influencer: data[0].spokesperson_name })
-        );
+      // @ts-ignore
+      .subscribe(({ data, meta }) => {
+        this.influencerCount = [...this.influencerCount, ...data];
+        if (this.page === 1) {
+          this.store.dispatch(
+            setInfluencer({ influencer: data[0].spokesperson_name })
+          );
+        }
+        this.page = this.page + 1;
+        this.total = meta.total_data;
       })
       .add(() => {
         this.isLoading = false;
@@ -69,7 +76,7 @@ export class InfluencersComponent {
 
   ngOnInit() {
     this.filterService.subscribe((filter) => {
-      this.fetchData(filter);
+      this.fetchData({ ...filter, page: this.page });
     });
   }
 
@@ -78,5 +85,17 @@ export class InfluencersComponent {
     this.store.dispatch(
       setInfluencer({ influencer: selectedInfluencer.spokesperson_name })
     );
+  }
+
+  onLazyLoad(event: any) {
+    const h =
+      event.target.scrollHeight -
+      event.target.scrollTop -
+      event.target.clientHeight;
+
+    if (h === 0) {
+      if (this.influencerCount.length >= this.total) return;
+      this.fetchData({ ...this.filterService.filter, page: this.page });
+    }
   }
 }

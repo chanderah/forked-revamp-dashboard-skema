@@ -51,3 +51,7 @@ export const setMedia = createAction(
   '[Spokesperson] Set Media',
   props<{ media: number }>()
 );
+
+export const clearInfluencer = createAction('[Spokesperson] Clear Influencer');
+
+export const clearMedia = createAction('[Spokesperson] Clear Media');

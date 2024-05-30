@@ -80,5 +80,15 @@ export const spokespersonReducer = createReducer(
   on(SpokespersonActions.setMedia, (state, { media }) => ({
     ...state,
     selectedMedia: media,
+  })),
+
+  on(SpokespersonActions.clearInfluencer, (state) => ({
+    ...state,
+    selectedInfluencer: null,
+  })),
+
+  on(SpokespersonActions.clearMedia, (state) => ({
+    ...state,
+    selectedMedia: null,
   }))
 );

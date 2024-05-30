@@ -28,6 +28,7 @@ export class MediaShareComponent {
   isLoading = false;
   spokepersonState: Observable<SpokespersonState>;
   selectedInfluencer: string | null = null;
+  selectedMedia: number | null = null;
 
   constructor(
     private influencerService: InfluencerService,
@@ -45,10 +46,13 @@ export class MediaShareComponent {
     this.influencerService
       .getSpokepersonMediaShares(filter)
       .subscribe((data) => {
-        this.store.dispatch(
-          setMedia({ media: data.data.media_shares[0].media_id })
-        );
         this.initChartData(data.data.media_shares, data.data.total_doc_count);
+        if (this.selectedMedia !== data.data.media_shares[0].media_id) {
+          this.selectedMedia = data.data.media_shares[0].media_id
+          this.store.dispatch(
+            setMedia({ media: data.data.media_shares[0].media_id })
+          );
+        }
       })
       .add(() => {
         this.isLoading = false;
@@ -63,7 +67,6 @@ export class MediaShareComponent {
       .pipe(pluck('selectedInfluencer'))
       .subscribe((data) => {
         if (!_.isEqual(data, this.selectedInfluencer)) {
-          console.log('data', data);
           this.selectedInfluencer = data;
           this.fetchData({
             ...this.filterService.filter,

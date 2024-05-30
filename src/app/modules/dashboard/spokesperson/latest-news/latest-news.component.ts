@@ -42,21 +42,25 @@ export class LatestNewsComponent {
   spokespersonState: Observable<SpokespersonState>;
   articles: Article[] = [];
   isLoading: boolean = false;
-  prevMedia: number | null = null;
+  prevSpokeperson: string | null = null;
 
   constructor(
     private store: Store<AppState>,
-    private mediaSOVService: MediaSOVService,
-    private filterService: FilterService
+    private filterService: FilterService,
+    private influencerService: InfluencerService
   ) {
     this.spokespersonState = this.store.select(selectSpokespersonState);
   }
 
-  fetchData = (filter: FilterRequestPayload) => {
+  fetchData = (
+    filter: FilterRequestPayload & {
+      spokeperson_name?: string;
+    }
+  ) => {
     this.isLoading = true;
-    this.mediaSOVService
-      .getLatestArticles(filter)
-      .subscribe(({data}) => {
+    this.influencerService
+      .getSpokepersonArticles(filter)
+      .subscribe(({ data }) => {
         this.articles = data ?? [];
       })
       .add(() => {
@@ -65,15 +69,12 @@ export class LatestNewsComponent {
   };
 
   ngOnInit() {
-    this.store.dispatch(
-      getLatestNews({ filter: initialState as FilterRequestPayload })
-    );
-    this.spokespersonState.subscribe(({ selectedMedia }) => {
-      if (!_.isEqual(selectedMedia, this.prevMedia)) {
-        this.prevMedia = selectedMedia;
+    this.spokespersonState.subscribe(({ selectedInfluencer }) => {
+      if (!_.isEqual(selectedInfluencer, this.prevSpokeperson)) {
+        this.prevSpokeperson = selectedInfluencer;
         this.fetchData({
           ...this.filterService.filter,
-          media_id: selectedMedia,
+          spokeperson_name: selectedInfluencer ?? undefined,
         });
       }
     });

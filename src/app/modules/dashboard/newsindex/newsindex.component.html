@@ -181,6 +181,7 @@
           [totalRecords]="totalRecords"
           [templateLeft]="customLeftTemplate"
           [showFirstLastIcon]="false"
+          [rowsPerPageOptions]="[10, 20, 50, 100, 500]"
         >
           <ng-template #customLeftTemplate let-state>
             <span class="text-sm text-color"
@@ -268,7 +269,10 @@
     </div>
     <div class="flex flex-column gap-2">
       <label class="font-semibold" for="content">Content</label>
-      <div class="text-xs">{{ editedArticle?.content ?? "" }}</div>
+      <div
+        class="text-xs"
+        [innerHTML]="sanitizedContent ?? editedArticle?.content ?? ''"
+      ></div>
     </div>
   </form>
   <p-multiSelect

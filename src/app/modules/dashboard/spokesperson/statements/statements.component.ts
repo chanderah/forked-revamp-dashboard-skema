@@ -24,6 +24,7 @@ import { IconDialogueComponent } from '../../../../core/components/icons/dialogu
 import { FilterService } from '../../../../core/services/filter.service';
 import { InfluencerService } from '../../../../core/services/influencer.service';
 import { RouterLink } from '@angular/router';
+import _ from 'lodash';
 
 @Component({
   selector: 'app-statements',
@@ -35,7 +36,7 @@ import { RouterLink } from '@angular/router';
     CommonModule,
     ImgFallbackDirective,
     SpinnerComponent,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './statements.component.html',
   styleUrl: './statements.component.scss',
@@ -81,13 +82,23 @@ export class StatementsComponent {
       });
     });
     this.spokespersonState.subscribe((data) => {
-      this.selectedInfluencer = data.selectedInfluencer
-      this.selectedMedia = data.selectedMedia
-      this.fetchData({
-        ...this.filterService.filter,
-        media_id: data.selectedMedia!,
-        spokeperson_name: data.selectedInfluencer!,
-      });
+      if (
+        !_.isEqual(this.selectedMedia, data.selectedMedia) ||
+        !_.isEqual(this.selectedInfluencer, data.selectedInfluencer)
+      ) {
+        this.selectedInfluencer = data.selectedInfluencer;
+        this.selectedMedia = data.selectedMedia;
+        this.fetchData({
+          ...this.filterService.filter,
+          media_id: data.selectedMedia!,
+          spokeperson_name: data.selectedInfluencer!,
+        });
+      }
     });
+  }
+
+  ngOnDestroy() {
+    this.selectedInfluencer = null
+    this.selectedMedia = null
   }
 }

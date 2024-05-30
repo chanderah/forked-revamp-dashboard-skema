@@ -43,7 +43,7 @@ export class ArticleService {
     return this.http.post<ArticleResponse>(`${this.baseUrl}/v1/user/editing/`, {
       ...filter,
       media_id: 0,
-      maxSize:  filter.size ?? 16,
+      maxSize: filter.size ?? 16,
       page: filter.page ?? 0,
     });
   }
@@ -177,6 +177,24 @@ export class ArticleService {
       }
     );
   }
+
+  // getSpokepersonArticles(
+  //   filter: FilterRequestPayload
+  // ): Observable<{ totalItems: number; results: Article[] }> {
+  //   return this.http.get<{ totalItems: number; results: Article[] }>(
+  //     `${this.baseUrl}/v3/spokesperson/quotes/articles`,
+  //     {
+  //       // @ts-ignore
+  //       params: {
+  //         category_id: 'all',
+  //         page: filter.page ?? 0,
+  //         maxSize: filter.maxSize ?? 8,
+  //         size: filter.size ?? 0,
+  //         ...filter,
+  //       },
+  //     }
+  //   );
+  // }
 
   downloadDocs(articles: Article[]): Observable<{ data: string }> {
     return this.http.post<{ data: string }>(

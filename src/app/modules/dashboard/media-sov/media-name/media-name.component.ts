@@ -32,6 +32,8 @@ export class MediaNameComponent {
   medias: MediaSOV[] = [];
   isLoading: boolean = false;
   selectedMedia: MediaSOV | null = null;
+  total = 0;
+  page = 1;
 
   constructor(
     private mediaSOVService: MediaSOVService,
@@ -43,9 +45,14 @@ export class MediaNameComponent {
     this.isLoading = true;
     this.mediaSOVService
       .getMedias(filter)
-      .subscribe(({ data }) => {
-        this.medias = data;
-        this.store.dispatch(setMedia({ media: data[0] }));
+      // @ts-ignore
+      .subscribe(({ data, meta }) => {
+        this.medias = [...this.medias, ...data];
+        if (this.page === 1) {
+          this.store.dispatch(setMedia({ media: data[0] }));
+        }
+        this.page = this.page + 1;
+        this.total = meta.total_data;
       })
       .add(() => {
         this.isLoading = false;
@@ -61,5 +68,17 @@ export class MediaNameComponent {
   onClick(media: MediaSOV) {
     this.selectedMedia = media;
     this.store.dispatch(setMedia({ media }));
+  }
+
+  onLazyLoad(event: any) {
+    const h =
+      event.target.scrollHeight -
+      event.target.scrollTop -
+      event.target.clientHeight;
+
+    if (h === 0) {
+      if (this.medias.length >= this.total) return;
+      this.fetchData({ ...this.filterService.filter, page: this.page });
+    }
   }
 }
