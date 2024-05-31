@@ -97,7 +97,7 @@ export class ShareComponent {
       .subscribe(({ message }) => {
         this.messageService.add({
           severity: 'success',
-          detail: message ?? 'Success',
+          detail: 'Email Sent.',
         });
       })
       .add(() => {

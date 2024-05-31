@@ -123,6 +123,7 @@ button {
 body {
   --bg-color: var(--surface-0);
   --card-color: var(--surface-0);
+  --card-secondary-color: #f1f4fa;
   background-color: var(--bg-color);
   --border-color: #e5e7eb;
 
@@ -142,6 +143,7 @@ body {
 body.dark {
   --bg-color: #060619;
   --card-color: #19182b;
+  --card-secondary-color: #19182b;
   --border-color: #464255;
   background-color: var(--bg-color);
 

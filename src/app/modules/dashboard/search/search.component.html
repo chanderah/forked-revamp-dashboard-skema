@@ -8,7 +8,7 @@
   </div>
   <div
     class="flex gap-5 mt-6 w-full p-6 align-items-end border-round"
-    style="background-color: #f1f4fa"
+    style="background-color: var(--card-secondary-color)"
   >
     <div class="flex flex-column gap-2 w-4">
       <label for="media" class="text-lg font-semibold">Select Media</label>
@@ -18,7 +18,8 @@
         optionLabel="name"
         optionValue="value"
         placeholder="All Media"
-        styleClass="w-full"
+        [style]="{ backgroundColor: 'var(--bg-color)' }"
+        styleClass="w-full border-200"
         inputId="media"
         [disabled]="isLoadingMediaOptions"
       ></p-dropdown>
@@ -33,7 +34,8 @@
         optionLabel="name"
         optionValue="value"
         placeholder="Select type"
-        styleClass="w-full"
+        [style]="{ backgroundColor: 'var(--bg-color)' }"
+        styleClass="w-full border-200"
         inputId="content"
       ></p-dropdown>
     </div>

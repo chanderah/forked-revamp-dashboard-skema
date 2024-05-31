@@ -14,11 +14,14 @@ import { Article } from '../../../core/models/article.model';
 import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
 import { ArticleListComponent } from '../../../core/components/article-list/article-list.component';
 import { IconArticleNotFoundComponent } from '../../../core/components/icons/article-notfound/article-notfound.component';
+import _ from 'lodash';
 
 interface Option {
   name: string;
   value: string | number;
 }
+
+const SEARCH_LOCAL_KEY = 'search_terms'
 
 @Component({
   selector: 'app-search',
@@ -33,7 +36,7 @@ interface Option {
     CommonModule,
     SpinnerComponent,
     ArticleListComponent,
-    IconArticleNotFoundComponent
+    IconArticleNotFoundComponent,
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
@@ -52,7 +55,7 @@ export class SearchComponent {
   totalRecords: number = 0;
   isLoading: boolean = false;
 
-  hasSearched = false
+  hasSearched = false;
 
   contentOptions: Option[] = [
     { name: 'Title', value: 'title' },
@@ -64,9 +67,22 @@ export class SearchComponent {
 
   constructor(
     private preferenceService: PreferenceService,
-    private articleService: ArticleService
+    private articleService: ArticleService,
   ) {
     this.getMediaOptions();
+    const existingSearch = window.localStorage.getItem(SEARCH_LOCAL_KEY);
+    if (existingSearch) {
+      const searchTermsObj = JSON.parse(existingSearch)
+      this.selectedMedia = searchTermsObj['media_category'] ?? 'all';
+      this.searchTerm = searchTermsObj['term'] ?? '';
+      this.selectedContent = searchTermsObj['search_field'] ?? 'title';
+      if (searchTermsObj['start_date']) {
+        this.startDate = moment(searchTermsObj['start_date']).toDate()
+      }
+      if (searchTermsObj['end_date']) {
+        this.endDate = moment(searchTermsObj['end_date']).toDate()
+      }
+    }
   }
 
   getMediaOptions = () => {
@@ -97,19 +113,20 @@ export class SearchComponent {
       })
       .add(() => {
         this.isLoading = false;
-        this.hasSearched = true
+        this.hasSearched = true;
       });
   };
 
   onSearch() {
-    const payload = {
+    const payload: any = {
       start_date: moment(this.startDate).format('YYYY-MM-DD'),
       end_date: moment(this.endDate).format('YYYY-MM-DD'),
       search_field: this.selectedContent,
-      media_category: 'all',
+      media_category: this.selectedMedia,
       page: 0,
       term: this.searchTerm,
     };
+    window.localStorage.setItem(SEARCH_LOCAL_KEY, JSON.stringify(payload))
     this.fetchArticles(payload);
   }
 

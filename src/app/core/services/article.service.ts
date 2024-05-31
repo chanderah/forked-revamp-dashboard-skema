@@ -15,11 +15,21 @@ export class ArticleService {
   constructor(private http: HttpClient) {}
 
   getHighlights(filter: FilterRequestPayload): Observable<HighlightsResponse> {
-    return this.http.post<HighlightsResponse>(
-      `${this.baseUrl}/v1/dashboard/high-lights`,
+    const params = {
+      start_date: filter.start_date ? filter.start_date + ' 00:00:00' : '',
+      end_date: filter.end_date ? filter.end_date + ' 23:59:59' : '',
+      max_size: filter.max_size ?? 6,
+      page: 1,
+      media_id: filter.media_id ?? '',
+      category_set: filter.category_set ?? '',
+      user_media_type_id: filter.user_media_type_id ?? '',
+      tone: filter.tone ?? '',
+    };
+
+    return this.http.get<HighlightsResponse>(
+      `${this.baseUrl}/v3/media-sov/latest-articles`,
       {
-        ...filter,
-        media_id: 0,
+        params,
       }
     );
   }
@@ -177,24 +187,6 @@ export class ArticleService {
       }
     );
   }
-
-  // getSpokepersonArticles(
-  //   filter: FilterRequestPayload
-  // ): Observable<{ totalItems: number; results: Article[] }> {
-  //   return this.http.get<{ totalItems: number; results: Article[] }>(
-  //     `${this.baseUrl}/v3/spokesperson/quotes/articles`,
-  //     {
-  //       // @ts-ignore
-  //       params: {
-  //         category_id: 'all',
-  //         page: filter.page ?? 0,
-  //         maxSize: filter.maxSize ?? 8,
-  //         size: filter.size ?? 0,
-  //         ...filter,
-  //       },
-  //     }
-  //   );
-  // }
 
   downloadDocs(articles: Article[]): Observable<{ data: string }> {
     return this.http.post<{ data: string }>(
