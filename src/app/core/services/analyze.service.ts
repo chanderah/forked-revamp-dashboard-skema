@@ -30,6 +30,7 @@ export class AnalyzeService {
       `${this.baseUrl}/v1/dashboard/top-issue`,
       {
         ...filter,
+        limit: 10,
         media_id: 0,
       }
     );
