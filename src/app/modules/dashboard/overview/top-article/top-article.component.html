@@ -16,68 +16,65 @@
     </div>
   </div>
   <spinner [spinning]="isLoading">
-    <p-scroller
-      [items]="articles"
-      [itemSize]="articles.length + 2"
-      scrollHeight="524px"
+    <div
+      style="height: 524px"
+      class="overflow-auto"
     >
-      <ng-template pTemplate="item" let-item let-options="options">
-        <div class="grid grid-nogutter">
+      <div class="grid grid-nogutter" *ngFor="let item of articles; index as i">
+        <div
+          class="col-12 cursor-pointer"
+          [routerLink]="'/dashboard/articles/' + item.article_id"
+        >
           <div
-            class="col-12 cursor-pointer"
-            [routerLink]="'/dashboard/articles/' + item.article_id"
+            class="flex flex-column xl:flex-row xl:align-items-start py-3 gap-4"
+            [ngClass]="{ 'border-top-1 border-200': i !== 0 }"
           >
+            <div class="w-6rem">
+              <img
+                [src]="item.image_url"
+                [alt]="item.title"
+                class="h-6rem w-full"
+                style="object-fit: cover"
+                imgFallback="https://placehold.co/600x400?text=No+Image+Available"
+              />
+            </div>
             <div
-              class="flex flex-column xl:flex-row xl:align-items-start py-3 gap-4"
-              [ngClass]="{ 'border-top-1 border-200': !options.first }"
+              class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1"
             >
-              <div class="w-6rem">
-                <img
-                  [src]="item.image_url"
-                  [alt]="item.title"
-                  class="h-6rem w-full"
-                  style="object-fit: cover"
-                  imgFallback="https://placehold.co/600x400?text=No+Image+Available"
-                />
-              </div>
-              <div
-                class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1"
-              >
-                <div class="flex flex-column">
-                  <div
-                    class="text-sm font-semibold white-space-nowrap text-overflow-ellipsis overflow-hidden"
-                    style="width: 370px"
-                  >
-                    {{ item.title }}
+              <div class="flex flex-column">
+                <div
+                  class="text-sm font-semibold white-space-nowrap text-overflow-ellipsis overflow-hidden"
+                  style="width: 370px"
+                >
+                  {{ item.title }}
+                </div>
+                <p
+                  class="white-space-nowrap overflow-hidden text-overflow-ellipsis p-0 mt-2"
+                  style="width: 370px"
+                >
+                  {{ item.content }}
+                </p>
+                <div class="flex gap-3 align-items-center">
+                  <div class="flex align-items-center gap-2">
+                    <i class="pi pi-globe text-500 text-xs"></i>
+                    <span
+                      class="text-xs text-500 p-0 mt-0 white-space-nowrap overflow-hidden text-overflow-ellipsis"
+                      style="width: 80px"
+                      >{{ item.media_name }}</span
+                    >
                   </div>
-                  <p
-                    class="white-space-nowrap overflow-hidden text-overflow-ellipsis p-0 mt-2"
-                    style="width: 370px"
-                  >
-                    {{ item.content }}
-                  </p>
-                  <div class="flex gap-3 align-items-center">
-                    <div class="flex align-items-center gap-2">
-                      <i class="pi pi-globe text-500 text-xs"></i>
-                      <span
-                        class="text-xs text-500 p-0 mt-0 white-space-nowrap overflow-hidden text-overflow-ellipsis"
-                        style="width: 80px"
-                        >{{ item.media_name }}</span
-                      >
-                    </div>
-                    <div class="flex align-items-center gap-2">
-                      <i class="pi pi-clock text-500 text-xs"></i>
-                      <span class="text-xs text-500 p-0 mt-0">{{
-                        item.datee.split(" ")[0]
-                      }}</span>
-                    </div>
+                  <div class="flex align-items-center gap-2">
+                    <i class="pi pi-clock text-500 text-xs"></i>
+                    <span class="text-xs text-500 p-0 mt-0">{{
+                      item.datee.split(" ")[0]
+                    }}</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </ng-template>
-    </p-scroller>
+      </div>
+    </div>
   </spinner>
 </section>

@@ -92,7 +92,10 @@
     </ng-template>
   </p-toolbar>
 </header>
-<main class="container" style="background-color: var(--bg-color)">
+<main
+  class="container"
+  style="background-color: var(--bg-color); min-height: 86vh"
+>
   <p-breadcrumb class="breadcrumb" [model]="breadCrumbsItems">
     <ng-template pTemplate="item" let-item>
       <div [ngClass]="{ 'text-color-secondary': item.label === 'Dashboard' }">
@@ -119,7 +122,9 @@
     </section>
   </div>
 </main>
-<footer class="border-top-1 border-200">
+<footer
+  class="border-top-1 border-200"
+>
   <div class="flex justify-content-between py-2 px-4">
     <p>Copyright © 2024 Skema Data Indonesia. All Rights Reserved.</p>
     <div class="flex align-items-center gap-4">
