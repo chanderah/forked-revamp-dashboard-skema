@@ -140,10 +140,25 @@ export class TopIssueComponent {
   colorFromRaw(ctx: any, border: boolean) {
     this.cdr.detectChanges();
     if (ctx.type !== 'data') return 'transparent';
-    const value = ctx.raw.v;
-    let alpha = (1 + Math.log(value)) / 10;
+
+    const dataIndex = ctx.dataIndex;
+    const maxDataIndex =
+      ctx.chart.data.datasets[ctx.datasetIndex].data.length - 1;
+
+    const isDarkModeStorage = window.localStorage.getItem('useDarkMode');
+    let isDarkMode = false;
+    if (isDarkModeStorage) {
+      const checked = JSON.parse(isDarkModeStorage);
+      isDarkMode = checked;
+    }
+
+    const maxAlpha = isDarkMode ? 0.8 : 1.0;
+    const minAlpha = 0.25;
+    let alpha = maxAlpha - (maxAlpha - minAlpha) * (dataIndex / maxDataIndex);
+
     const bgColor = '#8ccced';
-    if (border) alpha += 0.5;
+    if (border) return 'white';
+
     return color(bgColor).alpha(alpha).rgbString();
   }
 
@@ -172,6 +187,13 @@ export class TopIssueComponent {
       getTopIssue({ filter: initialState as FilterRequestPayload })
     );
 
+    const isDarkModeStorage = window.localStorage.getItem('useDarkMode');
+    let isDarkMode = false;
+    if (isDarkModeStorage) {
+      const checked = JSON.parse(isDarkModeStorage);
+      isDarkMode = checked;
+    }
+
     this.analyzeState.subscribe(({ topIssue }) => {
       this.isLoading = topIssue.isLoading;
       this.isDataExist = Object.keys(topIssue.data ?? {}).length > 0;
@@ -191,7 +213,7 @@ export class TopIssueComponent {
             // @ts-ignore
             tree: dataArray,
             key: 'value',
-            borderWidth: 1,
+            borderWidth: 0.5,
             spacing: 0.4,
             borderColor: (ctx) => this.colorFromRaw(ctx, true),
             backgroundColor: (ctx) => {
@@ -201,7 +223,7 @@ export class TopIssueComponent {
             labels: {
               align: 'left',
               display: true,
-              color: '#464255',
+              color: isDarkMode ? 'white' : '#464255',
               padding: 5,
               font: { size: 16 },
               hoverFont: { size: 16, weight: 'bold' },
@@ -213,7 +235,7 @@ export class TopIssueComponent {
           },
         ],
       };
-      
+
       this.cdr.detectChanges();
       chart.update();
     });
