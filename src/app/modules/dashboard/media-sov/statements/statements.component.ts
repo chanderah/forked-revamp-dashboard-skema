@@ -1,18 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import { Store, select } from '@ngrx/store';
 import { Observable, map, pluck } from 'rxjs';
-import { Influencer } from '../../../../core/models/influencer.model';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { AppState } from '../../../../core/store';
 import {
   FilterState,
   initialState,
 } from '../../../../core/store/filter/filter.reducer';
-import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
-import { getInfluencer } from '../../../../core/store/spokesperson/spokesperson.actions';
-import { SpokespersonState } from '../../../../core/store/spokesperson/spokesperson.reducer';
-import { selectSpokespersonState } from '../../../../core/store/spokesperson/spokesperson.selectors';
 import { ScrollerModule } from 'primeng/scroller';
 import { CommonModule } from '@angular/common';
 import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
@@ -25,6 +20,8 @@ import { TONE_MAP } from '../../../../shared/utils/Constants';
 import { MediaSOVState } from '../../../../core/store/media-sov/media-sov.reducer';
 import { selectMediaSOVState } from '../../../../core/store/media-sov/media-sov.selectors';
 import { RouterLink } from '@angular/router';
+import { Media } from '../../../../core/models/media.model';
+import _ from 'lodash';
 
 @Component({
   selector: 'app-statements',
@@ -36,7 +33,7 @@ import { RouterLink } from '@angular/router';
     CommonModule,
     ImgFallbackDirective,
     SpinnerComponent,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './statements.component.html',
   styleUrl: './statements.component.scss',
@@ -45,6 +42,14 @@ export class StatementsComponent {
   articles: Article[] = [];
   isLoading: boolean = false;
   mediaSOVState: Observable<MediaSOVState>;
+  prevMedia: any | null = null;
+  prevTone: any | null = null;
+
+  selectedMedia: any = null;
+  selectedTone: any = null;
+
+  @Input() media: any;
+  @Input() tone: any;
 
   constructor(
     private mediaSOVService: MediaSOVService,
@@ -72,12 +77,61 @@ export class StatementsComponent {
     this.filterService.subscribe((filter) => {
       this.fetchData({ ...filter } as FilterRequestPayload);
     });
-    this.mediaSOVState.subscribe((data) => {
+    // this.mediaSOVState
+    //   .pipe(map(({ media, tone }) => ({ media, tone })))
+    //   .subscribe(({ media, tone }) => {
+    //     if (
+    //       (media && !_.isEqual(media, this.prevMedia)) ||
+    //       (tone && !_.isEqual(tone, this.prevTone))
+    //     ) {
+    //       this.prevMedia = media;
+    //       this.prevTone = tone;
+    //       this.fetchData({
+    //         ...this.filterService.filter,
+    //         media_id: media?.media_id,
+    //         tone,
+    //       });
+    //     }
+    //   });
+    // this.mediaSOVState.subscribe((data) => {
+    //   // this.fetchData({
+    //   //   ...this.filterService.filter,
+    //   //   tone: data.tone,
+    //   //   media_id: data.media?.media_id,
+    //   // } as FilterRequestPayload);
+    // });
+  }
+
+  ngOnChanges(changes: any) {
+    const { media, tone } = changes;
+    if (
+      media &&
+      !media.firstChange &&
+      !_.isEqual(media.currentValue, media.previousValue)
+    ) {
+      this.selectedMedia = media;
       this.fetchData({
         ...this.filterService.filter,
-        tone: data.tone,
-        media_id: data.media?.media_id,
-      } as FilterRequestPayload);
-    });
+        tone: this.selectedTone,
+        media_id: media.currentValue?.media_id,
+      });
+    }
+
+    if (
+      tone &&
+      !tone.firstChange &&
+      !_.isEqual(tone.currentValue, tone.previousValue)
+    ) {
+      this.selectedTone = tone;
+      this.fetchData({
+        ...this.filterService.filter,
+        tone: tone.currentValue,
+        media_id: this.selectedMedia?.media_id,
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    this.prevMedia = null;
   }
 }

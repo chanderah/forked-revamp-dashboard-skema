@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import { IconNewspaperComponent } from '../../../../core/components/icons/newspaper/newspaper.component';
 import { CommonModule } from '@angular/common';
 import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, pluck } from 'rxjs';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { AppState } from '../../../../core/store';
 import { Article } from '../../../../core/models/article.model';
@@ -37,6 +37,8 @@ export class LatestNewsComponent {
   mediaSOVState: Observable<MediaSOVState>;
   prevMedia: MediaSOV | null = null;
 
+  @Input() media: any = null;
+
   constructor(
     private mediaSOVService: MediaSOVService,
     private filterService: FilterService,
@@ -57,18 +59,31 @@ export class LatestNewsComponent {
       });
   };
 
+  ngOnChanges(changes: any) {
+    const { media } = changes;
+    if (
+      !media.firstChange &&
+      !_.isEqual(media.currentValue, media.previousValue)
+    ) {
+      this.fetchData({
+        ...this.filterService.filter,
+        media_id: media.currentValue?.media_id,
+      });
+    }
+  }
+
   ngOnInit() {
     this.filterService.subscribe((filter) => {
       this.fetchData({ ...filter, media_id: this.prevMedia?.media_id });
     });
-    this.mediaSOVState.subscribe((data) => {
-      if (!_.isEqual(data.media?.media_id, this.prevMedia?.media_id)) {
-        this.prevMedia = data.media;
-        this.fetchData({
-          ...this.filterService.filter,
-          media_id: data?.media?.media_id,
-        });
-      }
-    });
+    // this.mediaSOVState.pipe(pluck('media')).subscribe((data) => {
+    //   if (data && !_.isEqual(data?.media_id, this.prevMedia?.media_id)) {
+    //     this.prevMedia = data;
+    //     this.fetchData({
+    //       ...this.filterService.filter,
+    //       media_id: data?.media_id,
+    //     });
+    //   }
+    // });
   }
 }

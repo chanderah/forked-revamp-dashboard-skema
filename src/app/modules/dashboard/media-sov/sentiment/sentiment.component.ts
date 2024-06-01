@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { htmlLegendPlugin } from '../../../../shared/utils/ChartUtils';
 import { Store } from '@ngrx/store';
@@ -17,6 +17,7 @@ import {
   POSITIVE_TONE,
 } from '../../../../shared/utils/Constants';
 import { setTone } from '../../../../core/store/media-sov/media-sov.actions';
+import _ from 'lodash';
 
 @Component({
   selector: 'app-sentiment',
@@ -31,6 +32,9 @@ export class SentimentComponent {
   options: any;
   plugins = [htmlLegendPlugin];
   mediaSOVState: Observable<MediaSOVState>;
+
+  @Input() media: any
+  @Input() setTone: any
 
   constructor(
     private mediaSOVService: MediaSOVService,
@@ -57,12 +61,25 @@ export class SentimentComponent {
     this.filterService.subscribe((filter) => {
       this.fetchData(filter);
     });
-    this.mediaSOVState.pipe(pluck('media')).subscribe((data) => {
+    // this.mediaSOVState.pipe(pluck('media')).subscribe((data) => {
+    //   this.fetchData({
+    //     ...this.filterService.filter,
+    //     media_id: data?.media_id,
+    //   });
+    // });
+  }
+
+  ngOnChanges(changes: any) {
+    const { media } = changes;
+    if (
+      !media.firstChange &&
+      !_.isEqual(media.currentValue, media.previousValue)
+    ) {
       this.fetchData({
         ...this.filterService.filter,
-        media_id: data?.media_id,
+        media_id: media.currentValue?.media_id,
       });
-    });
+    }
   }
 
   getChartData = (mediaTone: MediaTone) => {
@@ -110,7 +127,8 @@ export class SentimentComponent {
   onDataSelect = (value: any) => {
     const currentData = this.chartData.datasets[value.element.datasetIndex];
     const tone = currentData.tones[value.element.index];
-    this.store.dispatch(setTone({ tone }));
+    // this.store.dispatch(setTone({ tone }));
+    this.setTone(tone)
   };
 
   initChartOpts = () => {

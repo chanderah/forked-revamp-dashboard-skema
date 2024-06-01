@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import { AppState } from '../../../../core/store';
 import { Store } from '@ngrx/store';
@@ -35,6 +35,8 @@ export class MediaNameComponent {
   total = 0;
   page = 1;
 
+  @Input() setMedia: any
+
   constructor(
     private mediaSOVService: MediaSOVService,
     private filterService: FilterService,
@@ -49,7 +51,8 @@ export class MediaNameComponent {
       .subscribe(({ data, meta }) => {
         this.medias = [...this.medias, ...data];
         if (this.page === 1) {
-          this.store.dispatch(setMedia({ media: data[0] }));
+          this.setMedia(data[0])
+          // this.store.dispatch(setMedia({ media: data[0] }));
         }
         this.page = this.page + 1;
         this.total = meta.total_data;
@@ -67,7 +70,7 @@ export class MediaNameComponent {
 
   onClick(media: MediaSOV) {
     this.selectedMedia = media;
-    this.store.dispatch(setMedia({ media }));
+    this.store.dispatch(this.setMedia(media));
   }
 
   onLazyLoad(event: any) {

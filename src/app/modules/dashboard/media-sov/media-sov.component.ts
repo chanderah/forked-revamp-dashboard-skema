@@ -16,4 +16,15 @@ import { SentimentComponent } from './sentiment/sentiment.component';
   templateUrl: './media-sov.component.html',
   styleUrl: './media-sov.component.scss',
 })
-export class MediaSOVComponent {}
+export class MediaSOVComponent {
+  media: any = null;
+  tone: any = null;
+
+  setTone = (tone: any) => {
+    this.tone = tone;
+  };
+
+  setMedia = (media: any) => {
+    this.media = media;
+  };
+}
