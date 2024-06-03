@@ -1,17 +1,17 @@
 <section class="grid">
   <div class="col-12 lg:col-3 xl:col-3">
-    <app-influencers></app-influencers>
+    <app-influencers [setInfluencer]="setInfluencer"></app-influencers>
   </div>
   <div class="col-12 lg:col-9 xl:col-9">
     <div class="mb-5">
-      <app-latest-news></app-latest-news>
+      <app-latest-news [influencer]="influencer"></app-latest-news>
     </div>
     <div class="grid">
       <div class="col-7">
-        <app-media-share></app-media-share>
+        <app-media-share [influencer]="influencer" [setMedia]="setMedia"></app-media-share>
       </div>
       <div class="col-5">
-        <app-statements></app-statements>
+        <app-statements [influencer]="influencer" [media]="media"></app-statements>
       </div>
     </div>
   </div>

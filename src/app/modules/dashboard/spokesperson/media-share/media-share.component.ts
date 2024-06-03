@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ChartModule } from 'primeng/chart';
 import { htmlLegendPlugin } from '../../../../shared/utils/ChartUtils';
 import { InfluencerService } from '../../../../core/services/influencer.service';
@@ -30,6 +30,9 @@ export class MediaShareComponent {
   selectedInfluencer: string | null = null;
   selectedMedia: number | null = null;
 
+  @Input() influencer: any;
+  @Input() setMedia: any;
+
   constructor(
     private influencerService: InfluencerService,
     private filterService: FilterService,
@@ -48,10 +51,8 @@ export class MediaShareComponent {
       .subscribe((data) => {
         this.initChartData(data.data.media_shares, data.data.total_doc_count);
         if (this.selectedMedia !== data.data.media_shares[0].media_id) {
-          this.selectedMedia = data.data.media_shares[0].media_id
-          this.store.dispatch(
-            setMedia({ media: data.data.media_shares[0].media_id })
-          );
+          this.selectedMedia = data.data.media_shares[0].media_id;
+          this.setMedia(data.data.media_shares[0].media_id);
         }
       })
       .add(() => {
@@ -63,18 +64,6 @@ export class MediaShareComponent {
     this.filterService.subscribe((filter) => {
       this.fetchData(filter);
     });
-    this.spokepersonState
-      .pipe(pluck('selectedInfluencer'))
-      .subscribe((data) => {
-        if (!_.isEqual(data, this.selectedInfluencer)) {
-          this.selectedInfluencer = data;
-          this.fetchData({
-            ...this.filterService.filter,
-            spokeperson_name: data!!,
-          });
-        }
-      });
-
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
     this.options = {
@@ -95,6 +84,20 @@ export class MediaShareComponent {
         },
       },
     };
+  }
+
+  ngOnChanges(changes: any) {
+    const { influencer } = changes;
+    if (
+      !influencer.firstChange &&
+      !_.isEqual(influencer.currentValue, influencer.previousValue)
+    ) {
+      this.selectedInfluencer = influencer?.currentValue;
+      this.fetchData({
+        ...this.filterService.filter,
+        spokeperson_name: influencer?.currentValue ?? undefined,
+      });
+    }
   }
 
   initChartData = (mediaShares: MediaShare[], totalDocCount: number) => {
@@ -124,6 +127,6 @@ export class MediaShareComponent {
   onDataSelect = (value: any) => {
     const currentData = this.data.datasets[value.element.datasetIndex];
     const mediaId = currentData.mediaIds[value.element.index];
-    this.store.dispatch(setMedia({ media: mediaId }));
+    this.setMedia(mediaId);
   };
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import { IconNewspaperComponent } from '../../../../core/components/icons/newspaper/newspaper.component';
 import { CommonModule } from '@angular/common';
@@ -44,6 +44,8 @@ export class LatestNewsComponent {
   isLoading: boolean = false;
   prevSpokeperson: string | null = null;
 
+  @Input() influencer: any;
+
   constructor(
     private store: Store<AppState>,
     private filterService: FilterService,
@@ -68,15 +70,16 @@ export class LatestNewsComponent {
       });
   };
 
-  ngOnInit() {
-    this.spokespersonState.subscribe(({ selectedInfluencer }) => {
-      if (!_.isEqual(selectedInfluencer, this.prevSpokeperson)) {
-        this.prevSpokeperson = selectedInfluencer;
-        this.fetchData({
-          ...this.filterService.filter,
-          spokeperson_name: selectedInfluencer ?? undefined,
-        });
-      }
-    });
+  ngOnChanges(changes: any) {
+    const { influencer } = changes;
+    if (
+      !influencer.firstChange &&
+      !_.isEqual(influencer.currentValue, influencer.previousValue)
+    ) {
+      this.fetchData({
+        ...this.filterService.filter,
+        spokeperson_name: influencer?.currentValue ?? undefined,
+      });
+    }
   }
 }

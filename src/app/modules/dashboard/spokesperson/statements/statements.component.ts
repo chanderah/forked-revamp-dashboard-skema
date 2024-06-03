@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -43,10 +43,14 @@ import _ from 'lodash';
 })
 export class StatementsComponent {
   spokespersonState: Observable<SpokespersonState>;
-  influencer: InfluencerQuotes[] = [];
+  influencers: InfluencerQuotes[] = [];
   isLoading: boolean = false;
   selectedMedia: number | null = null;
   selectedInfluencer: string | null = null;
+  total: number = 0
+
+  @Input() influencer: any;
+  @Input() media: any;
 
   constructor(
     private store: Store<AppState>,
@@ -65,8 +69,10 @@ export class StatementsComponent {
     this.isLoading = true;
     this.influencerService
       .getSpokepersonQuotes({ ...filter, max_size: '20' })
-      .subscribe(({ data }) => {
-        this.influencer = data;
+      // @ts-ignore
+      .subscribe(({ data, meta }) => {
+        this.influencers = data;
+        this.total = meta.total_data;
       })
       .add(() => {
         this.isLoading = false;
@@ -75,30 +81,54 @@ export class StatementsComponent {
 
   ngOnInit() {
     this.filterService.subscribe((filter) => {
-      this.fetchData({
-        ...filter,
-        media_id: this.selectedMedia!,
-        spokeperson_name: this.selectedInfluencer!,
-      });
-    });
-    this.spokespersonState.subscribe((data) => {
-      if (
-        !_.isEqual(this.selectedMedia, data.selectedMedia) ||
-        !_.isEqual(this.selectedInfluencer, data.selectedInfluencer)
-      ) {
-        this.selectedInfluencer = data.selectedInfluencer;
-        this.selectedMedia = data.selectedMedia;
+      if (this.selectedInfluencer && this.selectedMedia) {
         this.fetchData({
-          ...this.filterService.filter,
-          media_id: data.selectedMedia!,
-          spokeperson_name: data.selectedInfluencer!,
+          ...filter,
+          media_id: this.selectedMedia!,
+          spokeperson_name: this.selectedInfluencer!,
         });
       }
     });
   }
 
-  ngOnDestroy() {
-    this.selectedInfluencer = null
-    this.selectedMedia = null
+  ngOnChanges(changes: any) {
+    const { influencer, media } = changes;
+    if (
+      media &&
+      !media.firstChange &&
+      !_.isEqual(media.currentValue, media.previousValue)
+    ) {
+      this.selectedMedia = media.currentValue;
+      this.fetchData({
+        ...this.filterService.filter,
+        media_id: media?.currentValue,
+        spokeperson_name: this.selectedInfluencer ?? undefined,
+      });
+    }
+
+    if (
+      influencer &&
+      !influencer.firstChange &&
+      !_.isEqual(influencer.currentValue, influencer.previousValue)
+    ) {
+      this.selectedInfluencer = influencer.currentValue;
+      this.fetchData({
+        ...this.filterService.filter,
+        spokeperson_name: influencer?.currentValue,
+        media_id: this.selectedMedia ?? undefined,
+      });
+    }
   }
+
+  // onLazyLoad(event: any) {
+  //   const h =
+  //     event.target.scrollHeight -
+  //     event.target.scrollTop -
+  //     event.target.clientHeight;
+
+  //   if (h === 0) {
+  //     if (this.influencers.length >= this.total) return;
+  //     this.fetchData({ ...this.filterService.filter, page: this.page });
+  //   }
+  // }
 }

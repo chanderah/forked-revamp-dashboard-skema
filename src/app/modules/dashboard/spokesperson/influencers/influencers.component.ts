@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import { selectSpokespersonState } from '../../../../core/store/spokesperson/spokesperson.selectors';
 import { AppState } from '../../../../core/store';
@@ -54,6 +54,8 @@ export class InfluencersComponent {
     this.filterState = this.store.select(selectFilterState);
   }
 
+  @Input() setInfluencer: any
+
   fetchData = (filter: FilterRequestPayload) => {
     this.isLoading = true;
     this.influencerService
@@ -62,9 +64,7 @@ export class InfluencersComponent {
       .subscribe(({ data, meta }) => {
         this.influencerCount = [...this.influencerCount, ...data];
         if (this.page === 1) {
-          this.store.dispatch(
-            setInfluencer({ influencer: data[0].spokesperson_name })
-          );
+          this.setInfluencer(data[0].spokesperson_name)
         }
         this.page = this.page + 1;
         this.total = meta.total_data;
@@ -82,9 +82,7 @@ export class InfluencersComponent {
 
   onClick(selectedInfluencer: InfluencerCount) {
     this.selectedInfluencer = selectedInfluencer;
-    this.store.dispatch(
-      setInfluencer({ influencer: selectedInfluencer.spokesperson_name })
-    );
+    this.setInfluencer(selectedInfluencer.spokesperson_name)
   }
 
   onLazyLoad(event: any) {
