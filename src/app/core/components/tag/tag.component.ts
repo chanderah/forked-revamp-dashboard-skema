@@ -23,8 +23,8 @@ export class TagComponent {
     const colorMap: { [x: string]: string } = {
       positive: positiveColor,
       1: positiveColor,
-      neutral: neutralColor,
-      0: neutralColor,
+      neutral: 'gray',
+      0: 'gray',
       negative: negativeColor,
       '-1': negativeColor,
     };
@@ -32,13 +32,13 @@ export class TagComponent {
     const bgColorMap: { [x: string]: string } = {
       positive: '#e8f2fc',
       1: '#e8f2fc',
-      neutral: '#e6f8f9',
-      0: '#e6f8f9',
+      neutral: '#80808021',
+      0: '#80808021',
       negative: '#ffebee',
       '-1': '#ffebee',
     };
 
-    this.bgColor = bgColorMap[this.type] ?? '#e6f8f9';
-    this.color = colorMap[this.type] ?? neutralColor;
+    this.bgColor = bgColorMap[this.type] ?? '#80808021';
+    this.color = colorMap[this.type] ?? 'gray';
   }
 }

@@ -89,8 +89,8 @@ export class MediaSentimentComponent {
           label: 'Neutral',
           data: neutralValues,
           tension: 0.4,
-          borderColor: neutralColor,
-          backgroundColor: neutralColor,
+          borderColor: 'gray',
+          backgroundColor: 'gray',
           tone: 0,
         },
         {

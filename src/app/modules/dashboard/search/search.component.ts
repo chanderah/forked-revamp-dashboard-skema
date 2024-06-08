@@ -82,6 +82,15 @@ export class SearchComponent {
       if (searchTermsObj['end_date']) {
         this.endDate = moment(searchTermsObj['end_date']).toDate()
       }
+      const payload: any = {
+        start_date: moment(this.startDate).format('YYYY-MM-DD'),
+        end_date: moment(this.endDate).format('YYYY-MM-DD'),
+        search_field: this.selectedContent,
+        media_category: this.selectedMedia,
+        page: 0,
+        term: this.searchTerm,
+      };
+      this.fetchArticles(payload);
     }
   }
 

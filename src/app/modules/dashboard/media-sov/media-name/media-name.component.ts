@@ -78,7 +78,7 @@ export class MediaNameComponent {
       event.target.scrollTop -
       event.target.clientHeight;
 
-    if (h === 0) {
+    if (parseInt(h.toFixed(1)) === 0) {
       if (this.medias.length >= this.total) return;
       this.fetchData({ ...this.filterService.filter, page: this.page });
     }

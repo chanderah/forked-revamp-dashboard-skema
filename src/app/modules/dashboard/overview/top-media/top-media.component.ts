@@ -100,7 +100,7 @@ export class TopMediaComponent implements OnInit {
           {
             data: simplifiedTones,
             datalabels: { anchor: 'end' },
-            backgroundColor: [positiveColor, negativeColor, neutralColor],
+            backgroundColor: [positiveColor, negativeColor, 'gray'],
           },
         ],
       };

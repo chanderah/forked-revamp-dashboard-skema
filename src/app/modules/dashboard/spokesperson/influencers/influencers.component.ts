@@ -54,7 +54,7 @@ export class InfluencersComponent {
     this.filterState = this.store.select(selectFilterState);
   }
 
-  @Input() setInfluencer: any
+  @Input() setInfluencer: any;
 
   fetchData = (filter: FilterRequestPayload) => {
     this.isLoading = true;
@@ -64,7 +64,7 @@ export class InfluencersComponent {
       .subscribe(({ data, meta }) => {
         this.influencerCount = [...this.influencerCount, ...data];
         if (this.page === 1) {
-          this.setInfluencer(data[0].spokesperson_name)
+          this.setInfluencer(data[0].spokesperson_name);
         }
         this.page = this.page + 1;
         this.total = meta.total_data;
@@ -82,7 +82,7 @@ export class InfluencersComponent {
 
   onClick(selectedInfluencer: InfluencerCount) {
     this.selectedInfluencer = selectedInfluencer;
-    this.setInfluencer(selectedInfluencer.spokesperson_name)
+    this.setInfluencer(selectedInfluencer.spokesperson_name);
   }
 
   onLazyLoad(event: any) {
@@ -91,7 +91,7 @@ export class InfluencersComponent {
       event.target.scrollTop -
       event.target.clientHeight;
 
-    if (h === 0) {
+    if (parseInt(h.toFixed(1)) <= 0) {
       if (this.influencerCount.length >= this.total) return;
       this.fetchData({ ...this.filterService.filter, page: this.page });
     }

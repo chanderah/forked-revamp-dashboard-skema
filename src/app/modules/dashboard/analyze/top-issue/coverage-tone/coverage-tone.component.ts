@@ -108,7 +108,7 @@ export class CoverageToneComponent {
         {
           type: 'bar',
           label: 'Neutral',
-          backgroundColor: documentStyle.getPropertyValue('--neutral-color'),
+          backgroundColor: 'gray',
           data: neutralValues,
           tone: NEUTRAL_TONE,
           mediaIds,
@@ -193,7 +193,7 @@ export class CoverageToneComponent {
         {
           type: 'bar',
           label: 'Neutral',
-          backgroundColor: documentStyle.getPropertyValue('--neutral-color'),
+          backgroundColor: 'gray',
           data: neutralValues,
           tone: NEUTRAL_TONE,
         },
@@ -284,7 +284,7 @@ export class CoverageToneComponent {
         {
           type: 'bar',
           label: 'Neutral',
-          backgroundColor: documentStyle.getPropertyValue('--neutral-color'),
+          backgroundColor: 'gray',
           tone: NEUTRAL_TONE,
           data: neutralValues,
         },
@@ -343,7 +343,7 @@ export class CoverageToneComponent {
     const documentStyle = getComputedStyle(document.documentElement);
     const positiveColor = documentStyle.getPropertyValue('--positive-color');
     const negativeColor = documentStyle.getPropertyValue('--negative-color');
-    const neutralColor = documentStyle.getPropertyValue('--neutral-color');
+    const neutralColor = 'gray';
 
     const datasets: any = [
       {
