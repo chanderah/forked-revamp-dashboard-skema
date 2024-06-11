@@ -46,6 +46,25 @@ export class ArticleDetailComponent {
     private filterService: FilterService
   ) {}
 
+  extractDateFromUrl = (url: string) => {
+    // Get the part of the URL after the last '/'
+    const isUrl = url.startsWith('http');
+    if (!isUrl) return url;
+
+    const lastPart = url.substring(url.lastIndexOf('/') + 1);
+
+    // Use a regular expression to match the date at the beginning of the string
+    const dateRegex = /^(\d{4}-\d{2}-\d{2})/;
+    const match = lastPart.match(dateRegex);
+
+    if (match) {
+      return match[1]; // Return the captured date
+    } else {
+      console.error('Date not found in the last part of the URL');
+      return null;
+    }
+  };
+
   ngOnInit() {
     this.activatedRoute.paramMap
       .pipe(
@@ -68,8 +87,24 @@ export class ArticleDetailComponent {
           this.sanitizedContent =
             this.sanitizer.bypassSecurityTrustHtml(hightligtedWords);
         });
+        let file = articleData?.file_pdf;
+        if (articleData?.media_type === 'media cetak') {
+          const parsed = this.extractDateFromUrl(file)?.split('-');
+          const fileName = file.substring(file.lastIndexOf('/') + 1);
+          if (parsed) {
+            file = `https://api.skema.co.id/media/pdf_images/${parsed[0]}/${parsed[1]}/${parsed[2]}/${fileName}`;
+          }
+        } else if (articleData?.media_type === 'media tv') {
+          const parsed = this.extractDateFromUrl(file)?.split('-');
+          const fileName = file.substring(file.lastIndexOf('/') + 1);
+          if (parsed) {
+            file = `https://api.skema.co.id/media/media_tv/${parsed[0]}/${parsed[1]}/${parsed[2]}/${fileName}`;
+          }
+        }
+
         this.article = {
           ...articleData,
+          file_pdf: file,
           toneLabel: TONE_MAP[articleData?.tone ?? 0] ?? '',
         };
       });
