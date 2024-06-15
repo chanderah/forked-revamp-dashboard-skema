@@ -97,7 +97,7 @@ export class SubCategoryListComponent {
     this.fetchData();
   }
 
-  fetchData = () => {
+  fetchData = (categoryId?: any) => {
     this.loading = true;
     this.preferenceService.getSubCategoriesCollections().subscribe((resp) => {
       this.loading = false;
@@ -105,6 +105,13 @@ export class SubCategoryListComponent {
         ...val,
         no: idx + 1,
       }));
+      if (categoryId) {
+        const categSel =
+          resp.results.find((categ) => {
+            return categ.category_id === categoryId;
+          }) ?? null;
+        this.selectedCategory = categSel;
+      }
       this.totalRecords = resp.count;
     });
   };
@@ -183,21 +190,21 @@ export class SubCategoryListComponent {
     ];
 
     if (keyword.value && startDate.value && expired.value) {
+      const payload: any = {
+        category_id: category.value!,
+        keyword: keyword.value,
+        start_date: moment(startDate.value).format('YYYY-MM-DD'),
+        end_date: moment(expired.value).format('YYYY-MM-DD'),
+      };
+
       promises.push(
-        this.preferenceService
-          .createCategoryKeyword(
-            this.selectedCategory?.category_id!,
-            keyword.value,
-            moment(startDate.value).format('YYYY-MM-DD'),
-            moment(expired.value).format('YYYY-MM-DD')
-          )
-          .toPromise()
+        this.preferenceService.createCategoryKeyword(payload).toPromise()
       );
     }
 
     await Promise.allSettled(promises);
-    this.fetchData();
-    this.modalUpdateOpen = false;
+    this.fetchKeyword(category.value!);
+    this.fetchData(category.value!);
     this.selectedSubCategories = [];
     this.messageService.add({
       severity: 'success',
@@ -248,13 +255,12 @@ export class SubCategoryListComponent {
     return TONE_MAP[tone] ?? '';
   }
 
-  openEditModal = async (category: Category) => {
-    this.selectedCategory = category;
+  fetchKeyword = (category: any) => {
     this.preferenceService
-      .getCategoryKeywords(category.category_id)
+      .getCategoryKeywords(category)
       .subscribe((response) => {
         this.editedValues.setValue({
-          category: category.category_id ?? '',
+          category: category ?? '',
           keyword: '',
           startDate: '',
           expired: '',
@@ -262,5 +268,10 @@ export class SubCategoryListComponent {
         this.existingKeywords = response?.data ?? [];
         this.modalUpdateOpen = true;
       });
+  };
+
+  openEditModal = async (category: Category) => {
+    this.selectedCategory = category;
+    this.fetchKeyword(category.category_id);
   };
 }

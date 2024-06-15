@@ -120,12 +120,12 @@ export class PreferenceService {
     );
   }
 
-  createCategoryKeyword(
-    category_id: string,
-    keyword: string,
-    start_date: string,
-    end_date: string
-  ): Observable<void> {
+  createCategoryKeyword({
+    category_id,
+    keyword,
+    start_date,
+    end_date,
+  }: any): Observable<void> {
     return this.http.post<void>(
       `${this.baseUrl}/v1/user/keyword/create
     `,
