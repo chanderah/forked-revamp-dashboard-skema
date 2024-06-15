@@ -23,6 +23,7 @@ export class MediaSOVService {
       category_set: filter.category_set ?? '',
       user_media_type_id: filter.user_media_type_id ?? '',
     };
+    // console.log('params', params)
 
     return this.http.get<{ data: MediaSOV[] }>(
       `${this.baseUrl}/v3/media-sov/media-list`,

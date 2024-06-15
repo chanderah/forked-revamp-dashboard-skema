@@ -17,6 +17,7 @@ import { MediaSOVState } from '../../../../core/store/media-sov/media-sov.reduce
 import { selectMediaSOVState } from '../../../../core/store/media-sov/media-sov.selectors';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 import { RouterLink } from '@angular/router';
+import { ArticleService } from '../../../../core/services/article.service';
 
 @Component({
   selector: 'app-headline-news',
@@ -29,7 +30,7 @@ import { RouterLink } from '@angular/router';
     TagComponent,
     ImgFallbackDirective,
     SpinnerComponent,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './headline-news.component.html',
   styleUrl: './headline-news.component.scss',
@@ -42,6 +43,7 @@ export class HeadlineNewsComponent {
 
   constructor(
     private mediaSOVService: MediaSOVService,
+    private articleService: ArticleService,
     private filterService: FilterService,
     private store: Store<AppState>
   ) {
@@ -50,8 +52,8 @@ export class HeadlineNewsComponent {
 
   fetchData = (filter: FilterRequestPayload) => {
     this.isLoading = true;
-    this.mediaSOVService
-      .getLatestArticles(filter)
+    this.articleService
+      .getArticlesHeadlines(filter)
       .subscribe(({ data }) => {
         this.articles = data.map((article) => {
           return { ...article, toneLabel: TONE_MAP[article?.tone ?? ''] };
@@ -66,17 +68,17 @@ export class HeadlineNewsComponent {
     this.filterService.subscribe((filter) => {
       this.fetchData({
         ...filter,
-        order_by: 'advalue_bw',
+        // order_by: 'advalue_bw',
         max_size: '20',
       } as FilterRequestPayload);
     });
-    this.mediaSOVState.subscribe((data) => {
-      this.fetchData({
-        ...this.filterService.filter,
-        order_by: 'advalue_bw',
-        max_size: '20',
-        media_id: data.media?.media_id,
-      } as FilterRequestPayload);
-    });
+    // this.mediaSOVState.subscribe((data) => {
+    //   this.fetchData({
+    //     ...this.filterService.filter,
+    //     order_by: 'advalue_bw',
+    //     max_size: '20',
+    //     media_id: data.media?.media_id,
+    //   } as FilterRequestPayload);
+    // });
   }
 }

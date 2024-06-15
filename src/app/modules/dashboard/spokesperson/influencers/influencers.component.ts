@@ -76,6 +76,8 @@ export class InfluencersComponent {
 
   ngOnInit() {
     this.filterService.subscribe((filter) => {
+      this.page = 1;
+      this.influencerCount = [];
       this.fetchData({ ...filter, page: this.page });
     });
   }
@@ -91,7 +93,7 @@ export class InfluencersComponent {
       event.target.scrollTop -
       event.target.clientHeight;
 
-    if (parseInt(h.toFixed(1)) <= 0) {
+    if (h === 0 && this.influencerCount.length > 0) {
       if (this.influencerCount.length >= this.total) return;
       this.fetchData({ ...this.filterService.filter, page: this.page });
     }

@@ -45,7 +45,16 @@ export class CoverageToneComponent {
   coverageChartData: any;
   coverageChartOpts: any;
   coveragePieData: any;
-  coveragePieOpts: any;
+  coveragePieOpts = {
+    plugins: {
+      legend: {
+        display: false,
+      },
+      htmlLegend: {
+        containerID: 'coverage-legend-container',
+      },
+    },
+  };
   toneByCategChartData: any;
   toneByCategChartOpts: any;
   toneByMediaChartData: any;
@@ -251,16 +260,6 @@ export class CoverageToneComponent {
   initCoveragePie = (tonesRes: Tones) => {
     const { datasets, labels, tones } = this.getCoveragePieData(tonesRes);
     this.coveragePieData = { labels, datasets, tones };
-    this.coveragePieOpts = {
-      plugins: {
-        legend: {
-          display: false,
-        },
-        htmlLegend: {
-          containerID: 'coverage-legend-container',
-        },
-      },
-    };
   };
 
   initCoverageChart = (tones: Tones) => {

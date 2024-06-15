@@ -63,7 +63,9 @@ export class MediaNameComponent {
 
   ngOnInit() {
     this.filterService.subscribe((filter) => {
-      this.fetchData(filter as FilterRequestPayload);
+      this.page = 1;
+      this.medias = [];
+      this.fetchData({ ...filter } as FilterRequestPayload);
     });
   }
 
@@ -78,7 +80,7 @@ export class MediaNameComponent {
       event.target.scrollTop -
       event.target.clientHeight;
 
-    if (parseInt(h.toFixed(1)) === 0) {
+    if (h === 0 && this.medias.length > 0) {
       if (this.medias.length >= this.total) return;
       this.fetchData({ ...this.filterService.filter, page: this.page });
     }
