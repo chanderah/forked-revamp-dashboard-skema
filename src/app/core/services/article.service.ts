@@ -6,6 +6,7 @@ import { FilterRequestPayload } from '../models/request.model';
 import { Article, ArticleResponse } from '../models/article.model';
 import { CategoryResponse } from '../models/category.model';
 import { BASE_URL } from '../api';
+import { getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
 
 @Injectable({
   providedIn: 'root',
@@ -189,22 +190,24 @@ export class ArticleService {
   }
 
   downloadDocs(articles: Article[]): Observable<{ data: string }> {
+    const user = getUserFromLocalStorage();
     return this.http.post<{ data: string }>(
       `${this.baseUrl}/v1/user/download/docxs`,
       {
         articles,
-        logo_name: 'company/bpjs-kesehatan.png',
+        logo_name: user?.comp_icon ?? 'company/bpjs-kesehatan.png',
       }
     );
   }
 
   downloadPdfs(articles: Article[]): Observable<{ data: { link: string } }> {
+    const user = getUserFromLocalStorage();
     return this.http.post<{ data: { link: string } }>(
       `${this.baseUrl}/v1/user/download/pdfs`,
       {
         articles,
         doc_type: 1,
-        logo_name: 'company/bpjs-kesehatan.png',
+        logo_name: user?.comp_icon ?? 'company/bpjs-kesehatan.png',
       }
     );
   }
