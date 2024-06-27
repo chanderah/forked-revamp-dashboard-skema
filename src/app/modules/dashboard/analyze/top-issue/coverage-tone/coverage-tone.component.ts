@@ -6,7 +6,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../../../../core/store';
 import { selectAnalyzeState } from '../../../../../core/store/analyze/analyze.selectors';
 import { selectFilterState } from '../../../../../core/store/filter/filter.selectors';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { AnalyzeState } from '../../../../../core/store/analyze/analyze.reducer';
 import {
   FilterState,
@@ -29,6 +29,9 @@ import {
   TONE_MAP,
 } from '../../../../../shared/utils/Constants';
 import { Router } from '@angular/router';
+import { ToneService } from '../../../../../core/services/tone.service';
+import { AnalyzeService } from '../../../../../core/services/analyze.service';
+import { FilterService } from '../../../../../core/services/filter.service';
 
 const documentStyle = getComputedStyle(document.documentElement);
 @Component({
@@ -62,30 +65,32 @@ export class CoverageToneComponent {
   toneByMediaChartOpts: any;
   coveragePiePlugins = [htmlLegendPlugin];
 
-  constructor(private store: Store<AppState>, private router: Router) {
+  constructor(
+    private store: Store<AppState>,
+    private router: Router,
+    private toneService: ToneService,
+    private filterService: FilterService
+  ) {
     this.analyzeState = this.store.select(selectAnalyzeState);
     this.filterState = this.store.select(selectFilterState);
   }
 
   ngOnInit() {
-    this.store.dispatch(
-      getTones({ filter: initialState as FilterRequestPayload })
-    );
-    this.store.dispatch(
-      getToneByCategory({ filter: initialState as FilterRequestPayload })
-    );
-    this.store.dispatch(
-      getToneByMedia({ filter: initialState as FilterRequestPayload })
-    );
-    this.analyzeState.subscribe(({ tones, toneByCategory, toneByMedia }) => {
-      if (tones.data) {
+    this.filterService.subscribe((filter) => {
+      this.isLoading = true
+      forkJoin([
+        this.toneService.getTones(filter),
+        this.toneService.getToneByCategory(filter),
+        this.toneService.getToneByMedia(filter),
+      ]).subscribe(([tones, toneByCategory, toneByMedia]) => {
         this.initCoveragePie(tones.data);
         this.initCoverageChart(tones.data);
-      }
-      this.initToneByCategoryChart(toneByCategory.data);
-      this.initToneByMediaChart(toneByMedia.data);
+        this.initToneByCategoryChart(toneByCategory.data);
+        this.initToneByMediaChart(toneByMedia.data);
+      }).add(() => {
+        this.isLoading = false
+      })
     });
-    this.filterState.subscribe(this.onFilterChange);
   }
 
   initToneByMediaChart = (toneByMedia: ToneByMedia[]) => {
@@ -432,7 +437,7 @@ export class CoverageToneComponent {
         mediaId,
         mediaName,
         categoryName,
-        date
+        date,
       },
     });
   };

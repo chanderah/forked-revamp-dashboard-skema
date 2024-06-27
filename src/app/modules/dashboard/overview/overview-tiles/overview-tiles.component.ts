@@ -14,6 +14,8 @@ import {
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
+import { FilterService } from '../../../../core/services/filter.service';
+import { OverviewService } from '../../../../core/services/overview.service';
 
 interface MediaCountTiles {
   print: number;
@@ -39,28 +41,42 @@ export class OverviewTilesComponent {
     tv: 0,
   };
 
-  constructor(private store: Store<AppState>) {
+  constructor(
+    private store: Store<AppState>,
+    private filterService: FilterService,
+    private overviewService: OverviewService
+  ) {
     this.overviewState = this.store.select(selectOverviewState);
     this.filterState = this.store.select(selectFilterState);
   }
 
   ngOnInit() {
-    this.store.dispatch(
-      getMediaCount({ filter: initialState as FilterRequestPayload })
-    );
-    this.filterState.subscribe(this.onFilterStateChanges);
-    this.overviewState.subscribe(this.onOverviewStateChanges);
+    this.filterService.subscribe((filter) => {
+      this.isLoading = true;
+      this.overviewService
+        .getMediaCount(filter)
+        .subscribe((data) => {
+          this.onOverviewStateChanges(data.data);
+        })
+        .add(() => {
+          this.isLoading = false;
+        });
+    });
+    // this.store.dispatch(
+    //   getMediaCount({ filter: initialState as FilterRequestPayload })
+    // );
+    // this.filterState.subscribe(this.onFilterStateChanges);
+    // this.overviewState.subscribe(this.onOverviewStateChanges);
   }
 
-  onFilterStateChanges = (filterState: FilterState) => {
-    const filter = { ...filterState } as FilterRequestPayload;
-    this.store.dispatch(getMediaCount({ filter }));
-  };
+  // onFilterStateChanges = (filterState: FilterState) => {
+  //   const filter = { ...filterState } as FilterRequestPayload;
+  //   this.store.dispatch(getMediaCount({ filter }));
+  // };
 
-  onOverviewStateChanges = ({ mediaCount }: OverviewState) => {
+  onOverviewStateChanges = (data: any) => {
     const mediaCountTmp = { ...this.mediaCount };
-    this.isLoading = mediaCount.isLoading;
-    mediaCount.data.forEach((media) => {
+    data.forEach((media: any) => {
       if (media.label === 'Print') mediaCountTmp.print = media.total ?? 0;
       if (media.label === 'Online') mediaCountTmp.online = media.total ?? 0;
       if (media.label === 'TV') mediaCountTmp.tv = media.total ?? 0;

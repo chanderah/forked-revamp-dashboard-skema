@@ -22,6 +22,8 @@ import {
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 import { RouterLink } from '@angular/router';
+import { OverviewService } from '../../../../core/services/overview.service';
+import { FilterService } from '../../../../core/services/filter.service';
 
 @Component({
   selector: 'app-top-city',
@@ -33,7 +35,7 @@ import { RouterLink } from '@angular/router';
     IconInfoComponent,
     CommonModule,
     SpinnerComponent,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './top-city.component.html',
   styleUrl: './top-city.component.scss',
@@ -48,37 +50,68 @@ export class TopCityComponent {
   isAllCountLoading: boolean = false;
   isWordCloudLoading: boolean = false;
 
-  constructor(private store: Store<AppState>) {
+  constructor(
+    private store: Store<AppState>,
+    private overviewService: OverviewService,
+    private filterService: FilterService
+  ) {
     this.overviewState = this.store.select(selectOverviewState);
     this.filterState = this.store.select(selectFilterState);
   }
 
   ngOnInit() {
-    const initialFilter = initialState as FilterRequestPayload;
-    this.store.dispatch(getAllCount({ filter: initialFilter }));
-    this.store.dispatch(getWordCloud({ filter: initialFilter }));
+    this.filterService.subscribe((filter) => {
+      this.isAllCountLoading = true;
+      this.overviewService
+        .getAllCount(filter)
+        .subscribe((data) => {
+          this.cities = data?.top_location.location ?? [];
+          this.totalArticles =
+            data?.top_location.total_top_location_article ?? 0;
+        })
+        .add(() => {
+          this.isAllCountLoading = false;
+        });
 
-    this.overviewState.subscribe(({ allCount, wordCloud }) => {
-      this.isAllCountLoading = allCount.isLoading;
-      this.isWordCloudLoading = wordCloud.isLoading;
-      this.cities = allCount.data?.top_location.location ?? [];
-      this.totalArticles =
-        allCount.data?.top_location.total_top_location_article ?? 0;
-      this.wordCloud = wordCloud.data.map((word) => ({
-        text: word.name,
-        value: word.weight,
-      }));
-      this.largestWordValue = wordCloud.data?.[0]?.weight ?? 0;
+      this.isWordCloudLoading = true;
+      this.overviewService
+        .getWordCloud(filter)
+        .subscribe((data) => {
+          this.wordCloud = data.data.map((word) => ({
+            text: word.name,
+            value: word.weight,
+          }));
+          this.largestWordValue = data.data?.[0]?.weight ?? 0;
+        })
+        .add(() => {
+          this.isWordCloudLoading = false;
+        });
     });
+    // const initialFilter = initialState as FilterRequestPayload;
+    // this.store.dispatch(getAllCount({ filter: initialFilter }));
+    // this.store.dispatch(getWordCloud({ filter: initialFilter }));
 
-    this.filterState.subscribe(this.onFilterChange);
+    // this.overviewState.subscribe(({ allCount, wordCloud }) => {
+    //   // this.isAllCountLoading = allCount.isLoading;
+    //   // this.cities = allCount.data?.top_location.location ?? [];
+    //   this.isWordCloudLoading = wordCloud.isLoading;
+    //   // this.totalArticles =
+    //   //   allCount.data?.top_location.total_top_location_article ?? 0;
+    //   this.wordCloud = wordCloud.data.map((word) => ({
+    //     text: word.name,
+    //     value: word.weight,
+    //   }));
+    //   this.largestWordValue = wordCloud.data?.[0]?.weight ?? 0;
+    // });
+
+    // this.filterState.subscribe(this.onFilterChange);
   }
 
-  onFilterChange = (filterState: FilterState) => {
-    const filter = { ...filterState } as FilterRequestPayload;
-    this.store.dispatch(getAllCount({ filter }));
-    this.store.dispatch(getWordCloud({ filter }));
-  };
+  // onFilterChange = (filterState: FilterState) => {
+  //   const filter = { ...filterState } as FilterRequestPayload;
+  //   this.store.dispatch(getAllCount({ filter }));
+  //   this.store.dispatch(getWordCloud({ filter }));
+  // };
 
   wordCloudFontSizeMapper = (word: any) => {
     const minInput = 0;

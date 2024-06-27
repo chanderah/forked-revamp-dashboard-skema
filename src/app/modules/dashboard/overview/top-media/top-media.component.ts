@@ -21,8 +21,15 @@ import {
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
-import { NEGATIVE_TONE, NEUTRAL_TONE, POSITIVE_TONE } from '../../../../shared/utils/Constants';
+import {
+  NEGATIVE_TONE,
+  NEUTRAL_TONE,
+  POSITIVE_TONE,
+} from '../../../../shared/utils/Constants';
 import { Router } from '@angular/router';
+import { FilterService } from '../../../../core/services/filter.service';
+import { OverviewService } from '../../../../core/services/overview.service';
+import { ToneService } from '../../../../core/services/tone.service';
 
 @Component({
   selector: 'app-top-media',
@@ -48,26 +55,39 @@ export class TopMediaComponent implements OnInit {
   chartsData: any[] = [];
   isLoading: boolean = false;
 
-  constructor(private store: Store<AppState>, private router: Router) {
+  constructor(
+    private store: Store<AppState>,
+    private router: Router,
+    private filterService: FilterService,
+    private toneService: ToneService
+  ) {
     this.overviewState = this.store.select(selectOverviewState);
     this.filterState = this.store.select(selectFilterState);
   }
 
   ngOnInit() {
-    this.store.dispatch(
-      getToneByMedia({ filter: initialState as FilterRequestPayload })
-    );
-    this.overviewState.subscribe(({ toneByMedia }) => {
-      this.isLoading = toneByMedia.isLoading;
-      this.chartsData = this.parseToChartData(toneByMedia.data);
+    this.filterService.subscribe((filter) => {
+      this.isLoading = true;
+      this.toneService
+        .getToneByMedia(filter)
+        .subscribe((data) => {
+          this.chartsData = this.parseToChartData(data.data);
+        })
+        .add(() => {
+          this.isLoading = false;
+        });
     });
-    this.filterState.subscribe(this.onFilterChange);
+    // this.store.dispatch(
+    //   getToneByMedia({ filter: initialState as FilterRequestPayload })
+    // );
+    // this.overviewState.subscribe(({ toneByMedia }) => {});
+    // this.filterState.subscribe(this.onFilterChange);
   }
 
-  onFilterChange = (filterState: FilterState) => {
-    const filter = { ...filterState } as FilterRequestPayload;
-    this.store.dispatch(getToneByMedia({ filter }));
-  };
+  // onFilterChange = (filterState: FilterState) => {
+  //   const filter = { ...filterState } as FilterRequestPayload;
+  //   this.store.dispatch(getToneByMedia({ filter }));
+  // };
 
   parseToChartData = (toneByMedia: ToneByMedia[]) => {
     const documentStyle = getComputedStyle(document.documentElement);
@@ -108,6 +128,8 @@ export class TopMediaComponent implements OnInit {
   };
 
   onSelectTone = (mediaId: number, mediaName: string, tone: number) => {
-    this.router.navigateByUrl(`/dashboard/articles-by-tone?mediaId=${mediaId}&tone=${tone}&mediaName=${mediaName}`)
-  }
+    this.router.navigateByUrl(
+      `/dashboard/articles-by-tone?mediaId=${mediaId}&tone=${tone}&mediaName=${mediaName}`
+    );
+  };
 }

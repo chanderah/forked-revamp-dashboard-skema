@@ -20,6 +20,8 @@ import { Article } from '../../../../core/models/article.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
 import { RouterLink } from '@angular/router';
+import { FilterService } from '../../../../core/services/filter.service';
+import { ArticleService } from '../../../../core/services/article.service';
 
 @Component({
   selector: 'app-latest-news',
@@ -32,7 +34,7 @@ import { RouterLink } from '@angular/router';
     CommonModule,
     SpinnerComponent,
     ImgFallbackDirective,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './latest-news.component.html',
   styleUrl: './latest-news.component.scss',
@@ -46,7 +48,11 @@ export class LatestNewsComponent {
     | { breakpoint: string; numVisible: number; numScroll: number }[]
     | undefined;
 
-  constructor(private store: Store<AppState>) {
+  constructor(
+    private store: Store<AppState>,
+    private filterService: FilterService,
+    private articleService: ArticleService
+  ) {
     this.analyzeState = this.store.select(selectAnalyzeState);
     this.filterState = this.store.select(selectFilterState);
 
@@ -70,18 +76,17 @@ export class LatestNewsComponent {
   }
 
   ngOnInit() {
-    this.store.dispatch(
-      getHighlights({ filter: initialState as FilterRequestPayload })
-    );
-    this.analyzeState.subscribe(({ highlights }) => {
-      this.isLoading = highlights.isLoading;
-      this.articles = highlights.data;
-    });
-    this.filterState.subscribe(this.onFilterChange);
-  }
+    this.filterService.subscribe((filter) => {
+      this.isLoading = true;
 
-  onFilterChange = (filterState: FilterState) => {
-    const filter = { ...filterState } as FilterRequestPayload;
-    this.store.dispatch(getHighlights({ filter }));
-  };
+      this.articleService
+        .getHighlights(filter)
+        .subscribe((data) => {
+          this.articles = data.data;
+        })
+        .add(() => {
+          this.isLoading = false;
+        });
+    });
+  }
 }

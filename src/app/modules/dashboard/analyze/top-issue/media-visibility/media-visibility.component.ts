@@ -25,6 +25,8 @@ import {
 import { SpinnerComponent } from '../../../../../core/components/spinner/spinner.component';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { FilterService } from '../../../../../core/services/filter.service';
+import { AnalyzeService } from '../../../../../core/services/analyze.service';
 
 @Component({
   selector: 'app-media-visibility',
@@ -52,7 +54,12 @@ export class MediaVisibilityComponent {
   filterState: Observable<FilterState>;
   isLoading: boolean = false;
 
-  constructor(private store: Store<AppState>, private router: Router) {
+  constructor(
+    private store: Store<AppState>,
+    private router: Router,
+    private filterService: FilterService,
+    private analyzeService: AnalyzeService
+  ) {
     this.analyzeState = this.store.select(selectAnalyzeState);
     this.filterState = this.store.select(selectFilterState);
 
@@ -79,16 +86,13 @@ export class MediaVisibilityComponent {
 
   ngOnInit() {
     this.initChartOpts();
-
-    this.store.dispatch(
-      getMediaVisibility({ filter: initialState as FilterRequestPayload })
-    );
-
-    this.analyzeState.subscribe(({ mediaVisibility }) => {
-      this.isLoading = mediaVisibility.isLoading;
-      this.initChartData(mediaVisibility.data);
+    this.filterService.subscribe((filter) => {
+      this.isLoading = true;
+      this.analyzeService.getMediaVisibility(filter).subscribe((data) => {
+        this.isLoading = false;
+        this.initChartData(data.data);
+      });
     });
-    this.filterState.subscribe(this.onFilterChange);
   }
 
   initChartData = (mediaVisibility: MediaVisibility[]) => {
@@ -130,7 +134,7 @@ export class MediaVisibilityComponent {
       const currentData =
         this.visibilityChartLineData.datasets[value.element.datasetIndex];
       mediaLabel = currentData.label;
-      date = currentData.date[value.element.index]
+      date = currentData.date[value.element.index];
     }
 
     this.router.navigate(['/dashboard/articles-by-media'], {
@@ -257,7 +261,12 @@ export class MediaVisibilityComponent {
 
     mediaVisibility.forEach((media) => {
       pieLabels.push(media.key);
-      const tmpData: { label: string; data: number[]; tension: number, date: string[] } = {
+      const tmpData: {
+        label: string;
+        data: number[];
+        tension: number;
+        date: string[];
+      } = {
         label: media.key,
         data: [],
         date: [],
@@ -306,8 +315,4 @@ export class MediaVisibilityComponent {
     };
   };
 
-  onFilterChange = (filterState: FilterState) => {
-    const filter = { ...filterState } as FilterRequestPayload;
-    this.store.dispatch(getMediaVisibility({ filter }));
-  };
 }
