@@ -8,6 +8,7 @@ import { Article } from '../../../core/models/article.model';
 import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
 import { ArticleListComponent } from '../../../core/components/article-list/article-list.component';
 import { TONE_MAP } from '../../../shared/utils/Constants';
+import moment from 'moment';
 
 @Component({
   selector: 'app-articles-by-media',
@@ -19,6 +20,7 @@ import { TONE_MAP } from '../../../shared/utils/Constants';
 export class ArticlesByMediaComponent {
   mediaId: number | null = null;
   mediaName: string | null = null;
+  date: string | null = null;
   topic: string | null = null;
   tone: number | null = null;
   toneLabel: string | null = null;
@@ -39,6 +41,8 @@ export class ArticlesByMediaComponent {
   ) {
     const mediaName = this.route.snapshot.queryParamMap.get('mediaName')!;
     const topic = this.route.snapshot.queryParamMap.get('topic')!;
+    const date = this.route.snapshot.queryParamMap.get('date')!;
+    this.date = date
 
     if (mediaName) {
       this.mediaName = mediaName;
@@ -60,6 +64,12 @@ export class ArticlesByMediaComponent {
     const req = {
       ...filter,
       category_id: this.mediaName,
+      start_date: this.date
+        ? moment(this.date).format('YYYY-MM-DD')
+        : filter.start_date,
+      end_date: this.date
+        ? moment(this.date).format('YYYY-MM-DD')
+        : filter.end_date,
     };
     this.isLoading = true;
     this.articleService
@@ -75,6 +85,12 @@ export class ArticlesByMediaComponent {
     const req = {
       ...filter,
       topic: this.topic ?? undefined,
+      start_date: this.date
+        ? moment(this.date).format('YYYY-MM-DD')
+        : filter.start_date,
+      end_date: this.date
+        ? moment(this.date).format('YYYY-MM-DD')
+        : filter.end_date,
     };
     this.isLoading = true;
     this.articleService

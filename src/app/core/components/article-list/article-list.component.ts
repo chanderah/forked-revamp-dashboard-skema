@@ -19,5 +19,6 @@ export class ArticleListComponent {
   @Input() first!: number;
   @Input() rows!: number;
   @Input() totalRecords!: number;
+  @Input() search?: boolean;
   @Input() onPageChange!: (e: any) => void;
 }

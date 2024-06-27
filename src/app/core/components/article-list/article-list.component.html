@@ -1,7 +1,7 @@
 <div class="grid mb-4">
   <div class="col-3 no-underline" *ngFor="let article of articles">
     <div class="mb-1">
-      <a [routerLink]="['/dashboard/articles', article.article_id]">
+      <a [routerLink]="['/dashboard/articles', article.article_id]" [queryParams]="{search: search}">
         <img
           [src]="article.image_url"
           [alt]="article.title"

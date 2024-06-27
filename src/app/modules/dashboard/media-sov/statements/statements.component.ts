@@ -112,7 +112,7 @@ export class StatementsComponent {
       this.selectedMedia = media;
       this.fetchData({
         ...this.filterService.filter,
-        tone: this.selectedTone,
+        tone: this.selectedTone?.currentValue,
         media_id: media.currentValue?.media_id,
       });
     }
@@ -126,7 +126,7 @@ export class StatementsComponent {
       this.fetchData({
         ...this.filterService.filter,
         tone: tone.currentValue,
-        media_id: this.selectedMedia?.media_id,
+        media_id: this.selectedMedia?.currentValue?.media_id,
       });
     }
   }

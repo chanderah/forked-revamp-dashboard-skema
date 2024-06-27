@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MapService } from '../../../core/services/map.service';
 import { FilterRequestPayload } from '../../../core/models/request.model';
 import { initialState } from '../../../core/store/filter/filter.reducer';
+import { FilterService } from '../../../core/services/filter.service';
 
 @Component({
   selector: 'app-map-articles',
@@ -28,27 +29,30 @@ export class MapArticlesComponent {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private mapService: MapService
+    private mapService: MapService,
+    private filterService: FilterService
   ) {}
 
   ngOnInit() {
     const location = this.route.snapshot.queryParamMap.get('location');
     this.location = location;
     if (location) {
-      this.fetchArticlesByGeo(location, 0, 6);
+      this.filterService.subscribe((filter) => {
+        this.fetchArticlesByGeo(location, 0, 6, filter);
+      });
     } else {
       this.router.navigateByUrl('/dashboard/map');
     }
   }
 
-  fetchArticlesByGeo = (location: string, page: number, rows: number) => {
+  fetchArticlesByGeo = (location: string, page: number, rows: number, filter: any) => {
     this.isLoading = true;
     this.mapService
       .getArticleByGeo({
-        ...(initialState as FilterRequestPayload),
         page,
         size: rows,
         geo_loc: location,
+        ...filter,
       })
       .subscribe((data) => {
         this.isLoading = false;
@@ -61,6 +65,6 @@ export class MapArticlesComponent {
     this.page = event.page;
     this.rows = event.rows;
     this.first = event.first;
-    this.fetchArticlesByGeo(this.location!, event.page, event.rows);
+    this.fetchArticlesByGeo(this.location!, event.page, event.rows, this.filterService.filter);
   };
 }

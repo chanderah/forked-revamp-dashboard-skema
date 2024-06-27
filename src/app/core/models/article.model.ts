@@ -1,4 +1,5 @@
 export interface Article {
+date_time: any;
   toneLabel?: string;
   article_id: string;
   title: string;

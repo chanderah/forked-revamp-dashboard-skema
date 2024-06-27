@@ -93,7 +93,7 @@ export class MediaListComponent {
     this.loading = true;
     this.preferenceService.getMedias().subscribe((resp) => {
       this.loading = false;
-      this.medias = resp.results;
+      this.medias = resp.results.map((result, idx) => ({ ...result, idx: idx + 1 }));
       this.totalRecords = resp.count;
     });
   };
@@ -244,7 +244,7 @@ export class MediaListComponent {
         };
       }) ?? [];
 
-    this.selectedMediaGroups = selectedGroup
+    this.selectedMediaGroups = selectedGroup;
 
     this.mediaGroupsOptions = [
       {

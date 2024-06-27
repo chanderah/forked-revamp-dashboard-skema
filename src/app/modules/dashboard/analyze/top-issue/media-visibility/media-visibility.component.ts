@@ -116,6 +116,7 @@ export class MediaVisibilityComponent {
 
   onVisibilityPieSelect = (value: any, type: string) => {
     let mediaLabel = null;
+    let date = null;
     if (type === 'pie') {
       const currentData =
         this.visibilityPieData.datasets[value.element.datasetIndex];
@@ -124,14 +125,16 @@ export class MediaVisibilityComponent {
       const currentData =
         this.visibilityChartBarData.datasets[value.element.datasetIndex];
       mediaLabel = currentData.label;
+      date = currentData.date[value.element.index];
     } else if (type === 'line') {
       const currentData =
         this.visibilityChartLineData.datasets[value.element.datasetIndex];
       mediaLabel = currentData.label;
+      date = currentData.date[value.element.index]
     }
 
     this.router.navigate(['/dashboard/articles-by-media'], {
-      queryParams: { mediaName: mediaLabel },
+      queryParams: { mediaName: mediaLabel, date },
     });
   };
 
@@ -143,7 +146,9 @@ export class MediaVisibilityComponent {
     );
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
     const isDarkModeStorage = window.localStorage.getItem('useDarkMode');
-    const isDarkMode = isDarkModeStorage ? JSON.parse(isDarkModeStorage) : false
+    const isDarkMode = isDarkModeStorage
+      ? JSON.parse(isDarkModeStorage)
+      : false;
 
     this.visibilityPieOpts = {
       plugins: {
@@ -172,7 +177,9 @@ export class MediaVisibilityComponent {
             padding: 32,
             boxWidth: 14,
             boxHeight: 5,
-            color: isDarkMode ? 'white' : documentStyle.getPropertyValue('--text-color'),
+            color: isDarkMode
+              ? 'white'
+              : documentStyle.getPropertyValue('--text-color'),
           },
         },
       },
@@ -209,7 +216,9 @@ export class MediaVisibilityComponent {
           align: 'center',
           labels: {
             font: { size: 10 },
-            color: isDarkMode ? 'white' : documentStyle.getPropertyValue('--text-color'),
+            color: isDarkMode
+              ? 'white'
+              : documentStyle.getPropertyValue('--text-color'),
             boxWidth: 10,
             boxHeight: 5,
             filter: function (legendItem: any, chartData: any) {
@@ -248,19 +257,24 @@ export class MediaVisibilityComponent {
 
     mediaVisibility.forEach((media) => {
       pieLabels.push(media.key);
-      const tmpData: { label: string; data: number[]; tension: number } = {
+      const tmpData: { label: string; data: number[]; tension: number, date: string[] } = {
         label: media.key,
         data: [],
+        date: [],
         tension: 0.4,
       };
       media.category_id_per_day.buckets.forEach((bucket) => {
         tmpData.data.push(bucket.doc_count);
+      });
+      media.category_id_per_day.buckets.forEach((bucket) => {
+        tmpData.date.push(bucket.key_as_string);
       });
       pieDatasets[0].percentages.push(
         ((media.doc_count / totalTones) * 100).toFixed(0)
       );
       pieDatasets[0].data.push(media.doc_count);
       pieDatasets[0].mediaIds.push(media.key);
+
       lineDatasets.push(tmpData);
     });
 
@@ -268,9 +282,13 @@ export class MediaVisibilityComponent {
       const data = visibility.category_id_per_day.buckets.map(
         (val) => val.doc_count
       );
+      const date = visibility.category_id_per_day.buckets.map(
+        (val) => val.key_as_string
+      );
       return {
         type: 'bar',
         data,
+        date,
         label: visibility.key,
       };
     });

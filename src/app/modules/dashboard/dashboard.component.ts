@@ -25,11 +25,19 @@ import { IconNotesComponent } from '../../core/components/icons/notes/notes.comp
 import { IconPeopleComponent } from '../../core/components/icons/people/people.component';
 import { IconPreferenceComponent } from '../../core/components/icons/preference/preference.component';
 import { User } from '../../core/models/user.model';
-import { USER_KEY, getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
+import {
+  USER_KEY,
+  getUserFromLocalStorage,
+} from '../../shared/utils/AuthUtils';
 import { ToggleDarkmodeComponent } from './components/toggle-darkmode/toggle-darkmode.component';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { IconGlobeComponent } from '../../core/components/icons/globe/globe.component';
 import { IconNewspaperComponent } from '../../core/components/icons/newspaper/newspaper.component';
+import { FilterService } from '../../core/services/filter.service';
+import { AppState } from '../../core/store';
+import { Store } from '@ngrx/store';
+import { setFilter } from '../../core/store/filter/filter.actions';
+import { initialState } from '../../core/store/filter/filter.reducer';
 
 @Component({
   selector: 'app-dashboard',
@@ -72,7 +80,7 @@ export class DashboardComponent implements OnInit {
 
   user: User | null = getUserFromLocalStorage();
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private store: Store<AppState>) {
     this.router.events.subscribe(() => {
       let currentRoute = this.router.routerState.root;
       while (currentRoute.firstChild) {
@@ -169,7 +177,8 @@ export class DashboardComponent implements OnInit {
         icon: 'pi pi-power-off',
         command: () => {
           window.localStorage.removeItem(USER_KEY);
-          this.router.navigateByUrl('login')
+          this.store.dispatch(setFilter({ filter: initialState }));
+          this.router.navigateByUrl('login');
         },
       },
     ];

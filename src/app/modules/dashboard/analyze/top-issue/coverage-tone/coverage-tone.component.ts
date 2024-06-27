@@ -26,6 +26,7 @@ import {
   NEGATIVE_TONE,
   NEUTRAL_TONE,
   POSITIVE_TONE,
+  TONE_MAP,
 } from '../../../../../shared/utils/Constants';
 import { Router } from '@angular/router';
 
@@ -279,6 +280,7 @@ export class CoverageToneComponent {
           backgroundColor: documentStyle.getPropertyValue('--negative-color'),
           tone: NEGATIVE_TONE,
           data: negativeValues,
+          date: chartLabels,
         },
         {
           type: 'bar',
@@ -286,6 +288,7 @@ export class CoverageToneComponent {
           backgroundColor: 'gray',
           tone: NEUTRAL_TONE,
           data: neutralValues,
+          date: chartLabels,
         },
         {
           type: 'bar',
@@ -293,6 +296,7 @@ export class CoverageToneComponent {
           backgroundColor: documentStyle.getPropertyValue('--positive-color'),
           tone: POSITIVE_TONE,
           data: positiveValues,
+          date: chartLabels,
         },
       ],
     };
@@ -392,13 +396,20 @@ export class CoverageToneComponent {
     let mediaId = null;
     let mediaName = null;
     let categoryName = null;
+    let date = null;
 
     if (type === 'chart') {
       const currentData =
         this.coverageChartData.datasets[value.element.datasetIndex];
       tone = currentData.tone;
+      date = currentData.date[value.element.index];
     } else if (type === 'pie_category') {
-      tone = this.coveragePieData.tones[value.element.datasetIndex];
+      const toneMap: any = {
+        0: 1,
+        1: -1,
+        2: 0,
+      };
+      tone = toneMap[value.element.index];
     } else if (type === 'media') {
       const currentData =
         this.toneByMediaChartData.datasets[value.element.datasetIndex];
@@ -421,6 +432,7 @@ export class CoverageToneComponent {
         mediaId,
         mediaName,
         categoryName,
+        date
       },
     });
   };

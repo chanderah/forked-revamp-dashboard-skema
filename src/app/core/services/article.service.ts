@@ -231,4 +231,24 @@ export class ArticleService {
       { params }
     );
   }
+
+  getTopArticles(
+    filter: FilterRequestPayload
+  ): Observable<{ data: Article[] }> {
+    const params = {
+      start_date: filter.start_date ? filter.start_date + ' 00:00:00' : '',
+      end_date: filter.end_date ? filter.end_date + ' 23:59:59' : '',
+      max_size: filter.max_size ?? 20,
+      page: 1,
+      media_id: filter.media_id ?? '',
+      category_set: filter.category_set ?? '',
+      user_media_type_id: filter.user_media_type_id ?? '',
+      tone: filter.tone ?? '',
+    };
+
+    return this.http.get<{ data: Article[] }>(
+      `${this.baseUrl}/v1/dashboard/top-articles`,
+      { params }
+    );
+  }
 }

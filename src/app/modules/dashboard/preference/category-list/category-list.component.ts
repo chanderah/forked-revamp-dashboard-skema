@@ -100,7 +100,10 @@ export class CategoryListComponent {
     this.loading = true;
     this.preferenceService.getCategories().subscribe((resp) => {
       this.loading = false;
-      this.categories = resp.results;
+      this.categories = resp.results.map((result, idx) => ({
+        ...result,
+        idx: idx + 1,
+      }));
       this.totalRecords = resp.count;
     });
   };

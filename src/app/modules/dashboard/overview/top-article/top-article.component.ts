@@ -20,6 +20,8 @@ import {
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
+import { ArticleService } from '../../../../core/services/article.service';
+import { FilterService } from '../../../../core/services/filter.service';
 
 @Component({
   selector: 'app-top-article',
@@ -43,24 +45,48 @@ export class TopArticleComponent {
   articles: Article[] = [];
   isLoading: boolean = false;
 
-  constructor(private store: Store<AppState>) {
+  constructor(
+    private store: Store<AppState>,
+    private articleService: ArticleService,
+    private filterService: FilterService
+  ) {
     this.overviewState = this.store.select(selectOverviewState);
     this.filterState = this.store.select(selectFilterState);
   }
 
+  fetchData = (filter: FilterRequestPayload) => {
+    this.isLoading = true;
+    this.articleService
+      .getTopArticles(filter)
+      .subscribe(({ data }) => {
+        // @ts-ignore
+        this.articles = data?.data ?? [];
+      })
+      .add(() => {
+        this.isLoading = false;
+      });
+  };
+
   ngOnInit() {
-    this.store.dispatch(
-      getUserEditingPlus({ filter: initialState as FilterRequestPayload })
-    );
-    this.overviewState.subscribe(({ topArticles }) => {
-      this.isLoading = topArticles.isLoading;
-      this.articles = topArticles.data;
+    this.filterService.subscribe((filter) => {
+      this.fetchData(filter);
     });
-    this.filterState.subscribe(this.onFilterChange);
   }
 
-  onFilterChange = (filterState: FilterState) => {
-    const filter = { ...filterState } as FilterRequestPayload;
-    this.store.dispatch(getUserEditingPlus({ filter }));
-  };
+  // ngOnInit() {
+
+  // this.store.dispatch(
+  //   getUserEditingPlus({ filter: initialState as FilterRequestPayload })
+  // );
+  // this.overviewState.subscribe(({ topArticles }) => {
+  //   this.isLoading = topArticles.isLoading;
+  //   this.articles = topArticles.data;
+  // });
+  // this.filterState.subscribe(this.onFilterChange);
+  // }
+
+  // onFilterChange = (filterState: FilterState) => {
+  //   const filter = { ...filterState } as FilterRequestPayload;
+  //   this.store.dispatch(getUserEditingPlus({ filter }));
+  // };
 }

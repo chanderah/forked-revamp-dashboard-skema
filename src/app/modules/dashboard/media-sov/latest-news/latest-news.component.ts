@@ -76,14 +76,5 @@ export class LatestNewsComponent {
     this.filterService.subscribe((filter) => {
       this.fetchData({ ...filter, media_id: this.prevMedia?.media_id });
     });
-    // this.mediaSOVState.pipe(pluck('media')).subscribe((data) => {
-    //   if (data && !_.isEqual(data?.media_id, this.prevMedia?.media_id)) {
-    //     this.prevMedia = data;
-    //     this.fetchData({
-    //       ...this.filterService.filter,
-    //       media_id: data?.media_id,
-    //     });
-    //   }
-    // });
   }
 }

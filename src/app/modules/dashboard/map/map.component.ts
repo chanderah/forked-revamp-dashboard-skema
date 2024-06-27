@@ -89,11 +89,9 @@ export class MapComponent {
     this.filterState.subscribe(this.onFilterChange);
   }
 
-  navigateInsideZone() {
+  navigateInsideZone(article_id: string) {
     this.ngZone.run(() => {
-      this.router.navigate(['/dashboard/map-articles'], {
-        queryParams: { location: this.selectedLoc },
-      });
+      this.router.navigate([`/dashboard/articles/${article_id}`]);
     });
   }
 
@@ -103,8 +101,8 @@ export class MapComponent {
     this.mapService
       .getAllCount(filter as FilterRequestPayload)
       .subscribe((data) => {
-        this.addGeoJSONLayer(data);
-        this.selectedLoc = null
+        this.addGeoJSONLayer(filter, data);
+        this.selectedLoc = null;
       });
   };
 
@@ -115,6 +113,7 @@ export class MapComponent {
     this.selectedLoc = location;
     let reqFilter = filter ?? initialState;
     if (location)
+      // @ts-ignore
       reqFilter = { ...reqFilter, geo_loc: location } as FilterRequestPayload;
     this.isLoadingArticles = true;
     this.mapService
@@ -149,7 +148,7 @@ export class MapComponent {
     legendControl.addTo(this.map);
   };
 
-  addGeoJSONLayer(data: AllCount): void {
+  addGeoJSONLayer(filter: any, data: AllCount): void {
     const getDataByLocation = (featureName: string) => {
       return data.data.find(
         (location) => location.key.toUpperCase() === featureName
@@ -179,7 +178,7 @@ export class MapComponent {
           layer.on({
             click: (e) => {
               const clickedFeatureName = e.target.feature.properties.name;
-              this.fetchArticlesByGeo(null, clickedFeatureName);
+              this.fetchArticlesByGeo(filter, clickedFeatureName);
             },
             mouseover: (e) => {
               const hoveredLayer = e.target;

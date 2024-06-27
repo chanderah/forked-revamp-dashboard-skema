@@ -97,8 +97,11 @@ export class FileExportComponent {
     this.loading = true;
     this.preferenceService.getColumns().subscribe((resp) => {
       this.loading = false;
-      this.columns = resp?.data ?? [];
-      this.totalRecords = resp?.data?.length ?? [];
+      this.columns = (resp.data ?? []).map((result, idx) => ({
+        ...result,
+        idx: idx + 1,
+      }));
+      this.totalRecords = resp?.data?.length ?? 0;
     });
   };
 

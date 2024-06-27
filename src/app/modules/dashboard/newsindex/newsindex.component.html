@@ -8,7 +8,9 @@
   <p-divider></p-divider>
   <div>
     <div class="flex justify-content-between align-items-center my-5">
-      <div class="text-sm">Article Found 0 / {{ totalRecords }}</div>
+      <div class="text-sm">
+        Article Found {{ selectedArticles.length }} / {{ totalRecords }}
+      </div>
       <div class="flex gap-2">
         <div>
           <span class="p-input-icon-right">
@@ -74,6 +76,53 @@
                 <div class="flex align-items-center gap-2">
                   Media Name
                   <i pSortableColumn="media_name" class="pi pi-angle-down"></i>
+                  <p-columnFilter
+                    field="tone"
+                    matchMode="in"
+                    display="menu"
+                    [showMatchModes]="false"
+                    [showOperator]="false"
+                    [showAddButton]="false"
+                    [showApplyButton]="false"
+                    [showClearButton]="false"
+                  >
+                    <ng-template
+                      pTemplate="filter"
+                      let-value
+                      let-filter="filterCallback"
+                    >
+                      <p-multiSelect
+                        [options]="toneOptions"
+                        optionLabel="label"
+                        [showHeader]="false"
+                        [(ngModel)]="selectedTones"
+                        placeholder="Select.."
+                      >
+                        <ng-template let-option pTemplate="item">
+                          <div class="inline-block vertical-align-middle">
+                            <span class="ml-1 mt-1">{{ option.label }}</span>
+                          </div>
+                        </ng-template>
+                      </p-multiSelect>
+                      <div class="flex gap-2">
+                        <button
+                          class="mt-4"
+                          pButton
+                          [outlined]="true"
+                          type="button"
+                          label="Clear"
+                          (click)="clear()"
+                        ></button>
+                        <button
+                          class="mt-4"
+                          pButton
+                          type="button"
+                          label="Apply"
+                          (click)="filterCallback()"
+                        ></button>
+                      </div>
+                    </ng-template>
+                  </p-columnFilter>
                 </div>
               </th>
               <th>
@@ -82,7 +131,9 @@
                   <i pSortablxxeColumn="title" class="pi pi-angle-down"></i>
                 </div>
               </th>
-              <th style="width: 4rem" class="text-center"><div>Preview</div></th>
+              <th style="width: 4rem" class="text-center">
+                <div>Preview</div>
+              </th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-article let-expanded="expanded">

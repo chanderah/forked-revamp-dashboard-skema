@@ -79,6 +79,7 @@ const highlightKeywords = (content: string, keywords: string[]): string => {
 })
 export class NewsindexComponent {
   articles!: Article[];
+  clearArticles!: Article[];
   totalRecords!: number;
   loading: boolean = false;
   selectedArticles: Article[] = [];
@@ -97,6 +98,30 @@ export class NewsindexComponent {
     issue: new FormControl(''),
     summary: new FormControl(''),
   });
+
+  selectedTones: any = [];
+  toneOptions = Object.keys(TONE_MAP).map((key) => ({
+    label: TONE_MAP[key],
+    value: key,
+  }));
+
+  filterCallback() {
+    const selectedToneValues = this.selectedTones.map(
+      (option: any) => +option.value
+    );
+    if (this.selectedTones.length) {
+      this.articles = this.clearArticles.filter((article) =>
+        selectedToneValues.includes(article.tone)
+      );
+    } else {
+      this.articles = this.clearArticles;
+    }
+  }
+
+  clear() {
+    this.selectedTones = [];
+    this.articles = this.clearArticles;
+  }
 
   updateToneItems: MenuItem[] = [
     {
@@ -154,7 +179,17 @@ export class NewsindexComponent {
       .getUserEditing({ ...initialState, ...filter } as FilterRequestPayload)
       .subscribe((resp) => {
         this.loading = false;
-        this.articles = resp.data;
+        const selectedToneValues = this.selectedTones.map(
+          (option: any) => +option.value
+        );
+        if (this.selectedTones.length) {
+          this.articles = resp.data.filter((article) =>
+            selectedToneValues.includes(article.tone)
+          );
+        } else {
+          this.articles = resp.data
+        }
+        this.clearArticles = resp.data;
         this.totalRecords = resp.recordsTotal;
       });
   };

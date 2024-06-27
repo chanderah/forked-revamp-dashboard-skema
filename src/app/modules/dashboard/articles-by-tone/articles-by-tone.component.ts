@@ -9,6 +9,7 @@ import { TitleCasePipe } from '../../../core/pipes/titlecase.pipe';
 import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
 import { ArticleListComponent } from '../../../core/components/article-list/article-list.component';
 import { TONE_MAP } from '../../../shared/utils/Constants';
+import moment from 'moment';
 
 @Component({
   selector: 'app-articles-by-tone',
@@ -23,6 +24,7 @@ export class ArticlesByToneComponent {
   tone: number | null = null;
   category_id: string | null = null;
   toneLabel: string | null = null;
+  date: string | null = null;
 
   articles: Article[] = [];
   page: number = 0;
@@ -41,12 +43,14 @@ export class ArticlesByToneComponent {
     const mediaName = this.route.snapshot.queryParamMap.get('mediaName')!;
     const tone = this.route.snapshot.queryParamMap.get('tone');
     const categoryName = this.route.snapshot.queryParamMap.get('categoryName');
+    const date = this.route.snapshot.queryParamMap.get('date');
 
     if (tone) {
       this.mediaId = +mediaId;
       this.mediaName = mediaName;
       this.tone = +tone;
       this.category_id = categoryName;
+      this.date = date;
       this.toneLabel = TONE_MAP[tone];
       this.filterService.subscribe((filter) => {
         this.fetchArticlesByTone(filter);
@@ -62,6 +66,12 @@ export class ArticlesByToneComponent {
       media_id: this?.mediaId ?? 0,
       tone: this?.tone ?? 0,
       category_id: this.category_id ?? 'all',
+      start_date: this.date
+        ? moment(this.date).format('YYYY-MM-DD')
+        : filter.start_date,
+      end_date: this.date
+        ? moment(this.date).format('YYYY-MM-DD')
+        : filter.end_date,
     };
     this.isLoading = true;
     this.articleService
