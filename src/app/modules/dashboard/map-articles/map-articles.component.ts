@@ -18,6 +18,10 @@ import { FilterService } from '../../../core/services/filter.service';
   styleUrl: './map-articles.component.scss',
 })
 export class MapArticlesComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   location: string | null = null;
   articles: Article[] = [];
   page: number = 0;
@@ -37,7 +41,7 @@ export class MapArticlesComponent {
     const location = this.route.snapshot.queryParamMap.get('location');
     this.location = location;
     if (location) {
-      this.filterService.subscribe((filter) => {
+      this.filter = this.filterService.subscribe((filter) => {
         this.fetchArticlesByGeo(location, 0, 6, filter);
       });
     } else {
@@ -45,7 +49,12 @@ export class MapArticlesComponent {
     }
   }
 
-  fetchArticlesByGeo = (location: string, page: number, rows: number, filter: any) => {
+  fetchArticlesByGeo = (
+    location: string,
+    page: number,
+    rows: number,
+    filter: any
+  ) => {
     this.isLoading = true;
     this.mapService
       .getArticleByGeo({
@@ -65,6 +74,11 @@ export class MapArticlesComponent {
     this.page = event.page;
     this.rows = event.rows;
     this.first = event.first;
-    this.fetchArticlesByGeo(this.location!, event.page, event.rows, this.filterService.filter);
+    this.fetchArticlesByGeo(
+      this.location!,
+      event.page,
+      event.rows,
+      this.filterService.filter
+    );
   };
 }

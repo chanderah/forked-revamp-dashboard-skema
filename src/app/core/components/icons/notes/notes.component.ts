@@ -21,7 +21,7 @@ import { Component, Input } from '@angular/core';
   `,
   styles: ``,
 })
-export class IconNotesComponent {
+export class IconNotesComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   @Input() class = '';
   @Input() fill = '#8A90AB';
 }

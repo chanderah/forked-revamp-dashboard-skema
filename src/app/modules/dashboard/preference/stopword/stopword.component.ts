@@ -54,7 +54,7 @@ interface StopwordData {
   templateUrl: './stopword.component.html',
   styleUrl: './stopword.component.scss',
 })
-export class StopwordComponent {
+export class StopwordComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   stopwords: StopwordData[] = [];
   totalRecords!: number;
   loading: boolean = false;

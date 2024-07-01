@@ -18,7 +18,7 @@ import {
 import { FilterRequestPayload } from '../../../core/models/request.model';
 import { AllCount } from '../../../core/models/all-count.model';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { AppState } from '../../../core/store';
 import { selectFilterState } from '../../../core/store/filter/filter.selectors';
 import { DividerModule } from 'primeng/divider';
@@ -48,6 +48,10 @@ import { FilterService } from '../../../core/services/filter.service';
   styleUrl: './map.component.scss',
 })
 export class MapComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   map: L.Map | null = null;
   geoJsonLayer: L.GeoJSON | null = null;
   selectedLoc: string | null = null;
@@ -72,7 +76,6 @@ export class MapComponent {
     zoomControl: false,
   };
 
-  filterState: Observable<FilterState>;
 
   constructor(
     private mapService: MapService,
@@ -82,11 +85,10 @@ export class MapComponent {
     private router: Router,
     private filterService: FilterService
   ) {
-    this.filterState = this.store.select(selectFilterState);
   }
 
   ngOnInit(): void {
-    this.filterState.subscribe(this.onFilterChange);
+    this.filter = this.filterService.subscribe(this.onFilterChange);
   }
 
   navigateInsideZone(article_id: string) {

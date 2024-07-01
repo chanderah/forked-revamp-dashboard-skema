@@ -5,7 +5,7 @@ import {
 } from '../../../../../core/components/chart-card/chart-card.component';
 import { ChartModule } from 'primeng/chart';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { AppState } from '../../../../../core/store';
 import { AnalyzeState } from '../../../../../core/store/analyze/analyze.reducer';
 import { selectAnalyzeState } from '../../../../../core/store/analyze/analyze.selectors';
@@ -35,7 +35,7 @@ import { AnalyzeService } from '../../../../../core/services/analyze.service';
   templateUrl: './media-visibility.component.html',
   styleUrl: './media-visibility.component.scss',
 })
-export class MediaVisibilityComponent {
+export class MediaVisibilityComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   visibilityChartLineData: any;
   visibilityChartLineOpts: any;
 
@@ -51,7 +51,6 @@ export class MediaVisibilityComponent {
   visibilityPiePlugins = [htmlLegendPlugin];
 
   analyzeState: Observable<AnalyzeState>;
-  filterState: Observable<FilterState>;
   isLoading: boolean = false;
 
   constructor(
@@ -61,7 +60,6 @@ export class MediaVisibilityComponent {
     private analyzeService: AnalyzeService
   ) {
     this.analyzeState = this.store.select(selectAnalyzeState);
-    this.filterState = this.store.select(selectFilterState);
 
     this.visibilityChartActionButton = {
       icon: 'pi-ellipsis-h',
@@ -86,7 +84,7 @@ export class MediaVisibilityComponent {
 
   ngOnInit() {
     this.initChartOpts();
-    this.filterService.subscribe((filter) => {
+    this.filter = this.filterService.subscribe((filter) => {
       this.isLoading = true;
       this.analyzeService.getMediaVisibility(filter).subscribe((data) => {
         this.isLoading = false;

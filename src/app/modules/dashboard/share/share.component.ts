@@ -35,7 +35,7 @@ import { ToastModule } from 'primeng/toast';
   templateUrl: './share.component.html',
   styleUrl: './share.component.scss',
 })
-export class ShareComponent {
+export class ShareComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   isLoadingMedias: boolean = false;
   mediaOptions: WartawanMedia[] = [];
   editorDeskOptions: { name: string; value: string }[] = [

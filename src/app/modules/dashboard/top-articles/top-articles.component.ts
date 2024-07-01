@@ -31,7 +31,7 @@ import { FilterService } from '../../../core/services/filter.service';
   templateUrl: './top-articles.component.html',
   styleUrl: './top-articles.component.scss',
 })
-export class TopArticlesComponent {
+export class TopArticlesComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   type: string | null = null;
   index: string = '0';
   articles: Article[] = [];
@@ -61,7 +61,7 @@ export class TopArticlesComponent {
   };
 
   async ngOnInit() {
-    this.filterService.subscribe((filter) => {
+    this.filter = this.filterService.subscribe((filter) => {
       this.fetchArticles(filter);
     });
   }

@@ -4,7 +4,7 @@ import { IconNewspaperComponent } from '../../../../core/components/icons/newspa
 import { CommonModule } from '@angular/common';
 import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { AppState } from '../../../../core/store';
 import {
@@ -39,6 +39,10 @@ import _ from 'lodash';
   styleUrl: './latest-news.component.scss',
 })
 export class LatestNewsComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   spokespersonState: Observable<SpokespersonState>;
   articles: Article[] = [];
   isLoading: boolean = false;

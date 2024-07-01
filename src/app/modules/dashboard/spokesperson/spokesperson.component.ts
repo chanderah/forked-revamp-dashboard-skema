@@ -16,7 +16,7 @@ import { MediaShareComponent } from './media-share/media-share.component';
   templateUrl: './spokesperson.component.html',
   styleUrl: './spokesperson.component.scss',
 })
-export class SpokespersonComponent {
+export class SpokespersonComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   influencer: any = null;
   media: any = null;
 

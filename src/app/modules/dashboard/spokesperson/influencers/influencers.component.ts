@@ -35,9 +35,8 @@ import { setInfluencer } from '../../../../core/store/spokesperson/spokesperson.
   templateUrl: './influencers.component.html',
   styleUrl: './influencers.component.scss',
 })
-export class InfluencersComponent {
+export class InfluencersComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   spokespersonState: Observable<SpokespersonState>;
-  filterState: Observable<FilterState>;
   influencerCount: InfluencerCount[] = [];
   isLoading: boolean = false;
   page = 1;
@@ -51,7 +50,6 @@ export class InfluencersComponent {
     private influencerService: InfluencerService
   ) {
     this.spokespersonState = this.store.select(selectSpokespersonState);
-    this.filterState = this.store.select(selectFilterState);
   }
 
   @Input() setInfluencer: any;
@@ -75,7 +73,7 @@ export class InfluencersComponent {
   };
 
   ngOnInit() {
-    this.filterService.subscribe((filter) => {
+    this.filter = this.filterService.subscribe((filter) => {
       this.page = 1;
       this.influencerCount = [];
       this.fetchData({ ...filter, page: this.page });

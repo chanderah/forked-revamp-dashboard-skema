@@ -20,4 +20,4 @@ import { HeadlineNewsComponent } from './headline-news/headline-news.component';
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.scss',
 })
-export class OverviewComponent {}
+export class OverviewComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}}

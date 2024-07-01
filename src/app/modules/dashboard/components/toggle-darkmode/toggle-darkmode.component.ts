@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './toggle-darkmode.component.html',
   styleUrl: './toggle-darkmode.component.scss',
 })
-export class ToggleDarkmodeComponent {
+export class ToggleDarkmodeComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   checked: boolean = false;
 
   constructor() {

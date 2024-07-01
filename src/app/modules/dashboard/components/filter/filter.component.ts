@@ -51,9 +51,7 @@ const DEFAULT_MEDIA: Option = {
   templateUrl: './filter.component.html',
   styleUrl: './filter.component.scss',
 })
-export class FilterComponent {
-  filterState: Observable<FilterState>;
-
+export class FilterComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   isCustom: boolean = false;
   selectedPeriodic: string = initialState.date_type;
   selectedCategory: number = initialState.category_set;
@@ -82,7 +80,6 @@ export class FilterComponent {
     private store: Store<AppState>,
     private preferenceService: PreferenceService
   ) {
-    this.filterState = this.store.select(selectFilterState);
     this.getCategoriesOptions();
     this.getSubCategoriesOptions();
     this.getMediaOptions();

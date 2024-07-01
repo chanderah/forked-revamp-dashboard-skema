@@ -30,9 +30,8 @@ interface MediaCountTiles {
   templateUrl: './overview-tiles.component.html',
   styleUrl: './overview-tiles.component.scss',
 })
-export class OverviewTilesComponent {
+export class OverviewTilesComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   overviewState: Observable<OverviewState>;
-  filterState: Observable<FilterState>;
   isLoading: boolean = false;
   mediaCount: MediaCountTiles = {
     online: 0,
@@ -47,11 +46,10 @@ export class OverviewTilesComponent {
     private overviewService: OverviewService
   ) {
     this.overviewState = this.store.select(selectOverviewState);
-    this.filterState = this.store.select(selectFilterState);
   }
 
   ngOnInit() {
-    this.filterService.subscribe((filter) => {
+    this.filter = this.filterService.subscribe((filter) => {
       this.isLoading = true;
       this.overviewService
         .getMediaCount(filter)

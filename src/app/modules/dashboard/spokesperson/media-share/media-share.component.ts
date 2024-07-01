@@ -21,7 +21,7 @@ import _ from 'lodash';
   templateUrl: './media-share.component.html',
   styleUrl: './media-share.component.scss',
 })
-export class MediaShareComponent {
+export class MediaShareComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   data: any;
   options: any;
   plugins = [htmlLegendPlugin];
@@ -61,7 +61,7 @@ export class MediaShareComponent {
   };
 
   ngOnInit() {
-    this.filterService.subscribe((filter) => {
+    this.filter = this.filterService.subscribe((filter) => {
       this.fetchData(filter);
     });
     const documentStyle = getComputedStyle(document.documentElement);

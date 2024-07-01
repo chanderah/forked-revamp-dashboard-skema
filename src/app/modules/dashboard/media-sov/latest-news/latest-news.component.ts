@@ -31,7 +31,7 @@ import { RouterLink } from '@angular/router';
   templateUrl: './latest-news.component.html',
   styleUrl: './latest-news.component.scss',
 })
-export class LatestNewsComponent {
+export class LatestNewsComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   articles: Article[] = [];
   isLoading: boolean = false;
   mediaSOVState: Observable<MediaSOVState>;
@@ -73,7 +73,7 @@ export class LatestNewsComponent {
   }
 
   ngOnInit() {
-    this.filterService.subscribe((filter) => {
+    this.filter = this.filterService.subscribe((filter) => {
       this.fetchData({ ...filter, media_id: this.prevMedia?.media_id });
     });
   }

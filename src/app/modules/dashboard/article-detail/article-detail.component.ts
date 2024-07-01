@@ -57,7 +57,7 @@ const highlightKeywords = (content: string, keywords: string[]): string => {
   styleUrl: './article-detail.component.scss',
   providers: [MessageService],
 })
-export class ArticleDetailComponent {
+export class ArticleDetailComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   article: (Article & { toneLabel: string }) | undefined;
   isLoading: boolean = false;
   sanitizedContent: SafeHtml | null = null;
@@ -176,7 +176,7 @@ export class ArticleDetailComponent {
       .subscribe(({ articleResp }) => {
         this.isLoading = false;
         const articleData = articleResp.data;
-        this.filterService.subscribe((filter) => {
+        this.filter = this.filterService.subscribe((filter) => {
           const hightligtedWords = highlightKeywords(
             articleData.content,
             articleData?.keywords ?? []

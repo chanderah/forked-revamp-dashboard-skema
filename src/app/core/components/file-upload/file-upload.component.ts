@@ -12,7 +12,7 @@ import { ButtonModule } from 'primeng/button';
   templateUrl: './file-upload.component.html',
   styleUrl: './file-upload.component.scss',
 })
-export class FileUploadComponent {
+export class FileUploadComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   @Input() form!: FormGroup;
 
   uploadedImageURL: SafeUrl | null = null;

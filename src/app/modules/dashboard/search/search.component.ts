@@ -41,7 +41,7 @@ const SEARCH_LOCAL_KEY = 'search_terms'
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
 })
-export class SearchComponent {
+export class SearchComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   selectedMedia: string = 'all';
   searchTerm: string = '';
   selectedContent: string = 'title';

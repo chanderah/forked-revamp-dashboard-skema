@@ -51,7 +51,6 @@ export class TopMediaComponent implements OnInit {
   plugins = [ChartDataLabels];
 
   overviewState: Observable<OverviewState>;
-  filterState: Observable<FilterState>;
   chartsData: any[] = [];
   isLoading: boolean = false;
 
@@ -62,11 +61,15 @@ export class TopMediaComponent implements OnInit {
     private toneService: ToneService
   ) {
     this.overviewState = this.store.select(selectOverviewState);
-    this.filterState = this.store.select(selectFilterState);
+  }
+  filter: any
+
+  ngOnDestroy() {
+    this.filter.unsubscribe()
   }
 
   ngOnInit() {
-    this.filterService.subscribe((filter) => {
+    this.filter = this.filterService.subscribe((filter) => {
       this.isLoading = true;
       this.toneService
         .getToneByMedia(filter)

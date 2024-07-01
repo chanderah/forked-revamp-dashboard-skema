@@ -10,6 +10,7 @@ import { SpinnerComponent } from '../../../core/components/spinner/spinner.compo
 import { ArticleListComponent } from '../../../core/components/article-list/article-list.component';
 import { TONE_MAP } from '../../../shared/utils/Constants';
 import moment from 'moment';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-articles-by-tone',
@@ -18,7 +19,7 @@ import moment from 'moment';
   templateUrl: './articles-by-tone.component.html',
   styleUrl: './articles-by-tone.component.scss',
 })
-export class ArticlesByToneComponent {
+export class ArticlesByToneComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   mediaId: number | null = null;
   mediaName: string | null = null;
   tone: number | null = null;
@@ -52,7 +53,7 @@ export class ArticlesByToneComponent {
       this.category_id = categoryName;
       this.date = date;
       this.toneLabel = TONE_MAP[tone];
-      this.filterService.subscribe((filter) => {
+      this.filter = this.filterService.subscribe((filter) => {
         this.fetchArticlesByTone(filter);
       });
     } else {

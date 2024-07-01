@@ -12,7 +12,7 @@ import { ChartCardComponent } from '../../../../core/components/chart-card/chart
   templateUrl: './media-chart.component.html',
   styleUrl: './media-chart.component.scss',
 })
-export class MediaChartComponent {
+export class MediaChartComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   @Input() data!: any;
   @Input() title!: string;
   @Input() onSelectTone!: (media_id: number, media_name: string, tone: number) => void;

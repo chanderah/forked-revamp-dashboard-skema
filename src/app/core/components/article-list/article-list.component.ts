@@ -14,7 +14,7 @@ import { DividerModule } from 'primeng/divider';
   templateUrl: './article-list.component.html',
   styleUrl: './article-list.component.scss'
 })
-export class ArticleListComponent {
+export class ArticleListComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   @Input() articles!: Article[];
   @Input() first!: number;
   @Input() rows!: number;

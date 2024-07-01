@@ -4,10 +4,13 @@ import { IconNewspaperComponent } from '../../../../core/components/icons/newspa
 import { ScrollerModule } from 'primeng/scroller';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { AppState } from '../../../../core/store';
-import { getArticlesByTone, getTones } from '../../../../core/store/analyze/analyze.actions';
+import {
+  getArticlesByTone,
+  getTones,
+} from '../../../../core/store/analyze/analyze.actions';
 import { AnalyzeState } from '../../../../core/store/analyze/analyze.reducer';
 import { selectAnalyzeState } from '../../../../core/store/analyze/analyze.selectors';
 import { Article } from '../../../../core/models/article.model';
@@ -26,12 +29,16 @@ import { RouterLink } from '@angular/router';
     CommonModule,
     SpinnerComponent,
     ImgFallbackDirective,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './featured-news.component.html',
   styleUrl: './featured-news.component.scss',
 })
 export class FeaturedNewsComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   analyzeState: Observable<AnalyzeState>;
   isLoading: boolean = false;
 
@@ -43,7 +50,9 @@ export class FeaturedNewsComponent {
 
   ngOnInit() {
     this.store.dispatch(
-      getArticlesByTone({ filter: {...initialState, tone: 0} as FilterRequestPayload })
+      getArticlesByTone({
+        filter: { ...initialState, tone: 0 } as FilterRequestPayload,
+      })
     );
     this.analyzeState.subscribe(({ articlesByTone }) => {
       this.articles = articlesByTone.data;
@@ -51,5 +60,3 @@ export class FeaturedNewsComponent {
     });
   }
 }
-
-

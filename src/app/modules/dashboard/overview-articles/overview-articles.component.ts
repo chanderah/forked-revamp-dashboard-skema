@@ -37,7 +37,7 @@ import { ArticleListComponent } from '../../../core/components/article-list/arti
   templateUrl: './overview-articles.component.html',
   styleUrl: './overview-articles.component.scss',
 })
-export class OverviewArticlesComponent {
+export class OverviewArticlesComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   type: string | null = null;
   index: string = '0';
   articles: Article[] = [];

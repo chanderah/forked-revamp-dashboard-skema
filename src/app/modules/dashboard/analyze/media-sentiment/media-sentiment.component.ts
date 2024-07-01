@@ -3,7 +3,7 @@ import { CardModule } from 'primeng/card';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import { ChartModule } from 'primeng/chart';
 import { IconRadioComponent } from '../../../../core/components/icons/radio/radio.component';
-import { Store,  } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppState } from '../../../../core/store';
 import { AnalyzeState } from '../../../../core/store/analyze/analyze.reducer';
@@ -21,7 +21,9 @@ import {
 import { ChartBar, Tones } from '../../../../core/models/tone.model';
 import moment from 'moment';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
-import _ from 'lodash'
+import _ from 'lodash';
+import { FilterService } from '../../../../core/services/filter.service';
+import { ToneService } from '../../../../core/services/tone.service';
 
 @Component({
   selector: 'app-media-sentiment',
@@ -37,31 +39,34 @@ import _ from 'lodash'
   styleUrl: './media-sentiment.component.scss',
 })
 export class MediaSentimentComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   analyzeState: Observable<AnalyzeState>;
-  filterState: Observable<FilterState>;
   isLoading: boolean = false;
   chartData: any;
-  tones: Tones | null = null
+  tones: Tones | null = null;
   options: any;
 
-  constructor(private store: Store<AppState>) {
+  constructor(
+    private store: Store<AppState>,
+    private filterService: FilterService,
+    private toneService: ToneService
+  ) {
     this.analyzeState = this.store.select(selectAnalyzeState);
-    this.filterState = this.store.select(selectFilterState);
   }
 
   ngOnInit() {
     this.initChartOpts();
-    this.store.dispatch(
-      getTones({ filter: initialState as FilterRequestPayload })
-    );
     this.analyzeState.subscribe(({ tones }) => {
       if (tones.data && !_.isEqual(this.tones, tones.data)) {
-        this.tones = tones.data
+        this.tones = tones.data;
         this.initChartData(tones.data);
       }
       this.isLoading = tones.isLoading;
     });
-    this.filterState.subscribe(this.onFilterChange);
+    this.filterService.subscribe(this.onFilterChange);
   }
 
   initChartData = (tones: Tones) => {
@@ -113,7 +118,9 @@ export class MediaSentimentComponent {
     );
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
     const isDarkModeStorage = window.localStorage.getItem('useDarkMode');
-    const isDarkMode = isDarkModeStorage ? JSON.parse(isDarkModeStorage) : false
+    const isDarkMode = isDarkModeStorage
+      ? JSON.parse(isDarkModeStorage)
+      : false;
 
     this.options = {
       maintainAspectRatio: false,

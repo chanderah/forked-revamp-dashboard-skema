@@ -28,7 +28,7 @@ import { setMedia } from '../../../../core/store/media-sov/media-sov.actions';
   templateUrl: './media-name.component.html',
   styleUrl: './media-name.component.scss',
 })
-export class MediaNameComponent {
+export class MediaNameComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   medias: MediaSOV[] = [];
   isLoading: boolean = false;
   selectedMedia: MediaSOV | null = null;
@@ -62,7 +62,7 @@ export class MediaNameComponent {
   };
 
   ngOnInit() {
-    this.filterService.subscribe((filter) => {
+    this.filter = this.filterService.subscribe((filter) => {
       this.page = 1;
       this.medias = [];
       this.fetchData({ ...filter } as FilterRequestPayload);

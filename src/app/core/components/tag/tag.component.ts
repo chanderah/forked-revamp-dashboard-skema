@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
   templateUrl: './tag.component.html',
   styleUrl: './tag.component.scss',
 })
-export class TagComponent {
+export class TagComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   @Input() content!: string;
   @Input() type!: 'positive' | 'negative' | 'neutral' | string | number;
 

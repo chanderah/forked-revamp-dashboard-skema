@@ -26,7 +26,7 @@ import _ from 'lodash';
   templateUrl: './sentiment.component.html',
   styleUrl: './sentiment.component.scss',
 })
-export class SentimentComponent {
+export class SentimentComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   isLoading: boolean = false;
   chartData: any;
   options: any;
@@ -58,7 +58,7 @@ export class SentimentComponent {
 
   ngOnInit() {
     this.initChartOpts();
-    this.filterService.subscribe((filter) => {
+    this.filter = this.filterService.subscribe((filter) => {
       this.fetchData(filter);
     });
     // this.mediaSOVState.pipe(pluck('media')).subscribe((data) => {

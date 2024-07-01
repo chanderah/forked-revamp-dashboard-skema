@@ -41,7 +41,7 @@ import _ from 'lodash';
   templateUrl: './statements.component.html',
   styleUrl: './statements.component.scss',
 })
-export class StatementsComponent {
+export class StatementsComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   spokespersonState: Observable<SpokespersonState>;
   influencers: InfluencerQuotes[] = [];
   isLoading: boolean = false;
@@ -80,7 +80,7 @@ export class StatementsComponent {
   };
 
   ngOnInit() {
-    this.filterService.subscribe((filter) => {
+    this.filter = this.filterService.subscribe((filter) => {
       if (this.selectedInfluencer && this.selectedMedia) {
         this.fetchData({
           ...filter,

@@ -51,7 +51,7 @@ import moment from 'moment';
   templateUrl: './sub-category-list.component.html',
   styleUrl: './sub-category-list.component.scss',
 })
-export class SubCategoryListComponent {
+export class SubCategoryListComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   categories: Category[] = [];
   totalRecords!: number;
   loading: boolean = false;

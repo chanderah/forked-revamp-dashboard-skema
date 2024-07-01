@@ -16,7 +16,7 @@ import { SentimentComponent } from './sentiment/sentiment.component';
   templateUrl: './media-sov.component.html',
   styleUrl: './media-sov.component.scss',
 })
-export class MediaSOVComponent {
+export class MediaSOVComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   media: any = null;
   tone: any = null;
 

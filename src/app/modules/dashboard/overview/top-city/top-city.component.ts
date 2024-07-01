@@ -40,9 +40,8 @@ import { FilterService } from '../../../../core/services/filter.service';
   templateUrl: './top-city.component.html',
   styleUrl: './top-city.component.scss',
 })
-export class TopCityComponent {
+export class TopCityComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   overviewState: Observable<OverviewState>;
-  filterState: Observable<FilterState>;
   cities: Location[] = [];
   totalArticles: number = 0;
   wordCloud: { text: string; value: number }[] = [];
@@ -56,11 +55,10 @@ export class TopCityComponent {
     private filterService: FilterService
   ) {
     this.overviewState = this.store.select(selectOverviewState);
-    this.filterState = this.store.select(selectFilterState);
   }
 
   ngOnInit() {
-    this.filterService.subscribe((filter) => {
+    this.filter = this.filterService.subscribe((filter) => {
       this.isAllCountLoading = true;
       this.overviewService
         .getAllCount(filter)

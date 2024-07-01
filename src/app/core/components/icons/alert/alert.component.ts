@@ -22,7 +22,7 @@ import { Component, Input } from '@angular/core';
   `,
   styles: `:host {line-height:0;}`,
 })
-export class IconAlertComponent {
+export class IconAlertComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   @Input() class = '';
   @Input() fill = '#FB3B52';
   @Input() width = 80;

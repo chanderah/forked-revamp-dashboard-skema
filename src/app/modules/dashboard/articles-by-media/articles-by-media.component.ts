@@ -17,7 +17,7 @@ import moment from 'moment';
   templateUrl: './articles-by-media.component.html',
   styleUrl: './articles-by-media.component.scss',
 })
-export class ArticlesByMediaComponent {
+export class ArticlesByMediaComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   mediaId: number | null = null;
   mediaName: string | null = null;
   date: string | null = null;
@@ -46,13 +46,13 @@ export class ArticlesByMediaComponent {
 
     if (mediaName) {
       this.mediaName = mediaName;
-      this.filterService.subscribe((filter) => {
+      this.filter = this.filterService.subscribe((filter) => {
         this.fetchArticlesPlus(filter);
       });
     } else if (topic) {
       this.topic = topic;
       this.isTopic = true;
-      this.filterService.subscribe((filter) => {
+      this.filter = this.filterService.subscribe((filter) => {
         this.fetchArticles(filter);
       });
     } else {

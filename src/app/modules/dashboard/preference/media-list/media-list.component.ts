@@ -54,7 +54,7 @@ import { TreeSelectModule } from 'primeng/treeselect';
   templateUrl: './media-list.component.html',
   styleUrl: './media-list.component.scss',
 })
-export class MediaListComponent {
+export class MediaListComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   medias: Media[] = [];
   totalRecords!: number;
   loading: boolean = false;

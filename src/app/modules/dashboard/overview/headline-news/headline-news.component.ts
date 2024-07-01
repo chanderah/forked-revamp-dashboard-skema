@@ -35,7 +35,7 @@ import { ArticleService } from '../../../../core/services/article.service';
   templateUrl: './headline-news.component.html',
   styleUrl: './headline-news.component.scss',
 })
-export class HeadlineNewsComponent {
+export class HeadlineNewsComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   articles: Article[] = [];
   isLoading: boolean = false;
 
@@ -65,7 +65,7 @@ export class HeadlineNewsComponent {
   };
 
   ngOnInit() {
-    this.filterService.subscribe((filter) => {
+    this.filter = this.filterService.subscribe((filter) => {
       this.fetchData({
         ...filter,
         // order_by: 'advalue_bw',

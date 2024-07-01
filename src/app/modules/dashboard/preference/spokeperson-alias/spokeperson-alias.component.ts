@@ -56,7 +56,7 @@ import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.di
   templateUrl: './spokeperson-alias.component.html',
   styleUrl: './spokeperson-alias.component.scss',
 })
-export class SpokepersonAliasComponent {
+export class SpokepersonAliasComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   categories: SpokepersonAlias[] = [];
   totalRecords!: number;
   loading: boolean = false;

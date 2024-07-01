@@ -39,6 +39,11 @@ import _ from 'lodash';
   styleUrl: './statements.component.scss',
 })
 export class StatementsComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+    this.prevMedia = null;
+  }
   articles: Article[] = [];
   isLoading: boolean = false;
   mediaSOVState: Observable<MediaSOVState>;
@@ -74,7 +79,7 @@ export class StatementsComponent {
   };
 
   ngOnInit() {
-    this.filterService.subscribe((filter) => {
+    this.filter = this.filterService.subscribe((filter) => {
       this.fetchData({ ...filter } as FilterRequestPayload);
     });
     // this.mediaSOVState
@@ -131,7 +136,4 @@ export class StatementsComponent {
     }
   }
 
-  ngOnDestroy() {
-    this.prevMedia = null;
-  }
 }

@@ -78,6 +78,10 @@ const highlightKeywords = (content: string, keywords: string[]): string => {
   styleUrl: './newsindex.component.scss',
 })
 export class NewsindexComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   articles!: Article[];
   clearArticles!: Article[];
   totalRecords!: number;
@@ -161,7 +165,7 @@ export class NewsindexComponent {
   ) {}
 
   ngOnInit() {
-    this.filterService.subscribe((filter) => {
+    this.filter = this.filterService.subscribe((filter) => {
       this.fetchData({ ...filter, page: this.page, size: this.rows });
     });
     this.searchText$
@@ -187,7 +191,7 @@ export class NewsindexComponent {
             selectedToneValues.includes(article.tone)
           );
         } else {
-          this.articles = resp.data
+          this.articles = resp.data;
         }
         this.clearArticles = resp.data;
         this.totalRecords = resp.recordsTotal;

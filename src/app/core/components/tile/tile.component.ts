@@ -24,7 +24,7 @@ import { RouterModule } from '@angular/router';
   templateUrl: './tile.component.html',
   styleUrl: './tile.component.scss',
 })
-export class TileComponent {
+export class TileComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   @Input() title!: string;
   @Input() content!: string | number;
   @Input() icon!: string;

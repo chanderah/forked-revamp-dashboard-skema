@@ -72,6 +72,10 @@ Chart.register(TreemapController, TreemapElement);
   styleUrl: './top-issue.component.scss',
 })
 export class TopIssueComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   // @ts-ignore
   @ViewChild('chartArea') private chartArea: ElementRef<HTMLCanvasElement> =
     null;
@@ -82,7 +86,6 @@ export class TopIssueComponent {
   downloadActive: boolean = false;
 
   analyzeState: Observable<AnalyzeState>;
-  filterState: Observable<FilterState>;
   isLoading: boolean = false;
   isDataExist: boolean = false;
 
@@ -111,7 +114,6 @@ export class TopIssueComponent {
     private cdr: ChangeDetectorRef
   ) {
     this.analyzeState = this.store.select(selectAnalyzeState);
-    this.filterState = this.store.select(selectFilterState);
     this.tabItems = [
       {
         label: 'Media Visibility',
@@ -240,7 +242,7 @@ export class TopIssueComponent {
       chart.update();
     });
     this.cdr.detectChanges();
-    this.filterState.subscribe(this.onFilterChange);
+    this.filterService.subscribe(this.onFilterChange);
   }
 
   onActiveItemChange(event: MenuItem) {

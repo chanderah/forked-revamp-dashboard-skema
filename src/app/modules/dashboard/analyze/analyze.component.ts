@@ -11,6 +11,6 @@ import { TopIssueComponent } from './top-issue/top-issue.component';
   templateUrl: './analyze.component.html',
   styleUrl: './analyze.component.scss'
 })
-export class AnalyzeComponent {
+export class AnalyzeComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
 
 }

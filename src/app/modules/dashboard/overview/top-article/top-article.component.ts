@@ -39,9 +39,8 @@ import { FilterService } from '../../../../core/services/filter.service';
   templateUrl: './top-article.component.html',
   styleUrl: './top-article.component.scss',
 })
-export class TopArticleComponent {
+export class TopArticleComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   overviewState: Observable<OverviewState>;
-  filterState: Observable<FilterState>;
   articles: Article[] = [];
   isLoading: boolean = false;
 
@@ -51,7 +50,6 @@ export class TopArticleComponent {
     private filterService: FilterService
   ) {
     this.overviewState = this.store.select(selectOverviewState);
-    this.filterState = this.store.select(selectFilterState);
   }
 
   fetchData = (filter: FilterRequestPayload) => {
@@ -68,7 +66,7 @@ export class TopArticleComponent {
   };
 
   ngOnInit() {
-    this.filterService.subscribe((filter) => {
+    this.filter = this.filterService.subscribe((filter) => {
       this.fetchData(filter);
     });
   }

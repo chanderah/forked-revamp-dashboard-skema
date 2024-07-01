@@ -61,7 +61,7 @@ import { Category } from '../../../../core/models/category.model';
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.scss',
 })
-export class CategoryListComponent {
+export class CategoryListComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   categories: Category[] = [];
   totalRecords!: number;
   loading: boolean = false;

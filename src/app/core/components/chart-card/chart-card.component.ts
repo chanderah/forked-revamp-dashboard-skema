@@ -29,7 +29,7 @@ export interface ActionButtonProps {
   templateUrl: './chart-card.component.html',
   styleUrl: './chart-card.component.scss',
 })
-export class ChartCardComponent {
+export class ChartCardComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   @Input() title!: string;
   @Input() actionButton: ActionButtonProps | undefined;
 }

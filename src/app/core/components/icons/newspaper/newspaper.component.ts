@@ -20,7 +20,7 @@ import { Component, Input } from '@angular/core';
   `,
   styles: `:host {line-height:0;}`,
 })
-export class IconNewspaperComponent {
+export class IconNewspaperComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   @Input() class = '';
   @Input() fill = '#8A90AB';
   @Input() width = 25;

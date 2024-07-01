@@ -6,7 +6,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../../../../core/store';
 import { selectAnalyzeState } from '../../../../../core/store/analyze/analyze.selectors';
 import { selectFilterState } from '../../../../../core/store/filter/filter.selectors';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, Subject, forkJoin } from 'rxjs';
 import { AnalyzeState } from '../../../../../core/store/analyze/analyze.reducer';
 import {
   FilterState,
@@ -42,8 +42,11 @@ const documentStyle = getComputedStyle(document.documentElement);
   styleUrl: './coverage-tone.component.scss',
 })
 export class CoverageToneComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   analyzeState: Observable<AnalyzeState>;
-  filterState: Observable<FilterState>;
   isLoading: boolean = false;
 
   coverageChartData: any;
@@ -72,24 +75,25 @@ export class CoverageToneComponent {
     private filterService: FilterService
   ) {
     this.analyzeState = this.store.select(selectAnalyzeState);
-    this.filterState = this.store.select(selectFilterState);
   }
 
   ngOnInit() {
-    this.filterService.subscribe((filter) => {
-      this.isLoading = true
+    this.filter = this.filterService.subscribe((filter) => {
+      this.isLoading = true;
       forkJoin([
         this.toneService.getTones(filter),
         this.toneService.getToneByCategory(filter),
         this.toneService.getToneByMedia(filter),
-      ]).subscribe(([tones, toneByCategory, toneByMedia]) => {
-        this.initCoveragePie(tones.data);
-        this.initCoverageChart(tones.data);
-        this.initToneByCategoryChart(toneByCategory.data);
-        this.initToneByMediaChart(toneByMedia.data);
-      }).add(() => {
-        this.isLoading = false
-      })
+      ])
+        .subscribe(([tones, toneByCategory, toneByMedia]) => {
+          this.initCoveragePie(tones.data);
+          this.initCoverageChart(tones.data);
+          this.initToneByCategoryChart(toneByCategory.data);
+          this.initToneByMediaChart(toneByMedia.data);
+        })
+        .add(() => {
+          this.isLoading = false;
+        });
     });
   }
 

@@ -53,7 +53,7 @@ import { DropdownModule } from 'primeng/dropdown';
   templateUrl: './file-export.component.html',
   styleUrl: './file-export.component.scss',
 })
-export class FileExportComponent {
+export class FileExportComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
   columns: Column[] = [];
   totalRecords!: number;
   loading: boolean = false;

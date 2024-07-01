@@ -9,7 +9,7 @@ import { selectFilterState } from '../../../../core/store/filter/filter.selector
 import { AppState } from '../../../../core/store';
 import { Store } from '@ngrx/store';
 import { AnalyzeState } from '../../../../core/store/analyze/analyze.reducer';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import {
   FilterState,
   initialState,
@@ -40,8 +40,8 @@ import { ArticleService } from '../../../../core/services/article.service';
   styleUrl: './latest-news.component.scss',
 })
 export class LatestNewsComponent {
+  filter: any;
   analyzeState: Observable<AnalyzeState>;
-  filterState: Observable<FilterState>;
   articles: Article[] = [];
   isLoading: boolean = false;
   responsiveOptions:
@@ -54,7 +54,6 @@ export class LatestNewsComponent {
     private articleService: ArticleService
   ) {
     this.analyzeState = this.store.select(selectAnalyzeState);
-    this.filterState = this.store.select(selectFilterState);
 
     this.responsiveOptions = [
       {
@@ -75,8 +74,12 @@ export class LatestNewsComponent {
     ];
   }
 
+  ngOnDestroy() {
+    this.filter.unsubscribe()
+  }
+
   ngOnInit() {
-    this.filterService.subscribe((filter) => {
+    this.filter = this.filterService.subscribe((filter) => {
       this.isLoading = true;
 
       this.articleService

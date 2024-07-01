@@ -22,4 +22,4 @@ import { FileExportComponent } from './file-export/file-export.component';
   templateUrl: './preference.component.html',
   styleUrl: './preference.component.scss',
 })
-export class PreferenceComponent {}
+export class PreferenceComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}}
