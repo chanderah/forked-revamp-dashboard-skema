@@ -20,6 +20,8 @@ import { Observable } from 'rxjs';
 import { AuthState } from '../../core/store/auth/auth.reducer';
 import { selectAuthState } from '../../core/store/auth/auth.selectors';
 import { getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
+import { setFilter } from '../../core/store/filter/filter.actions';
+import { initialState } from '../../core/store/filter/filter.reducer';
 
 @Component({
   selector: 'app-login',
@@ -57,7 +59,7 @@ export class LoginComponent implements OnInit {
     if (data) {
       const checked = JSON.parse(data);
       if (checked) window.document.body.classList.add('dark');
-      else window.document.body.classList.remove('dark')
+      else window.document.body.classList.remove('dark');
     }
   }
 
@@ -80,6 +82,7 @@ export class LoginComponent implements OnInit {
 
   login() {
     const { username, password } = this.loginForm.value;
+    this.store.dispatch(setFilter({ filter: initialState }));
     this.store.dispatch(
       AuthActions.login({ username: username!, password: password! })
     );

@@ -164,6 +164,8 @@ export class NewsindexComponent {
     private sanitizer: DomSanitizer
   ) {}
 
+  term: any = '';
+
   ngOnInit() {
     this.filter = this.filterService.subscribe((filter) => {
       this.fetchData({ ...filter, page: this.page, size: this.rows });
@@ -173,6 +175,7 @@ export class NewsindexComponent {
       .subscribe((value) => {
         this.page = 0;
         this.first = 0;
+        this.term = value;
         this.fetchData({ page: 0, term: value, size: this.rows });
       });
   }
@@ -180,7 +183,11 @@ export class NewsindexComponent {
   fetchData = (filter?: Partial<FilterRequestPayload>) => {
     this.loading = true;
     this.articleService
-      .getUserEditing({ ...initialState, ...filter } as FilterRequestPayload)
+      .getUserEditing({
+        ...this.filterService.filter,
+        ...filter,
+        term: this.term
+      } as FilterRequestPayload)
       .subscribe((resp) => {
         this.loading = false;
         const selectedToneValues = this.selectedTones.map(

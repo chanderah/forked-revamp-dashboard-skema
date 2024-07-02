@@ -177,7 +177,6 @@ export class DashboardComponent implements OnInit {
         icon: 'pi pi-power-off',
         command: () => {
           window.localStorage.removeItem(USER_KEY);
-          this.store.dispatch(setFilter({ filter: initialState }));
           this.router.navigateByUrl('login');
         },
       },
