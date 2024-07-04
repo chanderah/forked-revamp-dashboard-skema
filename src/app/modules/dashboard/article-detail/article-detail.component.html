@@ -21,6 +21,10 @@
         <div class="text-sm">
           <div>
             <span class="font-semibold">Jurnalist:</span>
+            {{ article?.journalist ?? "-" }}
+          </div>
+          <div>
+            <span class="font-semibold">Media Name:</span>
             {{ article?.media_name ?? "-" }}
           </div>
           <div>
@@ -59,7 +63,7 @@
       ></tag>
     </div>
 
-    <button pButton size="small" [outlined]="true" (click)="openEditModal()">
+    <button pButton class="mt-4" size="small" [outlined]="true" (click)="openEditModal()">
       Save Article
     </button>
 
