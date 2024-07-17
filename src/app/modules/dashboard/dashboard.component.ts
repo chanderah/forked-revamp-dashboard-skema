@@ -80,6 +80,15 @@ export class DashboardComponent implements OnInit {
 
   user: User | null = getUserFromLocalStorage();
 
+  userCompLevelMap: { [x: string]: string } = {
+    1: 'Viewer',
+    2: 'Editor',
+    3: 'Admin Analyst',
+    4: 'Custom',
+    6: 'Super Admin',
+    7: 'Analyst',
+  };
+
   constructor(private router: Router, private store: Store<AppState>) {
     this.router.events.subscribe(() => {
       let currentRoute = this.router.routerState.root;

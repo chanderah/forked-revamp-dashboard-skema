@@ -19,6 +19,7 @@ import { FilterRequestPayload } from '../../../core/models/request.model';
 import { getMediaCountArticles } from '../../../core/store/articles/articles.actions';
 import { selectArticlesState } from '../../../core/store/articles/articles.selectors';
 import { ArticleListComponent } from '../../../core/components/article-list/article-list.component';
+import { FilterService } from '../../../core/services/filter.service';
 
 @Component({
   selector: 'app-overview-articles',
@@ -51,7 +52,8 @@ export class OverviewArticlesComponent{ filter: any; ngOnDestroy(){this.filter?.
   constructor(
     private route: ActivatedRoute,
     private store: Store<AppState>,
-    private overviewService: OverviewService
+    private overviewService: OverviewService,
+    private filterService: FilterService
   ) {}
 
   fetchArticles = (mediaCount: MediaCount, page: number, size: number) => {
@@ -80,14 +82,6 @@ export class OverviewArticlesComponent{ filter: any; ngOnDestroy(){this.filter?.
     if (currentMedia) {
       this.currentMedia = currentMedia;
       this.fetchArticles(currentMedia, 0, 16);
-    } else {
-      this.overviewService
-        .getMediaCount(initialState as FilterRequestPayload)
-        .subscribe((resp) => {
-          const currentMedia = resp.data[+this.index];
-          this.currentMedia = currentMedia
-          this.fetchArticles(currentMedia, 0, 16);
-        });
     }
 
     this.store
@@ -99,6 +93,16 @@ export class OverviewArticlesComponent{ filter: any; ngOnDestroy(){this.filter?.
           this.totalRecords = mediaCountArticles.data.recordsTotal;
         }
       });
+
+    this.filterService.subscribe((filter) => {
+      this.overviewService
+      .getMediaCount(filter as FilterRequestPayload)
+      .subscribe((resp) => {
+        const currentMedia = resp.data[+this.index];
+        this.currentMedia = currentMedia
+        this.fetchArticles(currentMedia, 0, 16);
+      });
+    })
   }
 
   onPageChange = (event: any) => {

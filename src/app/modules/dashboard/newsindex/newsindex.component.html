@@ -350,6 +350,7 @@
       (click)="updateArticle()"
       label="Save"
       pAutoFocus
+      [disabled]="!user?.stat_edit"
       [loading]="isUpdating"
       [autofocus]="true"
     ></p-button>

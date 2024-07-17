@@ -38,6 +38,8 @@ import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import _ from 'lodash';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { getUserFromLocalStorage } from '../../../shared/utils/AuthUtils';
+import { User } from '../../../core/models/user.model';
 
 const highlightKeywords = (content: string, keywords: string[]): string => {
   const cleanedKeywords = keywords.map((keyword) => keyword.replace(/"/g, ''));
@@ -109,6 +111,8 @@ export class NewsindexComponent {
     value: key,
   }));
 
+  user: User | null = getUserFromLocalStorage();
+
   filterCallback() {
     const selectedToneValues = this.selectedTones.map(
       (option: any) => +option.value
@@ -138,6 +142,7 @@ export class NewsindexComponent {
     },
     {
       label: 'Update Tone',
+      disabled: !this?.user?.stat_edit,
       items: [
         {
           label: 'Posivite',

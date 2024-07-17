@@ -79,7 +79,13 @@
             <div class="m-0 text-sm">
               {{ user?.usr_comp_name ?? "-" }}
             </div>
-            <div class="m-0 text-gray-500 text-xs">Admin</div>
+            <div class="m-0 text-gray-500 text-xs">
+              {{
+                user?.usr_comp_level
+                  ? userCompLevelMap[user?.usr_comp_level ?? "-"]
+                  : "-"
+              }}
+            </div>
           </div>
           <p-tieredMenu
             #menu
@@ -122,9 +128,7 @@
     </section>
   </div>
 </main>
-<footer
-  class="border-top-1 border-200"
->
+<footer class="border-top-1 border-200">
   <div class="flex justify-content-between py-2 px-4">
     <p>Copyright © 2024 Skema Data Indonesia. All Rights Reserved.</p>
     <div class="flex align-items-center gap-4">
