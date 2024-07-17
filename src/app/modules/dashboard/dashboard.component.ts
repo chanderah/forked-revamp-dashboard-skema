@@ -127,7 +127,7 @@ export class DashboardComponent implements OnInit {
       },
       {
         label: 'News Index',
-        routerLink: 'newsindex',
+        routerLink: 'news-index',
       },
       {
         label: 'Preference',
@@ -149,7 +149,7 @@ export class DashboardComponent implements OnInit {
       analyze: 'Analyze',
       spokesperson: 'Spokesperson',
       'media-sov': 'Media SOV',
-      newsindex: 'News Index',
+      'news-index': 'News Index',
       preference: 'Preference',
       'overview-articles': 'Articles',
       map: 'Map',

@@ -1,4 +1,4 @@
-import { Route } from '@angular/router';
+import { mapToCanActivate, Route } from '@angular/router';
 import { OverviewComponent } from './overview/overview.component';
 import { DashboardComponent } from './dashboard.component';
 import { AnalyzeComponent } from './analyze/analyze.component';
@@ -16,6 +16,7 @@ import { TopArticlesComponent } from './top-articles/top-articles.component';
 import { ArticlesByMediaComponent } from './articles-by-media/articles-by-media.component';
 import { SearchComponent } from './search/search.component';
 import { ArticlesComponent } from './articles/articles.component';
+import { AuthGuardService } from '../../core/guards/auth-guard.service';
 
 interface ChildrenRoute extends Route {
   withFilter?: boolean;
@@ -40,53 +41,62 @@ export const DashboardRoutes: DashboardRoutesProps[] = [
         path: 'overview',
         title: 'Overview',
         component: OverviewComponent,
+        canActivate: mapToCanActivate([AuthGuardService]),
         withFilter: true,
       },
       {
         path: 'analyze',
         title: 'Analyze',
         component: AnalyzeComponent,
+        canActivate: mapToCanActivate([AuthGuardService]),
         withFilter: true,
       },
       {
         path: 'spokesperson',
         title: 'Spokesperson',
         component: SpokespersonComponent,
+        canActivate: mapToCanActivate([AuthGuardService]),
         withFilter: true,
       },
       {
         path: 'media-sov',
         title: 'Media SOV',
         component: MediaSOVComponent,
+        canActivate: mapToCanActivate([AuthGuardService]),
         withFilter: true,
       },
       {
         path: 'map',
         title: 'Map',
         component: MapComponent,
+        canActivate: mapToCanActivate([AuthGuardService]),
         withFilter: true,
       },{
         path: 'map-articles',
         title: 'Map Articles',
         component: MapArticlesComponent,
+        
         withFilter: true,
       },
       {
-        path: 'newsindex',
+        path: 'news-index',
         title: 'News Index',
         component: NewsindexComponent,
+        canActivate: mapToCanActivate([AuthGuardService]),
         withFilter: true,
       },
       {
         path: 'preference',
         title: 'Preference',
         component: PreferenceComponent,
+        canActivate: mapToCanActivate([AuthGuardService]),
         withFilter: true,
       },
       {
         path: 'share',
         title: 'Share',
         component: ShareComponent,
+        canActivate: mapToCanActivate([AuthGuardService]),
         withFilter: true,
       },
       {
