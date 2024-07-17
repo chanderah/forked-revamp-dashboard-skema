@@ -104,7 +104,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     const currentLocation = window.location.href.split('/').pop();
     this.navActiveItem = currentLocation;
-    this.navItems = [
+    const navItems: any = [
       {
         label: 'Overview',
         routerLink: 'overview',
@@ -138,6 +138,11 @@ export class DashboardComponent implements OnInit {
         routerLink: 'share',
       },
     ];
+    this.navItems = navItems.filter((navItem: any) => {
+      return this.user?.menu
+        ?.map((m) => m.toLowerCase())
+        .includes(navItem.routerLink);
+    });
 
     const breadCrumbLabelMap: { [x: string]: string } = {
       overview: 'Overview',
