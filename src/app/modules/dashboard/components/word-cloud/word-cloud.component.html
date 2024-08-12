@@ -1,0 +1,16 @@
+<spinner [spinning]="isLoading">
+  <div
+    style="background-color: var(--card-color); width: max-content"
+    class="border-1 border-200"
+  >
+    <angular-d3-cloud
+      [data]="data"
+      [width]="width"
+      [height]="height"
+      font="serif"
+      [rotate]="0"
+      [autoFill]="true"
+      [fontSizeMapper]="wordCloudFontSizeMapper"
+    ></angular-d3-cloud>
+  </div>
+</spinner>

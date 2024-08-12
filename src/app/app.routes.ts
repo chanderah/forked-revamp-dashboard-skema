@@ -20,4 +20,5 @@ export const routes: Routes = [
         (module) => module.LoginComponent
       ),
   },
+  { path: '**', redirectTo: '' },
 ];

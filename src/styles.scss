@@ -82,6 +82,10 @@ button {
   fill: var(--primary-color) !important;
 }
 
+.fill-secondary {
+  fill: var(--text-color-secondary) !important;
+}
+
 .fill-negative {
   fill: var(--negative-color) !important;
 }
@@ -165,7 +169,9 @@ body.dark {
     }
   }
 
-  .p-dropdown-panel .p-dropdown-items .p-dropdown-item:not(.p-highlight):not(.p-disabled):hover {
+  .p-dropdown-panel
+    .p-dropdown-items
+    .p-dropdown-item:not(.p-highlight):not(.p-disabled):hover {
     background-color: var(--bg-color);
   }
 

@@ -1,0 +1,7 @@
+<div class="w-full">
+  <word-cloud
+    [data]="wordCloudData"
+    [isLoading]="isLoadingWordCloud"
+    [largestValue]="res.data[0].weight || 0"
+  ></word-cloud>
+</div>

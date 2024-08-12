@@ -15,58 +15,29 @@
       />
     </ng-template>
     <ng-template pTemplate="center">
-      <p-tabMenu
-        class="nav"
-        [model]="navItems"
-        (activeItemChange)="onActiveItemChange($event)"
-      >
+      <p-tabMenu class="nav" [model]="navItems">
         <ng-template pTemplate="item" let-item>
           <a
             [routerLink]="item.routerLink"
             class="p-menuitem-link flex justify-content-between align-items-center"
           >
             <div class="flex align-items-center gap-2">
-              <icon-home
-                *ngIf="item.routerLink === 'overview'"
-                [class]="navActiveItem === 'overview' ? 'fill-primary' : ''"
-              ></icon-home>
-              <icon-chart
-                *ngIf="item.routerLink === 'analyze'"
-                [class]="navActiveItem === 'analyze' ? 'fill-primary' : ''"
-              ></icon-chart>
-              <icon-newspaper
-                [width]="20"
-                *ngIf="item.routerLink === 'media-sov'"
-                [class]="navActiveItem === 'media-sov' ? 'fill-primary' : ''"
-              ></icon-newspaper>
-              <icon-globe
-                [width]="20"
-                *ngIf="item.routerLink === 'map'"
-                [class]="navActiveItem === 'map' ? 'fill-primary' : ''"
-              ></icon-globe>
-              <icon-people
-                *ngIf="item.routerLink === 'spokesperson'"
-                [class]="navActiveItem === 'spokesperson' ? 'fill-primary' : ''"
-              ></icon-people>
-              <icon-notes
-                *ngIf="item.routerLink === 'news-index'"
-                [class]="navActiveItem === 'news-index' ? 'fill-primary' : ''"
-              ></icon-notes>
-              <icon-preference
-                *ngIf="item.routerLink === 'preference'"
-                [class]="navActiveItem === 'preference' ? 'fill-primary' : ''"
-              ></icon-preference>
-              <icon-cable
-                *ngIf="item.routerLink === 'share'"
-                [class]="navActiveItem === 'share' ? 'fill-primary' : ''"
-              ></icon-cable>
+              <svg-icon
+                [src]="item.icon"
+                [svgClass]="
+                  currentRoute === item.routerLink
+                    ? 'fill-primary'
+                    : 'fill-secondary'
+                "
+              ></svg-icon>
+
               <div class="text-xs font-medium text-color white-space-nowrap">
                 {{ item.label }}
               </div>
             </div>
           </a>
-        </ng-template></p-tabMenu
-      >
+        </ng-template>
+      </p-tabMenu>
     </ng-template>
     <ng-template pTemplate="end">
       <div class="flex align-items-center gap-4">
