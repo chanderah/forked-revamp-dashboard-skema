@@ -7,6 +7,7 @@ import { SocialMediaService } from '../../../core/services/social-media.service'
 import { WordCloudComponent } from '../components/word-cloud/word-cloud.component';
 import { IconNewspaperComponent } from '../../../core/components/icons/newspaper/newspaper.component';
 import { IconInfoComponent } from '../../../core/components/icons/info/info.component';
+import { FilterService } from '../../../core/services/filter.service';
 
 @Component({
   selector: 'app-social-media-overview',
@@ -44,14 +45,28 @@ export class SocialMediaOverviewComponent {
     { type: 'tagcloud', title: 'Word Cloud', isLoading: true },
   ];
 
-  constructor(private service: SocialMediaService) {}
+  constructor(
+    private service: SocialMediaService,
+    private filterService: FilterService
+  ) {}
 
   ngOnInit(): void {
+    this.filterService.subscribe(({ start_date, end_date }) => {
+      this.getData(start_date, end_date);
+    });
+  }
+
+  getData(startDate: string, endDate: string) {
+    this.listCharts.forEach((v) => {
+      // v.data = undefined;
+      v.isLoading = true;
+    });
+
     from(this.listCharts)
       .pipe(
         mergeMap((chart) =>
           this.service
-            .getChart({ type: chart.type })
+            .getChart({ type: chart.type, startDate, endDate })
             .pipe(
               mergeMap((res: any) => [{ type: chart.type, data: res?.data }])
             )

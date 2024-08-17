@@ -12,8 +12,8 @@ export class SocialMediaService {
   getChart(req: RequestGetChart) {
     return this.httpClient.get(`${BASE_URL}/v1/socmed/charts/${req.type}`, {
       params: {
-        start_date: '2024-01-01',
-        end_date: '2024-01-02',
+        start_date: req.startDate,
+        end_date: req.endDate,
       },
     });
   }

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { HighchartsChartModule } from 'highcharts-angular';
@@ -12,7 +12,7 @@ import lightTheme from 'highcharts/themes/avocado';
 @Component({
   selector: 'app-highcharts',
   standalone: true,
-  imports: [CommonModule, HighchartsChartModule, SpinnerComponent],
+  imports: [NgIf, HighchartsChartModule, SpinnerComponent],
   templateUrl: './highcharts.component.html',
   styleUrl: './highcharts.component.scss',
 })

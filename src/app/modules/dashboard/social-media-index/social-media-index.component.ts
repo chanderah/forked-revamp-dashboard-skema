@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { from, mergeMap } from 'rxjs';
 import { HighchartsComponent } from '../../../core/components/highcharts/highcharts.component';
 import { ChartType } from '../../../core/models/social-media';
 import { SocialMediaService } from '../../../core/services/social-media.service';
@@ -24,19 +23,19 @@ export class SocialMediaIndexComponent {
   constructor(private service: SocialMediaService) {}
 
   ngOnInit(): void {
-    from(this.listCharts)
-      .pipe(
-        mergeMap((chart) =>
-          this.service
-            .getChart({ type: chart.type })
-            .pipe(
-              mergeMap((res: any) => [{ type: chart.type, data: res?.data }])
-            )
-        )
-      )
-      .subscribe((res) => {
-        const i = this.listCharts.findIndex((v) => v.type === res.type);
-        if (i > -1) this.listCharts[i].data = res.data;
-      });
+    // from(this.listCharts)
+    //   .pipe(
+    //     mergeMap((chart) =>
+    //       this.service
+    //         .getChart({ type: chart.type,  })
+    //         .pipe(
+    //           mergeMap((res: any) => [{ type: chart.type, data: res?.data }])
+    //         )
+    //     )
+    //   )
+    //   .subscribe((res) => {
+    //     const i = this.listCharts.findIndex((v) => v.type === res.type);
+    //     if (i > -1) this.listCharts[i].data = res.data;
+    //   });
   }
 }
