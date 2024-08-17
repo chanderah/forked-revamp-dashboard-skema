@@ -1,9 +1,9 @@
 {
   "name": "revamp-dashboard-skema",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "scripts": {
     "ng": "ng",
-    "dev": "npm install && npm run start",
+    "dev": "npm i --force && npm run start",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
@@ -27,6 +27,8 @@
     "chart.js": "^4.4.3",
     "chartjs-chart-treemap": "^2.3.1",
     "chartjs-plugin-datalabels": "^2.2.0",
+    "highcharts": "^11.4.7",
+    "highcharts-angular": "^4.0.1",
     "html2canvas": "^1.4.1",
     "leaflet": "^1.9.4",
     "lodash": "^4.17.21",

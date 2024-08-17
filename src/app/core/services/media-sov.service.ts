@@ -1,16 +1,17 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { BASE_URL } from '../api';
+import { Article } from '../models/article.model';
 import { MediaSOV, MediaTone } from '../models/media.model';
 import { FilterRequestPayload } from '../models/request.model';
-import { Article } from '../models/article.model';
-import { BASE_URL } from '../api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MediaSOVService {
   private baseUrl = BASE_URL;
+
   constructor(private http: HttpClient) {}
 
   getMedias(filter: FilterRequestPayload): Observable<{ data: MediaSOV[] }> {

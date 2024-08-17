@@ -130,13 +130,13 @@ export class DashboardComponent implements OnInit {
         icon: '../../../assets/icons/notes.svg',
       },
       {
-        label: 'Social Media Index',
-        routerLink: 'social-media-index',
+        label: 'Social Media Overview',
+        routerLink: 'social-media-overview',
         icon: '../../../assets/icons/home.svg',
       },
       {
-        label: 'Social Media Overview',
-        routerLink: 'social-media-overview',
+        label: 'Social Media Index',
+        routerLink: 'social-media-index',
         icon: '../../../assets/icons/home.svg',
       },
       {
@@ -150,10 +150,6 @@ export class DashboardComponent implements OnInit {
         icon: '../../../assets/icons/cable.svg',
       },
     ];
-
-    // TODO: REMOVE
-    this.user?.menu.push('social-media-overview');
-    this.user?.menu.push('social-media-index');
 
     this.navItems = allNavItems.filter((navItem: any) => {
       return this.user?.menu

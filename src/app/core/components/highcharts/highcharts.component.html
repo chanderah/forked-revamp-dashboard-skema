@@ -1,0 +1,11 @@
+<spinner [spinning]="isLoading">
+  <div #container class="card">
+    <div style="height: 400px" *ngIf="!data"></div>
+    <highcharts-chart
+      *ngIf="data"
+      [Highcharts]="HIGHCHARTS"
+      [options]="data"
+      style="display: block; width: 100%; height: 400px"
+    ></highcharts-chart>
+  </div>
+</spinner>

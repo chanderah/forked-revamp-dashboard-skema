@@ -1,7 +1,27 @@
-<div class="w-full">
-  <word-cloud
-    [data]="wordCloudData"
-    [isLoading]="isLoadingWordCloud"
-    [largestValue]="res.data[0].weight || 0"
-  ></word-cloud>
+<div class="grid w-full">
+  <div
+    class="col-12 md:col-6 flex flex-column gap-4 px-3 py-4"
+    *ngFor="let item of listCharts"
+  >
+    <div class="flex align-items-center gap-2">
+      <icon-newspaper fill="var(--primary-color)"></icon-newspaper>
+      <div class="text-sm font-semibold">{{ item.title }}</div>
+      <icon-info></icon-info>
+    </div>
+
+    <ng-container *ngIf="item.type === 'tagcloud'; else chart">
+      <word-cloud
+        [isLoading]="item.isLoading"
+        [data]="item.data"
+        [largestValue]="item.largestValue ?? 0"
+      ></word-cloud>
+    </ng-container>
+
+    <ng-template #chart>
+      <app-highcharts
+        [isLoading]="item.isLoading"
+        [data]="item.data"
+      ></app-highcharts>
+    </ng-template>
+  </div>
 </div>

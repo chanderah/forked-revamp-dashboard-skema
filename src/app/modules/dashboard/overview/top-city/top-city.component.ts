@@ -9,17 +9,7 @@ import { Observable } from 'rxjs';
 import { AppState } from '../../../../core/store';
 import { selectOverviewState } from '../../../../core/store/overview/overview.selectors';
 import { Location } from '../../../../core/models/all-count.model';
-import {
-  getAllCount,
-  getWordCloud,
-} from '../../../../core/store/overview/overview.actions';
 import { CommonModule } from '@angular/common';
-import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
-import {
-  FilterState,
-  initialState,
-} from '../../../../core/store/filter/filter.reducer';
-import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 import { RouterLink } from '@angular/router';
 import { OverviewService } from '../../../../core/services/overview.service';
@@ -40,7 +30,11 @@ import { FilterService } from '../../../../core/services/filter.service';
   templateUrl: './top-city.component.html',
   styleUrl: './top-city.component.scss',
 })
-export class TopCityComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class TopCityComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   overviewState: Observable<OverviewState>;
   cities: Location[] = [];
   totalArticles: number = 0;

@@ -1,17 +1,18 @@
 import { Component, Input } from '@angular/core';
 import { AngularD3CloudModule } from 'angular-d3-cloud';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
+import { NgIf, NgStyle } from '@angular/common';
 
 @Component({
   selector: 'word-cloud',
   standalone: true,
-  imports: [SpinnerComponent, AngularD3CloudModule],
+  imports: [NgIf, NgStyle, SpinnerComponent, AngularD3CloudModule],
   templateUrl: './word-cloud.component.html',
   styleUrl: './word-cloud.component.scss',
 })
 export class WordCloudComponent {
   @Input() isLoading: boolean = true;
-  @Input() data: { text: string; value: number }[] = [];
+  @Input() data: { name: string; weight: string; [x: string]: any }[] = [];
   @Input() largestValue: number = 0;
   @Input() width: number = 520;
   @Input() height: number = 200;

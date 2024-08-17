@@ -1,7 +1,11 @@
-<div class="w-full">
-  <word-cloud
-    [data]="wordCloudData"
-    [isLoading]="isLoadingWordCloud"
-    [largestValue]="res.data[0].weight || 0"
-  ></word-cloud>
+<!-- <section class="grid">
+  <div class="col-12 lg:col-3 xl:col-3">
+    <app-highcharts [data]="numberOfMentions"></app-highcharts>
+  </div>
+</section> -->
+
+<div class="grid w-full">
+  <div class="col" *ngFor="let item of listCharts">
+    <app-highcharts [data]="item.data"></app-highcharts>
+  </div>
 </div>

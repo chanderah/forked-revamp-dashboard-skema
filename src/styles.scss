@@ -285,3 +285,11 @@ body.dark {
     border: 1px solid var(--border-color);
   }
 }
+
+.card {
+  padding: 8px;
+  background-color: var(--card-color);
+  border-color: var(--border-color) !important;
+  border-width: 1px !important;
+  border-style: solid;
+}

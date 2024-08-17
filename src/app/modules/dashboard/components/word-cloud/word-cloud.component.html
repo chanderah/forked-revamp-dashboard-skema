@@ -1,9 +1,8 @@
 <spinner [spinning]="isLoading">
-  <div
-    style="background-color: var(--card-color); width: max-content"
-    class="border-1 border-200"
-  >
+  <div class="card">
+    <div [ngStyle]="{ height: height + 'px' }" *ngIf="!data"></div>
     <angular-d3-cloud
+      *ngIf="data"
       [data]="data"
       [width]="width"
       [height]="height"
