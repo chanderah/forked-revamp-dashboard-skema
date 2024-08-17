@@ -76,7 +76,6 @@ export class SocialMediaOverviewComponent {
           } else this.listCharts[i].data = res.data;
         }
         this.listCharts[i].isLoading = false;
-        console.log(this.listCharts[i].data);
       });
   }
 }
