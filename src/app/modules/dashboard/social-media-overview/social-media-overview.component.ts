@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { from, mergeMap } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { from, mergeMap, skip, Subscription } from 'rxjs';
 import { HighchartsComponent } from '../../../core/components/highcharts/highcharts.component';
 import { ChartType } from '../../../core/models/social-media';
 import { SocialMediaService } from '../../../core/services/social-media.service';
@@ -8,6 +8,8 @@ import { WordCloudComponent } from '../components/word-cloud/word-cloud.componen
 import { IconNewspaperComponent } from '../../../core/components/icons/newspaper/newspaper.component';
 import { IconInfoComponent } from '../../../core/components/icons/info/info.component';
 import { FilterService } from '../../../core/services/filter.service';
+import { CommonService } from '../../../core/services/common.service';
+import { FilterState } from '../../../core/store/filter/filter.reducer';
 
 @Component({
   selector: 'app-social-media-overview',
@@ -22,7 +24,9 @@ import { FilterService } from '../../../core/services/filter.service';
   templateUrl: './social-media-overview.component.html',
   styleUrl: './social-media-overview.component.scss',
 })
-export class SocialMediaOverviewComponent {
+export class SocialMediaOverviewComponent implements OnInit, OnDestroy {
+  subscription!: Subscription;
+
   listCharts: {
     isLoading: boolean;
     type: ChartType;
@@ -47,13 +51,18 @@ export class SocialMediaOverviewComponent {
 
   constructor(
     private service: SocialMediaService,
-    private filterService: FilterService
+    private filterService: FilterService,
+    private commonService: CommonService
   ) {}
 
   ngOnInit(): void {
-    this.filterService.subscribe(({ start_date, end_date }) => {
+    this.filterService.subscribe(({ start_date, end_date }: FilterState) => {
       this.getData(start_date, end_date);
     });
+
+    this.subscription = this.commonService.darkMode$
+      .pipe(skip(1))
+      .subscribe(() => window.location.reload());
   }
 
   getData(startDate: string, endDate: string) {
@@ -92,5 +101,9 @@ export class SocialMediaOverviewComponent {
         }
         this.listCharts[i].isLoading = false;
       });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) this.subscription.unsubscribe();
   }
 }

@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { HighchartsChartModule } from 'highcharts-angular';
 import { CommonService } from '../../services/common.service';
@@ -7,7 +7,6 @@ import { SpinnerComponent } from '../spinner/spinner.component';
 import { Options } from 'highcharts';
 import darkTheme from 'highcharts/themes/dark-unica';
 import lightTheme from 'highcharts/themes/avocado';
-import { skip, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-highcharts',
@@ -28,13 +27,11 @@ import { skip, Subscription } from 'rxjs';
     </spinner>
   `,
 })
-export class HighchartsComponent implements OnInit, OnDestroy {
+export class HighchartsComponent implements OnInit {
   Highcharts: typeof Highcharts = Highcharts;
 
   @Input() isLoading: boolean = false;
   @Input() data?: Options;
-
-  subscription!: Subscription;
 
   constructor(public commonService: CommonService) {}
 
@@ -42,13 +39,5 @@ export class HighchartsComponent implements OnInit, OnDestroy {
     this.commonService.isDarkMode
       ? darkTheme(Highcharts)
       : lightTheme(Highcharts);
-
-    this.subscription = this.commonService.darkMode$
-      .pipe(skip(1))
-      .subscribe(() => window.location.reload());
-  }
-
-  ngOnDestroy(): void {
-    if (this.subscription) this.subscription.unsubscribe();
   }
 }
