@@ -3,25 +3,28 @@
     class="col-12 md:col-6 flex flex-column gap-4 px-3 py-4"
     *ngFor="let item of listCharts"
   >
-    <div class="flex align-items-center gap-2">
-      <icon-newspaper fill="var(--primary-color)"></icon-newspaper>
-      <div class="text-sm font-semibold">{{ item.title }}</div>
-      <icon-info></icon-info>
-    </div>
+    <ng-container *ngIf="!item.data?.isEmpty">
+      <div class="flex align-items-center gap-2">
+        <icon-newspaper fill="var(--primary-color)"></icon-newspaper>
+        <div class="text-sm font-semibold">{{ item.title }}</div>
+        <icon-info></icon-info>
+      </div>
 
-    <ng-container *ngIf="item.type === 'tagcloud'; else chart">
-      <word-cloud
-        [isLoading]="item.isLoading"
-        [data]="item.data"
-        [largestValue]="item.largestValue ?? 0"
-      ></word-cloud>
+      <ng-container *ngIf="item.type === 'tagcloud'; else chart">
+        <word-cloud
+          [isLoading]="item.isLoading"
+          [data]="item.data"
+          [largestValue]="item.largestValue ?? 0"
+        ></word-cloud>
+      </ng-container>
+
+      <ng-template #chart>
+        <app-highcharts
+          [isLoading]="item.isLoading"
+          [data]="item.data"
+          [height]="item.height"
+        ></app-highcharts>
+      </ng-template>
     </ng-container>
-
-    <ng-template #chart>
-      <app-highcharts
-        [isLoading]="item.isLoading"
-        [data]="item.data"
-      ></app-highcharts>
-    </ng-template>
   </div>
 </div>

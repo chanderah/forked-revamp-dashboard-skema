@@ -32,6 +32,7 @@ export class SocialMediaOverviewComponent implements OnInit, OnDestroy {
     type: ChartType;
     title: string;
     data?: any;
+    height?: string;
     largestValue?: number;
   }[] = [
     {
@@ -44,8 +45,18 @@ export class SocialMediaOverviewComponent implements OnInit, OnDestroy {
       title: 'Share of Sentiment',
       isLoading: true,
     },
-    { type: 'share-of-platform', title: 'Share of Platform', isLoading: true },
-    { type: 'engaging-authors', title: 'Engaging Authors', isLoading: true },
+    {
+      type: 'share-of-platform',
+      title: 'Share of Platform',
+      height: '520px',
+      isLoading: true,
+    },
+    {
+      type: 'engaging-authors',
+      title: 'Engaging Authors',
+      height: '520px',
+      isLoading: true,
+    },
     { type: 'tagcloud', title: 'Word Cloud', isLoading: true },
   ];
 
