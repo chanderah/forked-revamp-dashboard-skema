@@ -1,5 +1,5 @@
 <div class="grid w-full">
-  <div class="col-12 md:col-6 flex flex-column">
+  <div class="col-12 md:col-6 flex flex-column gap-4">
     <ng-container *ngFor="let item of listCharts; let even = even">
       <ng-container
         *ngIf="even && !item.data?.isEmpty"
@@ -9,7 +9,7 @@
     </ng-container>
   </div>
 
-  <div class="col-12 md:col-6 flex flex-column">
+  <div class="col-12 md:col-6 flex flex-column gap-4">
     <ng-container *ngFor="let item of listCharts; let odd = odd">
       <ng-container
         *ngIf="odd && !item.data?.isEmpty"
@@ -21,10 +21,10 @@
 </div>
 
 <ng-template #chart let-item="item">
-  <div class="flex flex-column gap-4 px-3 py-4">
+  <div class="flex flex-column gap-2 px-2">
     <div class="flex align-items-center gap-2">
       <icon-newspaper fill="var(--primary-color)"></icon-newspaper>
-      <div class="text-sm font-semibold">{{ item.title }}</div>
+      <p class="text-sm font-semibold">{{ item.title }}</p>
       <icon-info></icon-info>
     </div>
 

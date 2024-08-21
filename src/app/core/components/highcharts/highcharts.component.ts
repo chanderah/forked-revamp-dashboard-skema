@@ -29,6 +29,13 @@ HC_networkgraph(Highcharts);
       </div>
     </spinner>
   `,
+  styles: [
+    `
+      div > span > table > tbody > tr > td {
+        display: none !important;
+      }
+    `,
+  ],
 })
 export class HighchartsComponent implements OnInit {
   Highcharts: typeof Highcharts = Highcharts;

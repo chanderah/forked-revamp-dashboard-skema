@@ -10,6 +10,7 @@ import { IconNewspaperComponent } from '../../../core/components/icons/newspaper
 import { IconInfoComponent } from '../../../core/components/icons/info/info.component';
 import { FilterState } from '../../../core/store/filter/filter.reducer';
 import { CommonService } from '../../../core/services/common.service';
+import { SvgIconComponent } from 'angular-svg-icon';
 
 @Component({
   selector: 'app-social-media-index',
@@ -20,6 +21,7 @@ import { CommonService } from '../../../core/services/common.service';
     HighchartsComponent,
     IconNewspaperComponent,
     IconInfoComponent,
+    SvgIconComponent,
   ],
   templateUrl: './social-media-index.component.html',
   styleUrl: './social-media-index.component.scss',
@@ -78,6 +80,7 @@ export class SocialMediaIndexComponent {
 
   getData(startDate: string, endDate: string) {
     this.listCharts.forEach((v) => {
+      v.data = undefined;
       v.isLoading = true;
     });
 
@@ -93,7 +96,17 @@ export class SocialMediaIndexComponent {
       )
       .subscribe((res) => {
         const i = this.listCharts.findIndex((v) => v.type === res.type);
-        if (i > -1 && res.data) this.listCharts[i].data = res.data;
+
+        if (i > -1 && res.data) {
+          if (res.type === 'emotion-map') {
+            const pointFormat = res.data.tooltip.pointFormat;
+            res.data.tooltip.pointFormat = pointFormat.replace(
+              '<td style="color: #222">',
+              '<td>'
+            );
+          }
+          this.listCharts[i].data = res.data;
+        }
         this.listCharts[i].isLoading = false;
       });
   }

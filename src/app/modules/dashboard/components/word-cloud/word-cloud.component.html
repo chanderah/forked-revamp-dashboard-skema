@@ -1,5 +1,5 @@
 <spinner [spinning]="isLoading">
-  <div class="app-card">
+  <div class="app-card flex align-items-center justify-content-center">
     <div [ngStyle]="{ height: height + 'px' }" *ngIf="!data"></div>
     <angular-d3-cloud
       *ngIf="data"

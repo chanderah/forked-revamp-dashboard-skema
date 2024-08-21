@@ -78,7 +78,7 @@ export class SocialMediaOverviewComponent implements OnInit, OnDestroy {
 
   getData(startDate: string, endDate: string) {
     this.listCharts.forEach((v) => {
-      // v.data = undefined;
+      v.data = undefined;
       v.isLoading = true;
     });
 
