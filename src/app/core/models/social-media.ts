@@ -1,7 +1,7 @@
 export interface RequestGetChart {
   type: ChartType;
-  startDate?: Date;
-  endDate?: Date;
+  startDate: string;
+  endDate: string;
 }
 
 export interface ResponseGetChart {

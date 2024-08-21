@@ -132,12 +132,12 @@ export class DashboardComponent implements OnInit {
       {
         label: 'Social Media Overview',
         routerLink: 'social-media-overview',
-        icon: '../../../assets/icons/home.svg',
+        icon: '../../../assets/icons/group.svg',
       },
       {
         label: 'Social Media Index',
         routerLink: 'social-media-index',
-        icon: '../../../assets/icons/home.svg',
+        icon: '../../../assets/icons/person-search.svg',
       },
       {
         label: 'Preference',

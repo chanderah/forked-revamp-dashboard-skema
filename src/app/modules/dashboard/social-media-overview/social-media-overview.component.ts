@@ -1,12 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { from, mergeMap } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { from, mergeMap, skip, Subscription } from 'rxjs';
 import { HighchartsComponent } from '../../../core/components/highcharts/highcharts.component';
 import { ChartType } from '../../../core/models/social-media';
 import { SocialMediaService } from '../../../core/services/social-media.service';
 import { WordCloudComponent } from '../components/word-cloud/word-cloud.component';
 import { IconNewspaperComponent } from '../../../core/components/icons/newspaper/newspaper.component';
 import { IconInfoComponent } from '../../../core/components/icons/info/info.component';
+import { FilterService } from '../../../core/services/filter.service';
+import { CommonService } from '../../../core/services/common.service';
+import { FilterState } from '../../../core/store/filter/filter.reducer';
 
 @Component({
   selector: 'app-social-media-overview',
@@ -21,12 +24,15 @@ import { IconInfoComponent } from '../../../core/components/icons/info/info.comp
   templateUrl: './social-media-overview.component.html',
   styleUrl: './social-media-overview.component.scss',
 })
-export class SocialMediaOverviewComponent {
+export class SocialMediaOverviewComponent implements OnInit, OnDestroy {
+  subscription!: Subscription;
+
   listCharts: {
     isLoading: boolean;
     type: ChartType;
     title: string;
     data?: any;
+    height?: string;
     largestValue?: number;
   }[] = [
     {
@@ -39,19 +45,48 @@ export class SocialMediaOverviewComponent {
       title: 'Share of Sentiment',
       isLoading: true,
     },
-    { type: 'share-of-platform', title: 'Share of Platform', isLoading: true },
-    { type: 'engaging-authors', title: 'Engaging Authors', isLoading: true },
+    {
+      type: 'share-of-platform',
+      title: 'Share of Platform',
+      height: '520px',
+      isLoading: true,
+    },
+    {
+      type: 'engaging-authors',
+      title: 'Engaging Authors',
+      height: '520px',
+      isLoading: true,
+    },
     { type: 'tagcloud', title: 'Word Cloud', isLoading: true },
   ];
 
-  constructor(private service: SocialMediaService) {}
+  constructor(
+    private service: SocialMediaService,
+    private filterService: FilterService,
+    private commonService: CommonService
+  ) {}
 
   ngOnInit(): void {
+    this.filterService.subscribe(({ start_date, end_date }: FilterState) => {
+      this.getData(start_date, end_date);
+    });
+
+    this.subscription = this.commonService.darkMode$
+      .pipe(skip(1))
+      .subscribe(() => window.location.reload());
+  }
+
+  getData(startDate: string, endDate: string) {
+    this.listCharts.forEach((v) => {
+      v.data = undefined;
+      v.isLoading = true;
+    });
+
     from(this.listCharts)
       .pipe(
         mergeMap((chart) =>
           this.service
-            .getChart({ type: chart.type })
+            .getChart({ type: chart.type, startDate, endDate })
             .pipe(
               mergeMap((res: any) => [{ type: chart.type, data: res?.data }])
             )
@@ -76,7 +111,10 @@ export class SocialMediaOverviewComponent {
           } else this.listCharts[i].data = res.data;
         }
         this.listCharts[i].isLoading = false;
-        console.log(this.listCharts[i].data);
       });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) this.subscription.unsubscribe();
   }
 }

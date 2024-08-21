@@ -1,11 +1,37 @@
-<!-- <section class="grid">
-  <div class="col-12 lg:col-3 xl:col-3">
-    <app-highcharts [data]="numberOfMentions"></app-highcharts>
-  </div>
-</section> -->
-
 <div class="grid w-full">
-  <div class="col" *ngFor="let item of listCharts">
-    <app-highcharts [data]="item.data"></app-highcharts>
+  <div class="col-12 md:col-6 flex flex-column gap-4">
+    <ng-container *ngFor="let item of listCharts; let even = even">
+      <ng-container
+        *ngIf="even && !item.data?.isEmpty"
+        [ngTemplateOutlet]="chart"
+        [ngTemplateOutletContext]="{ item }"
+      ></ng-container>
+    </ng-container>
+  </div>
+
+  <div class="col-12 md:col-6 flex flex-column gap-4">
+    <ng-container *ngFor="let item of listCharts; let odd = odd">
+      <ng-container
+        *ngIf="odd && !item.data?.isEmpty"
+        [ngTemplateOutlet]="chart"
+        [ngTemplateOutletContext]="{ item }"
+      ></ng-container>
+    </ng-container>
   </div>
 </div>
+
+<ng-template #chart let-item="item">
+  <div class="flex flex-column gap-2 px-2">
+    <div class="flex align-items-center gap-2">
+      <icon-newspaper fill="var(--primary-color)"></icon-newspaper>
+      <p class="text-sm font-semibold">{{ item.title }}</p>
+      <icon-info></icon-info>
+    </div>
+
+    <app-highcharts
+      [isLoading]="item.isLoading"
+      [data]="item.data"
+      [height]="item.height"
+    ></app-highcharts>
+  </div>
+</ng-template>
