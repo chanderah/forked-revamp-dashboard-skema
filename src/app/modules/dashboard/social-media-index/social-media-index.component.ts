@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { from, mergeMap, skip, Subscription } from 'rxjs';
 import { HighchartsComponent } from '../../../core/components/highcharts/highcharts.component';
 import { ChartType } from '../../../core/models/social-media';
@@ -26,7 +26,7 @@ import { SvgIconComponent } from 'angular-svg-icon';
   templateUrl: './social-media-index.component.html',
   styleUrl: './social-media-index.component.scss',
 })
-export class SocialMediaIndexComponent {
+export class SocialMediaIndexComponent implements OnInit, OnDestroy {
   subscription!: Subscription;
 
   listCharts: {
@@ -96,7 +96,6 @@ export class SocialMediaIndexComponent {
       )
       .subscribe((res) => {
         const i = this.listCharts.findIndex((v) => v.type === res.type);
-
         if (i > -1 && res.data) {
           if (res.type === 'emotion-map') {
             const pointFormat = res.data.tooltip.pointFormat;
@@ -109,5 +108,9 @@ export class SocialMediaIndexComponent {
         }
         this.listCharts[i].isLoading = false;
       });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) this.subscription.unsubscribe();
   }
 }
