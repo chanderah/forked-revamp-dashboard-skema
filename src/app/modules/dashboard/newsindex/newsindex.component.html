@@ -364,20 +364,21 @@
   [closeOnEscape]="true"
   [closable]="true"
   [dismissableMask]="true"
-  [showHeader]="false"
   [draggable]="false"
 >
-  <div class="flex flex-column gap-2 py-3 px-2">
-    <p class="py-2">
+  <p-header> Send to E-mail </p-header>
+  <div class="flex flex-column gap-2">
+    <p class="pb-2">
       If more than 1 email is to be sent then use a comma (,) to separate the
-      email.
+      email. <br />
+      Example: abc&#64;mail.com, def&#64;mail.com
     </p>
 
     <label for="email" class="font-semibold text-sm">E-mail</label>
     <input
       pInputText
       id="email"
-      placeholder="Example: abc@mail.com, def@mail.com"
+      placeholder="abc@mail.com, def@mail.com"
       [formControl]="sendMailCtrl"
     />
   </div>
@@ -396,13 +397,3 @@
     ></p-button>
   </p-footer>
 </p-dialog>
-
-<!--
-<p-dialog
-  header="Header"
-  [(visible)]="modalAddOpen"
-  [modal]="true"
-  [style]="{ width: '50rem' }"
-  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
->
-</p-dialog> -->
