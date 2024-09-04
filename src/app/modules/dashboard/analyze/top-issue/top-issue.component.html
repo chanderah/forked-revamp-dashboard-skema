@@ -36,9 +36,9 @@
             >
               <div class="flex align-items-center gap-2">
                 <icon-newspaper
+                  *ngIf="item.key === 'media'"
                   [width]="20"
                   [height]="20"
-                  *ngIf="item.key === 'media'"
                   [class]="activeTab?.['key'] === 'media' ? 'fill-primary' : ''"
                 ></icon-newspaper>
                 <icon-pencil
@@ -88,44 +88,39 @@
   [style]="{ width: '50rem' }"
   [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
 >
-  <ng-template pTemplate="header">
-    <div class="inline-flex align-items-center justify-content-center gap-2">
-      <span class="font-bold text-md">Download Excel File</span>
-    </div>
-  </ng-template>
+  <p-header class="text-base">Download Excel File</p-header>
   <div>
     <div class="mb-2 font-semibold">Columns:</div>
     <p-listbox
       [(ngModel)]="selectedColumns"
       [options]="columnsOptions"
-      [selectAll]="isSelectAllColumns"
+      [selectAll]="selectedColumns.length === columnsOptions.length"
       optionLabel="label"
       [multiple]="true"
       [checkbox]="true"
       [metaKeySelection]="false"
       [showToggleAll]="true"
-      (onChange)="onChangeColumn($event)"
-      (onSelectAllChange)="onSelectAllColumnsChange($event)"
+      (onSelectAllChange)="onCheckedAllColumn($event.checked)"
     ></p-listbox>
+
     <div class="mt-4 mb-2 font-semibold">Categories:</div>
     <p-listbox
       [(ngModel)]="selectedCategories"
       [options]="categoriesOptions"
-      [selectAll]="isSelectAllCategories"
+      [selectAll]="selectedCategories.length === categoriesOptions.length"
       optionLabel="label"
       [multiple]="true"
       [checkbox]="true"
       [metaKeySelection]="false"
       [showToggleAll]="true"
-      (onChange)="onChangeCategory($event)"
-      (onSelectAllChange)="onSelectAllCategoryChange($event)"
+      (onSelectAllChange)="onCheckedAllCategory($event.checked)"
     ></p-listbox>
   </div>
   <div class="mt-5">
     <span class="font-semibold">Note:</span> you can only download the columns
     that are selected.
   </div>
-  <ng-template pTemplate="footer">
+  <p-footer>
     <div class="pt-4">
       <p-button
         (click)="downloadExcelConfirmModalOpen = false"
@@ -147,7 +142,7 @@
         (click)="downloadExcel()"
       ></p-button>
     </div>
-  </ng-template>
+  </p-footer>
 </p-dialog>
 
 <p-dialog
@@ -157,11 +152,7 @@
   [style]="{ width: '50rem' }"
   [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
 >
-  <ng-template pTemplate="header">
-    <div class="inline-flex align-items-center justify-content-center gap-2">
-      <span class="font-bold text-md">Download PPT file</span>
-    </div>
-  </ng-template>
+  <p-header class="font-bold text-base"> Download PPT file </p-header>
   <div>
     <div *ngFor="let image of images">
       <img [src]="image.image" class="w-full" />

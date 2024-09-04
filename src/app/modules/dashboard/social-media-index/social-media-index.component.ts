@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { from, mergeMap, skip, Subscription } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { mergeMap, skip, Subscription, from } from 'rxjs';
 import { HighchartsComponent } from '../../../core/components/highcharts/highcharts.component';
 import { ChartType } from '../../../core/models/social-media';
 import { SocialMediaService } from '../../../core/services/social-media.service';
@@ -11,6 +11,7 @@ import { IconInfoComponent } from '../../../core/components/icons/info/info.comp
 import { FilterState } from '../../../core/store/filter/filter.reducer';
 import { CommonService } from '../../../core/services/common.service';
 import { SvgIconComponent } from 'angular-svg-icon';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-social-media-index',
@@ -22,17 +23,19 @@ import { SvgIconComponent } from 'angular-svg-icon';
     IconNewspaperComponent,
     IconInfoComponent,
     SvgIconComponent,
+    TooltipModule,
   ],
   templateUrl: './social-media-index.component.html',
   styleUrl: './social-media-index.component.scss',
 })
-export class SocialMediaIndexComponent {
+export class SocialMediaIndexComponent implements OnInit, OnDestroy {
   subscription!: Subscription;
 
   listCharts: {
     isLoading: boolean;
     type: ChartType;
     title: string;
+    description?: string;
     data?: any;
     height?: string;
     largestValue?: number;
@@ -96,8 +99,10 @@ export class SocialMediaIndexComponent {
       )
       .subscribe((res) => {
         const i = this.listCharts.findIndex((v) => v.type === res.type);
-
         if (i > -1 && res.data) {
+          this.listCharts[i].description = res.data.caption.text;
+          delete res.data['caption'];
+
           if (res.type === 'emotion-map') {
             const pointFormat = res.data.tooltip.pointFormat;
             res.data.tooltip.pointFormat = pointFormat.replace(
@@ -109,5 +114,9 @@ export class SocialMediaIndexComponent {
         }
         this.listCharts[i].isLoading = false;
       });
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription) this.subscription.unsubscribe();
   }
 }

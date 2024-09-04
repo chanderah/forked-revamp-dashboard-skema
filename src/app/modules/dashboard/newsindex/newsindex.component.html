@@ -34,7 +34,7 @@
           ></p-button
           ><p-tieredMenu
             #menu
-            [model]="updateToneItems"
+            [model]="listAction"
             [popup]="true"
           ></p-tieredMenu>
         </div>
@@ -226,6 +226,7 @@
           </ng-template>
         </p-table>
         <p-paginator
+          *ngIf="totalRecords"
           (onPageChange)="onPageChange($event)"
           [first]="first"
           [rows]="rows"
@@ -355,4 +356,44 @@
       [autofocus]="true"
     ></p-button>
   </ng-template>
+</p-dialog>
+
+<p-dialog
+  [(visible)]="showSendMailDialog"
+  [modal]="true"
+  [closeOnEscape]="true"
+  [closable]="true"
+  [dismissableMask]="true"
+  [draggable]="false"
+>
+  <p-header class="text-base">Send to E-mail</p-header>
+  <div class="flex flex-column gap-2">
+    <p class="pb-2">
+      If more than 1 email is to be sent then use a comma (,) to separate the
+      email. <br />
+      Example: abc&#64;mail.com, def&#64;mail.com
+    </p>
+
+    <label for="email" class="font-semibold text-sm">E-mail</label>
+    <input
+      pInputText
+      id="email"
+      placeholder="abc@mail.com, def@mail.com"
+      [formControl]="sendMailCtrl"
+    />
+  </div>
+  <p-footer>
+    <p-button
+      (click)="showSendMailDialog = false"
+      label="Cancel"
+      [outlined]="true"
+    ></p-button>
+    <p-button
+      (click)="sendMail()"
+      pAutoFocus
+      label="Send"
+      [autofocus]="true"
+      [disabled]="!isValidEmail(sendMailCtrl.value)"
+    ></p-button>
+  </p-footer>
 </p-dialog>

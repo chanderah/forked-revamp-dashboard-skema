@@ -7,7 +7,20 @@
       <div class="flex align-items-center gap-2">
         <icon-newspaper fill="var(--primary-color)"></icon-newspaper>
         <div class="text-sm font-semibold">{{ item.title }}</div>
-        <icon-info></icon-info>
+        <icon-info
+          *ngIf="item.description"
+          [pTooltip]="tooltipContent"
+          [autoHide]="false"
+        >
+          <ng-template #tooltipContent>
+            <span
+              class="text-xs font-light line-height-1"
+              style="color: var(--primary-color-text)"
+            >
+              {{ item.description }}
+            </span>
+          </ng-template>
+        </icon-info>
       </div>
 
       <ng-container *ngIf="item.type === 'tagcloud'; else chart">
