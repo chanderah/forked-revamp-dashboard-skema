@@ -13,6 +13,7 @@ import { getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
 })
 export class ArticleService {
   private baseUrl = BASE_URL;
+
   constructor(private http: HttpClient) {}
 
   getHighlights(filter: FilterRequestPayload): Observable<HighlightsResponse> {
@@ -210,6 +211,18 @@ export class ArticleService {
         logo_name: user?.comp_icon ?? 'company/bpjs-kesehatan.png',
       }
     );
+  }
+
+  sendMail(emails: string, articles: Article[]) {
+    return this.http.post(`${this.baseUrl}/v1/user/editing/send-mail`, {
+      email: emails.trim().replace(' ', ''),
+      data: articles.map((v) => {
+        return {
+          article_id: v.article_id,
+          category_id: v.category_id,
+        };
+      }),
+    });
   }
 
   getArticlesHeadlines(

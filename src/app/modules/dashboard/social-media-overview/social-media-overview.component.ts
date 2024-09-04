@@ -10,6 +10,7 @@ import { IconInfoComponent } from '../../../core/components/icons/info/info.comp
 import { FilterService } from '../../../core/services/filter.service';
 import { CommonService } from '../../../core/services/common.service';
 import { FilterState } from '../../../core/store/filter/filter.reducer';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-social-media-overview',
@@ -20,6 +21,7 @@ import { FilterState } from '../../../core/store/filter/filter.reducer';
     HighchartsComponent,
     IconNewspaperComponent,
     IconInfoComponent,
+    TooltipModule,
   ],
   templateUrl: './social-media-overview.component.html',
   styleUrl: './social-media-overview.component.scss',
@@ -31,6 +33,7 @@ export class SocialMediaOverviewComponent implements OnInit, OnDestroy {
     isLoading: boolean;
     type: ChartType;
     title: string;
+    description?: string;
     data?: any;
     height?: string;
     largestValue?: number;
@@ -95,6 +98,9 @@ export class SocialMediaOverviewComponent implements OnInit, OnDestroy {
       .subscribe((res) => {
         const i = this.listCharts.findIndex((v) => v.type === res.type);
         if (i > -1 && res.data) {
+          this.listCharts[i].description = res.data.caption.text;
+          delete res.data['caption'];
+
           if (res.type === 'tagcloud') {
             const wordCloudData = res.data.series[0].data;
             if (wordCloudData && wordCloudData.length) {

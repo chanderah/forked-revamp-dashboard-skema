@@ -1,3 +1,4 @@
+import { isEmpty, isValidEmail } from './../../../shared/utils/CommonUtils';
 import { Component } from '@angular/core';
 import { DividerModule } from 'primeng/divider';
 import { IconNewspaperComponent } from '../../../core/components/icons/newspaper/newspaper.component';
@@ -6,7 +7,6 @@ import { RouterModule } from '@angular/router';
 import { IconInfoComponent } from '../../../core/components/icons/info/info.component';
 import { ArticleService } from '../../../core/services/article.service';
 import { FilterRequestPayload } from '../../../core/models/request.model';
-import { initialState } from '../../../core/store/filter/filter.reducer';
 import { Article } from '../../../core/models/article.model';
 import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
@@ -28,7 +28,13 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DialogModule } from 'primeng/dialog';
 import { FilterService } from '../../../core/services/filter.service';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { FormatAmountPipe } from '../../../core/pipes/format-amount.pipe';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ChipModule } from 'primeng/chip';
@@ -67,6 +73,7 @@ const highlightKeywords = (content: string, keywords: string[]): string => {
     CommonModule,
     ConfirmPopupModule,
     DialogModule,
+    FormsModule,
     ReactiveFormsModule,
     FormatAmountPipe,
     InputTextareaModule,
@@ -81,9 +88,7 @@ const highlightKeywords = (content: string, keywords: string[]): string => {
 })
 export class NewsindexComponent {
   filter: any;
-  ngOnDestroy() {
-    this.filter?.unsubscribe?.();
-  }
+
   articles!: Article[];
   clearArticles!: Article[];
   totalRecords!: number;
@@ -94,17 +99,22 @@ export class NewsindexComponent {
   rows: number = 10;
   searchText$ = new Subject<string>();
   modalUpdateOpen: boolean = false;
+  showSendMailDialog: boolean = false;
 
   isUpdating: boolean = false;
   editedArticle: Article | null = null;
   editedCategories: { category_id: string }[] = [];
   availableCategories: Category[] = [];
-  editedValues = new FormGroup({
-    title: new FormControl(''),
-    issue: new FormControl(''),
-    summary: new FormControl(''),
+
+  sendMailCtrl: FormControl = new FormControl('', Validators.required);
+  editedValues = this.fb.group({
+    title: '',
+    issue: '',
+    summary: '',
   });
 
+  term: any = '';
+  sanitizedContent: SafeHtml | null = null;
   selectedTones: any = [];
   toneOptions = Object.keys(TONE_MAP).map((key) => ({
     label: TONE_MAP[key],
@@ -113,32 +123,18 @@ export class NewsindexComponent {
 
   user: User | null = getUserFromLocalStorage();
 
-  filterCallback() {
-    const selectedToneValues = this.selectedTones.map(
-      (option: any) => +option.value
-    );
-    if (this.selectedTones.length) {
-      this.articles = this.clearArticles.filter((article) =>
-        selectedToneValues.includes(article.tone)
-      );
-    } else {
-      this.articles = this.clearArticles;
-    }
-  }
-
-  clear() {
-    this.selectedTones = [];
-    this.articles = this.clearArticles;
-  }
-
-  updateToneItems: MenuItem[] = [
+  listAction: MenuItem[] = [
     {
-      label: 'Download pdf',
+      label: 'Download PDF',
       command: () => this.downloadAsPdf(),
     },
     {
-      label: 'Download Doc',
+      label: 'Download DOC',
       command: () => this.downloadAsDocs(),
+    },
+    {
+      label: 'Send to E-mail',
+      command: () => (this.showSendMailDialog = true),
     },
     {
       label: 'Update Tone',
@@ -159,17 +155,15 @@ export class NewsindexComponent {
       ],
     },
   ];
-  sanitizedContent: SafeHtml | null = null;
 
   constructor(
     private articleService: ArticleService,
     private filterService: FilterService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private fb: FormBuilder
   ) {}
-
-  term: any = '';
 
   ngOnInit() {
     this.filter = this.filterService.subscribe((filter) => {
@@ -191,7 +185,7 @@ export class NewsindexComponent {
       .getUserEditing({
         ...this.filterService.filter,
         ...filter,
-        term: this.term
+        term: this.term,
       } as FilterRequestPayload)
       .subscribe((resp) => {
         this.loading = false;
@@ -405,13 +399,13 @@ export class NewsindexComponent {
     this.articleService
       .downloadPdfs(this.selectedArticles)
       .subscribe(({ data }) => {
+        this.selectedArticles = [];
         if (data.link) {
           window.open(data.link, '_blank');
         }
       })
       .add(() => {
         this.loading = false;
-        this.selectedArticles = [];
       });
   };
 
@@ -420,17 +414,62 @@ export class NewsindexComponent {
     this.articleService
       .downloadDocs(this.selectedArticles)
       .subscribe(({ data }) => {
+        this.selectedArticles = [];
         if (data) {
           window.open(data, '_blank');
         }
       })
       .add(() => {
         this.loading = false;
-        this.selectedArticles = [];
       });
   };
 
+  sendMail() {
+    this.loading = true;
+    this.articleService
+      .sendMail(this.sendMailCtrl.value, this.selectedArticles)
+      .subscribe(() => {
+        this.selectedArticles = [];
+        this.showSendMailDialog = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Email sent!',
+        });
+      })
+      .add(() => {
+        this.loading = false;
+      });
+  }
+
+  isValidEmail(emails: string): boolean {
+    if (isEmpty(emails)) return false;
+    return emails.split(',').every((v) => isValidEmail(v.trim()));
+  }
+
   openPreview(article: Article) {
     window.open(article.preview_link, '_blank');
+  }
+
+  filterCallback() {
+    const selectedToneValues = this.selectedTones.map(
+      (option: any) => +option.value
+    );
+    if (this.selectedTones.length) {
+      this.articles = this.clearArticles.filter((article) =>
+        selectedToneValues.includes(article.tone)
+      );
+    } else {
+      this.articles = this.clearArticles;
+    }
+  }
+
+  clear() {
+    this.selectedTones = [];
+    this.articles = this.clearArticles;
+  }
+
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
   }
 }
