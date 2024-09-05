@@ -12,6 +12,7 @@ import { FilterState } from '../../../core/store/filter/filter.reducer';
 import { CommonService } from '../../../core/services/common.service';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TooltipModule } from 'primeng/tooltip';
+import { isDarkMode } from '../../../shared/utils/CommonUtils';
 
 @Component({
   selector: 'app-social-media-index',
@@ -41,26 +42,24 @@ export class SocialMediaIndexComponent implements OnInit, OnDestroy {
     largestValue?: number;
   }[] = [
     {
+      type: 'social-network-analysis',
+      title: 'SNA',
+      // height: '600px',
+      isLoading: true,
+    },
+    {
       type: 'emotion-map',
       title: 'Emotions',
       isLoading: true,
     },
     {
-      type: 'social-network-analysis',
-      title: 'SNA',
-      height: '600px',
-      isLoading: true,
-    },
-    {
       type: 'authors',
       title: 'Top Accounts',
-      height: '520px',
       isLoading: true,
     },
     {
       type: 'key-hashtags',
       title: 'Top Hashtags',
-      height: '520px',
       isLoading: true,
     },
   ];
@@ -109,6 +108,15 @@ export class SocialMediaIndexComponent implements OnInit, OnDestroy {
               '<td style="color: #222">',
               '<td>'
             );
+          }
+
+          if (isDarkMode()) {
+            if (res.data?.xAxis?.labels?.style?.color) {
+              res.data.xAxis.labels.style.color = 'white';
+            }
+            if (res.data?.yAxis?.labels?.style?.color) {
+              res.data.yAxis.labels.style.color = 'white';
+            }
           }
           this.listCharts[i].data = res.data;
         }

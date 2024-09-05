@@ -23,21 +23,11 @@
         </icon-info>
       </div>
 
-      <ng-container *ngIf="item.type === 'tagcloud'; else chart">
-        <word-cloud
-          [isLoading]="item.isLoading"
-          [data]="item.data"
-          [largestValue]="item.largestValue ?? 0"
-        ></word-cloud>
-      </ng-container>
-
-      <ng-template #chart>
-        <app-highcharts
-          [isLoading]="item.isLoading"
-          [data]="item.data"
-          [height]="item.height"
-        ></app-highcharts>
-      </ng-template>
+      <app-highcharts
+        [isLoading]="item.isLoading"
+        [data]="item.data"
+        [height]="item.height"
+      ></app-highcharts>
     </ng-container>
   </div>
 </div>

@@ -11,6 +11,7 @@ import { FilterService } from '../../../core/services/filter.service';
 import { CommonService } from '../../../core/services/common.service';
 import { FilterState } from '../../../core/store/filter/filter.reducer';
 import { TooltipModule } from 'primeng/tooltip';
+import { isDarkMode } from '../../../shared/utils/CommonUtils';
 
 @Component({
   selector: 'app-social-media-overview',
@@ -60,7 +61,7 @@ export class SocialMediaOverviewComponent implements OnInit, OnDestroy {
       height: '520px',
       isLoading: true,
     },
-    { type: 'tagcloud', title: 'Word Cloud', isLoading: true },
+    { type: 'tagcloud', title: 'Tag Cloud', isLoading: true },
   ];
 
   constructor(
@@ -101,20 +102,15 @@ export class SocialMediaOverviewComponent implements OnInit, OnDestroy {
           this.listCharts[i].description = res.data.caption.text;
           delete res.data['caption'];
 
-          if (res.type === 'tagcloud') {
-            const wordCloudData = res.data.series[0].data;
-            if (wordCloudData && wordCloudData.length) {
-              this.listCharts[i].data = wordCloudData.map((v: any) => {
-                return {
-                  text: v.name,
-                  value: v.weight,
-                };
-              });
-              this.listCharts[i].largestValue = Math.max(
-                ...wordCloudData.map((v: any) => v.weight)
-              );
+          if (isDarkMode()) {
+            if (res.data?.xAxis?.labels?.style?.color) {
+              res.data.xAxis.labels.style.color = 'white';
             }
-          } else this.listCharts[i].data = res.data;
+            if (res.data?.yAxis?.labels?.style?.color) {
+              res.data.yAxis.labels.style.color = 'white';
+            }
+          }
+          this.listCharts[i].data = res.data;
         }
         this.listCharts[i].isLoading = false;
       });

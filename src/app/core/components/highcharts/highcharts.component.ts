@@ -7,8 +7,10 @@ import { SpinnerComponent } from '../spinner/spinner.component';
 import { Options } from 'highcharts';
 import darkTheme from 'highcharts/themes/high-contrast-dark';
 import lightTheme from 'highcharts/themes/avocado';
-import HC_networkgraph from 'highcharts/modules/networkgraph';
-HC_networkgraph(Highcharts);
+import HighchartsNetworkGraph from 'highcharts/modules/networkgraph';
+import HighchartsWordcloud from 'highcharts/modules/wordcloud';
+HighchartsNetworkGraph(Highcharts);
+HighchartsWordcloud(Highcharts);
 
 @Component({
   selector: 'app-highcharts',
