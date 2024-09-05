@@ -293,6 +293,34 @@ body.dark {
       }
     }
   }
+
+  .p-tieredmenu {
+    background-color: var(--bg-color);
+    .p-submenu-list {
+      background-color: var(--bg-color);
+    }
+  }
+
+  .p-multiselect-panel {
+    background-color: var(--card-color);
+  }
+
+  .p-multiselect-token-label {
+    color: var(--bg-color) !important;
+  }
+
+  .p-multiselect .p-multiselect-trigger {
+    background-color: var(--card-color);
+  }
+
+  .p-multiselect-label-container {
+    background-color: var(--card-color) !important;
+  }
+
+  .p-multiselect-token-icon {
+    fill: var(--card-color) !important;
+    color: var(--card-color) !important;
+  }
 }
 
 .app-card {

@@ -3,7 +3,8 @@ export const isDarkMode = () => {
 };
 
 export const isValidEmail = (email: string) => {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const emailPattern = /^(?!\.)([^\s@]+)@[^\s@]+\.[^\s@]{2,}(?<!\.)$/;
+  return emailPattern.test(email);
 };
 
 export const isEmpty = (obj: any) => {
