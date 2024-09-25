@@ -41,23 +41,23 @@ export class SocialMediaOverviewComponent implements OnInit, OnDestroy {
   }[] = [
     {
       type: 'number-of-mentions',
-      title: 'Number of Mentions',
+      title: 'Daily Mentions',
       isLoading: true,
     },
     {
       type: 'share-of-sentiment',
-      title: 'Share of Sentiment',
+      title: 'Sentiments',
       isLoading: true,
     },
     {
       type: 'share-of-platform',
-      title: 'Share of Platform',
+      title: 'Platforms',
       height: '520px',
       isLoading: true,
     },
     {
       type: 'engaging-authors',
-      title: 'Engaging Authors',
+      title: 'Top Influencer',
       height: '520px',
       isLoading: true,
     },
@@ -100,6 +100,7 @@ export class SocialMediaOverviewComponent implements OnInit, OnDestroy {
         const i = this.listCharts.findIndex((v) => v.type === res.type);
         if (i > -1 && res.data) {
           this.listCharts[i].description = res.data.caption.text;
+          res.data.title.text = '';
           delete res.data['caption'];
 
           if (isDarkMode()) {

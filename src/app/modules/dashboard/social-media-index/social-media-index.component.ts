@@ -49,17 +49,32 @@ export class SocialMediaIndexComponent implements OnInit, OnDestroy {
     },
     {
       type: 'emotion-map',
-      title: 'Emotions',
+      title: 'Emotion',
       isLoading: true,
     },
     {
       type: 'authors',
-      title: 'Top Accounts',
+      title: 'Most Active Account',
       isLoading: true,
     },
     {
       type: 'key-hashtags',
-      title: 'Top Hashtags',
+      title: 'Top Hashtag',
+      isLoading: true,
+    },
+    {
+      type: 'engaging-posts',
+      title: 'Most Engaging Post',
+      isLoading: true,
+    },
+    {
+      type: 'daily-facebook-reactions',
+      title: 'Facebook Reaction',
+      isLoading: true,
+    },
+    {
+      type: 'reach-frequency',
+      title: 'Reach per Day',
       isLoading: true,
     },
   ];
@@ -100,6 +115,7 @@ export class SocialMediaIndexComponent implements OnInit, OnDestroy {
         const i = this.listCharts.findIndex((v) => v.type === res.type);
         if (i > -1 && res.data) {
           this.listCharts[i].description = res.data.caption.text;
+          res.data.title.text = '';
           delete res.data['caption'];
 
           if (res.type === 'emotion-map') {
