@@ -321,6 +321,18 @@ body.dark {
     fill: var(--card-color) !important;
     color: var(--card-color) !important;
   }
+
+  .p-confirm-popup {
+    background-color: var(--card-color);
+  }
+
+  .p-column-filter-overlay-menu {
+    background-color: var(--card-color);
+
+    .p-column-filter-buttonbar {
+      padding: 0;
+    }
+  }
 }
 
 .app-card {
