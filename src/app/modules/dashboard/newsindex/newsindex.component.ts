@@ -24,7 +24,7 @@ import { TieredMenuModule } from 'primeng/tieredmenu';
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { PaginatorModule } from 'primeng/paginator';
 import { CommonModule } from '@angular/common';
-import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { debounceTime, distinctUntilChanged, forkJoin } from 'rxjs';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DialogModule } from 'primeng/dialog';
 import { FilterService } from '../../../core/services/filter.service';
@@ -42,7 +42,6 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { Category } from '../../../core/models/category.model';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
-import _ from 'lodash';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { getUserFromLocalStorage } from '../../../shared/utils/AuthUtils';
 import { User } from '../../../core/models/user.model';
@@ -92,17 +91,16 @@ export class NewsindexComponent {
   articles!: Article[];
   clearArticles!: Article[];
   totalRecords!: number;
-  loading: boolean = false;
   selectedArticles: Article[] = [];
   page: number = 0;
   first: number = 0;
   rows: number = 10;
-  searchText$ = new Subject<string>();
+  searchCtrl = new FormControl<string>('');
   modalUpdateOpen: boolean = false;
   showSendMailDialog: boolean = false;
 
-  isUpdating: boolean = false;
-  editedArticle: Article | null = null;
+  isLoading: boolean = false;
+  editedArticle!: Article;
   editedCategories: { category_id: string }[] = [];
   availableCategories: Category[] = [];
 
@@ -169,18 +167,19 @@ export class NewsindexComponent {
     this.filter = this.filterService.subscribe((filter) => {
       this.fetchData({ ...filter, page: this.page, size: this.rows });
     });
-    this.searchText$
+
+    this.searchCtrl.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value) => {
         this.page = 0;
         this.first = 0;
         this.term = value;
-        this.fetchData({ page: 0, term: value, size: this.rows });
+        this.fetchData({ page: 0, term: value ?? '', size: this.rows });
       });
   }
 
   fetchData = (filter?: Partial<FilterRequestPayload>) => {
-    this.loading = true;
+    this.isLoading = true;
     this.articleService
       .getUserEditing({
         ...this.filterService.filter,
@@ -188,7 +187,7 @@ export class NewsindexComponent {
         term: this.term,
       } as FilterRequestPayload)
       .subscribe((resp) => {
-        this.loading = false;
+        this.isLoading = false;
         const selectedToneValues = this.selectedTones.map(
           (option: any) => +option.value
         );
@@ -264,98 +263,91 @@ export class NewsindexComponent {
   };
 
   updateArticle = async () => {
-    try {
-      const { title, summary, issue } = this.editedValues.controls;
+    this.isLoading = true;
 
-      const promises = [];
-      if (title.dirty && title.value) {
-        promises.push(
-          this.articleService
-            .updateArticleTitle({
-              article_id: this.editedArticle?.article_id!,
-              category_id: this.editedArticle?.category_id!,
-              title: title.value,
-            })
-            .toPromise()
-        );
-      }
+    const { title, summary, issue } = this.editedValues.controls;
+    const apis = [
+      this.articleService.updateArticleSave({
+        advalue_bw: `${this.editedArticle.advalue_bw}`,
+        advalue_fc: `${this.editedArticle.advalue_fc}`,
+        article_id: +this.editedArticle.article_id!,
+        category_ids: this.editedCategories.map((val) => val.category_id),
+        circulation: `${this.editedArticle.circulation}`,
+        datee: this.editedArticle.datee?.split(' ')[0] ?? '',
+        media_id: this.editedArticle.media_id!,
+        tone: this.editedArticle.tone!,
+      }),
+    ];
 
-      if (issue.dirty && issue.value) {
-        promises.push(
-          this.articleService
-            .updateArticleIssue({
-              article_id: [+this.editedArticle?.article_id!],
-              new_topic: issue.value,
-              topic: [this.editedArticle?.issue ?? ''],
-            })
-            .toPromise()
-        );
-      }
-
-      if (summary.dirty && summary.value) {
-        promises.push(
-          this.articleService
-            .updateArticleSummary({
-              article_id: +this.editedArticle?.article_id!,
-              category_id: this.editedArticle?.article_id!,
-              summary: summary.value,
-            })
-            .toPromise()
-        );
-      }
-
-      if (
-        !_.isEqual(
-          this.editedArticle?.categories,
-          this.editedCategories.map((val) => val.category_id)
-        )
-      ) {
-        const {
-          advalue_bw,
-          advalue_fc,
-          article_id,
-          circulation,
-          datee,
-          media_id,
-          tone,
-        } = this.editedArticle ?? {};
-        promises.push(
-          this.articleService
-            .updateArticleSave({
-              advalue_bw: `${advalue_bw}`,
-              advalue_fc: `${advalue_fc}`,
-              article_id: +article_id!,
-              category_ids: this.editedCategories.map((val) => val.category_id),
-              circulation: `${circulation}`,
-              datee: datee?.split(' ')[0] ?? '',
-              media_id: media_id!,
-              tone: tone!,
-            })
-            .toPromise()
-        );
-      }
-
-      this.isUpdating = true;
-      await Promise.allSettled(promises);
-      this.fetchData({
-        ...this.filterService.filter,
-        page: 0,
-        size: this.rows,
-      });
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Updated',
-        detail: 'Data has been updated.',
-      });
-    } finally {
-      this.modalUpdateOpen = false;
-      this.isUpdating = false;
+    if (title.dirty) {
+      apis.push(
+        this.articleService.updateArticleTitle({
+          article_id: this.editedArticle?.article_id!,
+          category_id: this.editedArticle?.category_id!,
+          title: title.value ?? '',
+        })
+      );
     }
-  };
 
-  search(searchTerm: string) {
-    this.searchText$.next(searchTerm);
-  }
+    if (issue.dirty) {
+      apis.push(
+        this.articleService.updateArticleIssue({
+          article_id: [+this.editedArticle?.article_id!],
+          new_topic: issue.value ?? '',
+          topic: [this.editedArticle?.issue ?? ''],
+        })
+      );
+    }
+
+    if (summary.dirty) {
+      apis.push(
+        this.articleService.updateArticleSummary({
+          article_id: +this.editedArticle?.article_id!,
+          category_id: this.editedArticle?.article_id!,
+          summary: summary.value ?? '',
+        })
+      );
+    }
+
+    const currentCategories = this.editedCategories.map((v) => v.category_id);
+    const deletedCategories = this.editedArticle.categories.filter(
+      (v) => !currentCategories.includes(v)
+    );
+
+    for (const v of deletedCategories) {
+      apis.push(
+        this.articleService.deleteCategory({
+          article_id: this.editedArticle.article_id,
+          category_id: v,
+        })
+      );
+    }
+
+    forkJoin(apis).subscribe({
+      next: () => {
+        this.fetchData({
+          ...this.filterService.filter,
+          page: this.page,
+          size: this.rows,
+        });
+
+        this.modalUpdateOpen = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Updated',
+          detail: 'Data has been updated.',
+        });
+      },
+      error: () => {
+        this.isLoading = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to update data.',
+        });
+      },
+    });
+  };
 
   getValue(event: Event): string {
     return (event.target as HTMLInputElement).value;
@@ -386,6 +378,7 @@ export class NewsindexComponent {
     this.editedCategories = article.categories.map((val) => ({
       category_id: val,
     }));
+
     this.editedValues.setValue({
       title: article.title ?? '',
       issue: article?.issue ?? '',
@@ -395,7 +388,7 @@ export class NewsindexComponent {
   };
 
   downloadAsPdf = () => {
-    this.loading = true;
+    this.isLoading = true;
     this.articleService
       .downloadPdfs(this.selectedArticles)
       .subscribe(({ data }) => {
@@ -405,12 +398,12 @@ export class NewsindexComponent {
         }
       })
       .add(() => {
-        this.loading = false;
+        this.isLoading = false;
       });
   };
 
   downloadAsDocs = () => {
-    this.loading = true;
+    this.isLoading = true;
     this.articleService
       .downloadDocs(this.selectedArticles)
       .subscribe(({ data }) => {
@@ -420,12 +413,12 @@ export class NewsindexComponent {
         }
       })
       .add(() => {
-        this.loading = false;
+        this.isLoading = false;
       });
   };
 
   sendMail() {
-    this.loading = true;
+    this.isLoading = true;
     this.articleService
       .sendMail(this.sendMailCtrl.value, this.selectedArticles)
       .subscribe(() => {
@@ -438,7 +431,7 @@ export class NewsindexComponent {
         });
       })
       .add(() => {
-        this.loading = false;
+        this.isLoading = false;
       });
   }
 

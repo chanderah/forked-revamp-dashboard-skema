@@ -264,4 +264,14 @@ export class ArticleService {
       { params }
     );
   }
+
+  deleteCategory(req: {
+    article_id: string;
+    category_id: string;
+  }): Observable<any> {
+    return this.http.post(
+      `${this.baseUrl}/v1/user/article/delete/category`,
+      req
+    );
+  }
 }

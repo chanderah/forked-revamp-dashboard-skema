@@ -19,7 +19,7 @@
               pInputText
               placeholder="Search"
               class="py-2"
-              (keyup)="search(getValue($event))"
+              [formControl]="searchCtrl"
             />
             <i class="pi pi-search"></i>
           </span>
@@ -59,7 +59,7 @@
           [rows]="10"
           [totalRecords]="totalRecords"
           [showFirstLastIcon]="false"
-          [loading]="loading"
+          [loading]="isLoading"
           [tableStyle]="{ 'min-width': '50rem' }"
         >
           <ng-template pTemplate="header">
@@ -259,92 +259,101 @@
       <span class="font-bold">Edit article</span>
     </div>
   </ng-template>
-  <form [formGroup]="editedValues" class="flex flex-column gap-4">
-    <div class="flex flex-column gap-2">
-      <label class="font-semibold" for="title">Title</label>
-      <input pInputText formControlName="title" id="title" class="text-xs" />
-    </div>
-    <div class="grid">
-      <div class="col-6">
-        <div class="flex justify-content-between">
-          <div class="text-xs font-semibold">Date:</div>
-          <div class="text-xs">{{ editedArticle?.datee ?? "-" }}</div>
-        </div>
+
+  <ng-container *ngIf="editedArticle">
+    <form [formGroup]="editedValues" class="flex flex-column gap-4">
+      <div class="flex flex-column gap-2">
+        <label class="font-semibold" for="title">Title</label>
+        <input pInputText formControlName="title" id="title" class="text-xs" />
       </div>
-      <div class="col-6">
-        <div class="flex justify-content-between">
-          <div class="text-xs font-semibold">News Value:</div>
-          <div class="text-xs">
-            {{ editedArticle?.advalue_bw ?? 0 | formatAmount }}
+      <div class="grid">
+        <div class="col-6">
+          <div class="flex justify-content-between">
+            <div class="text-xs font-semibold">Date:</div>
+            <div class="text-xs">
+              {{ editedArticle.datee ? editedArticle.datee : "" }}
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="flex justify-content-between">
+            <div class="text-xs font-semibold">News Value:</div>
+            <div class="text-xs">
+              {{ editedArticle.advalue_bw ?? 0 | formatAmount }}
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="flex justify-content-between">
+            <div class="text-xs font-semibold">Media:</div>
+            <div class="text-xs">
+              {{ editedArticle.media_name ? editedArticle.media_name : "-" }}
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="flex justify-content-between">
+            <div class="text-xs font-semibold">Ad Value:</div>
+            <div class="text-xs">
+              {{ editedArticle.advalue_fc ?? 0 | formatAmount }}
+            </div>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="flex justify-content-between">
+            <div class="text-xs font-semibold">Option:</div>
+            <a
+              class="text-xs"
+              [href]="editedArticle.preview_link"
+              target="_blank"
+              >Preview</a
+            >
           </div>
         </div>
       </div>
-      <div class="col-6">
-        <div class="flex justify-content-between">
-          <div class="text-xs font-semibold">Media:</div>
-          <div class="text-xs">{{ editedArticle?.media_name ?? "-" }}</div>
-        </div>
+      <div class="flex flex-column gap-2">
+        <label class="font-semibold" for="issue">Issue</label>
+        <input pInputText formControlName="issue" id="issue" class="text-xs" />
       </div>
-      <div class="col-6">
-        <div class="flex justify-content-between">
-          <div class="text-xs font-semibold">Ad Value:</div>
-          <div class="text-xs">
-            {{ editedArticle?.advalue_fc ?? 0 | formatAmount }}
-          </div>
-        </div>
+      <div class="flex flex-column gap-2">
+        <label class="font-semibold" for="summary">Summary</label>
+        <textarea
+          pInputTextarea
+          formControlName="summary"
+          id="summary"
+          class="text-xs"
+          rows="5"
+        ></textarea>
       </div>
-      <div class="col-6">
-        <div class="flex justify-content-between">
-          <div class="text-xs font-semibold">Option:</div>
-          <a
-            class="text-xs"
-            [href]="editedArticle?.preview_link"
-            target="_blank"
-            >Preview</a
-          >
-        </div>
+      <div class="flex flex-column gap-2">
+        <label class="font-semibold" for="content">Content</label>
+        <div
+          class="text-xs"
+          [innerHTML]="sanitizedContent ?? editedArticle.content"
+        ></div>
       </div>
-    </div>
-    <div class="flex flex-column gap-2">
-      <label class="font-semibold" for="issue">Issue</label>
-      <input pInputText formControlName="issue" id="issue" class="text-xs" />
-    </div>
-    <div class="flex flex-column gap-2">
-      <label class="font-semibold" for="summary">Summary</label>
-      <textarea
-        pInputTextarea
-        formControlName="summary"
-        id="summary"
-        class="text-xs"
-        rows="5"
-      ></textarea>
-    </div>
-    <div class="flex flex-column gap-2">
-      <label class="font-semibold" for="content">Content</label>
-      <div
-        class="text-xs"
-        [innerHTML]="sanitizedContent ?? editedArticle?.content ?? ''"
-      ></div>
-    </div>
-  </form>
-  <p-multiSelect
-    [options]="availableCategories"
-    [filter]="false"
-    [(ngModel)]="editedCategories"
-    dataKey="category_id"
-    placeholder="Select Cateogry"
-    optionLabel="category_id"
-    display="chip"
-    appendTo="body"
-    styleClass="text-xs w-full mt-4"
-  ></p-multiSelect>
+    </form>
+
+    <p-multiSelect
+      [options]="availableCategories"
+      [filter]="false"
+      [(ngModel)]="editedCategories"
+      dataKey="category_id"
+      placeholder="Select Cateogry"
+      optionLabel="category_id"
+      display="chip"
+      appendTo="body"
+      styleClass="text-xs w-full mt-4"
+    ></p-multiSelect>
+  </ng-container>
+
   <ng-template pTemplate="footer">
     <p-button
       (click)="modalUpdateOpen = false"
       label="Cancel"
       pAutoFocus
       [outlined]="true"
-      [loading]="isUpdating"
+      [loading]="isLoading"
     ></p-button>
     <p-button
       icon="pi pi-check"
@@ -352,7 +361,7 @@
       label="Save"
       pAutoFocus
       [disabled]="!user?.stat_edit"
-      [loading]="isUpdating"
+      [loading]="isLoading"
       [autofocus]="true"
     ></p-button>
   </ng-template>
