@@ -1,5 +1,5 @@
 import { isEmpty, isValidEmail } from './../../../shared/utils/CommonUtils';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { DividerModule } from 'primeng/divider';
 import { IconNewspaperComponent } from '../../../core/components/icons/newspaper/newspaper.component';
 import { IconPencilComponent } from '../../../core/components/icons/pencil/pencil.component';
@@ -45,6 +45,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { getUserFromLocalStorage } from '../../../shared/utils/AuthUtils';
 import { User } from '../../../core/models/user.model';
+import { ColumnFilter } from 'primeng/table';
 
 const highlightKeywords = (content: string, keywords: string[]): string => {
   const cleanedKeywords = keywords.map((keyword) => keyword.replace(/"/g, ''));
@@ -86,6 +87,8 @@ const highlightKeywords = (content: string, keywords: string[]): string => {
   styleUrl: './newsindex.component.scss',
 })
 export class NewsindexComponent {
+  @ViewChild('filterField')
+  filterField!: ColumnFilter;
   filter: any;
 
   articles!: Article[];
@@ -95,7 +98,10 @@ export class NewsindexComponent {
   page: number = 0;
   first: number = 0;
   rows: number = 10;
-  searchCtrl = new FormControl<string>('');
+  searchForm = this.fb.group({
+    query: '',
+    field: 'title',
+  });
   modalUpdateOpen: boolean = false;
   showSendMailDialog: boolean = false;
 
@@ -111,9 +117,13 @@ export class NewsindexComponent {
     summary: '',
   });
 
-  term: any = '';
   sanitizedContent: SafeHtml | null = null;
   selectedTones: any = [];
+
+  searchFieldOptions = [
+    { label: 'Title', value: 'title' },
+    { label: 'Content', value: 'content' },
+  ];
   toneOptions = Object.keys(TONE_MAP).map((key) => ({
     label: TONE_MAP[key],
     value: key,
@@ -168,23 +178,27 @@ export class NewsindexComponent {
       this.fetchData({ ...filter, page: this.page, size: this.rows });
     });
 
-    this.searchCtrl.valueChanges
+    this.searchForm.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged())
-      .subscribe((value) => {
+      .subscribe((v) => {
         this.page = 0;
         this.first = 0;
-        this.term = value;
-        this.fetchData({ page: 0, term: value ?? '', size: this.rows });
+        this.fetchData({ page: 0, term: v.query ?? '', size: this.rows });
       });
   }
 
   fetchData = (filter?: Partial<FilterRequestPayload>) => {
     this.isLoading = true;
+    if (this.filterField) {
+      this.filterField.overlayVisible = false;
+    }
+
     this.articleService
       .getUserEditing({
         ...this.filterService.filter,
         ...filter,
-        term: this.term,
+        term: this.searchForm.get('query')?.value,
+        search_field: this.searchForm.get('field')?.value,
       } as FilterRequestPayload)
       .subscribe((resp) => {
         this.isLoading = false;
