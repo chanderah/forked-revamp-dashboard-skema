@@ -63,7 +63,13 @@
       ></tag>
     </div>
 
-    <button pButton class="mt-4" size="small" [outlined]="true" (click)="openEditModal()">
+    <button
+      pButton
+      class="mt-4"
+      size="small"
+      [outlined]="true"
+      (click)="openEditModal()"
+    >
       Save Article
     </button>
 
@@ -134,7 +140,6 @@
         />
         <label for="ingredient3" class="ml-2"> Negative </label>
       </div>
-
     </div>
   </div>
   <div class="mt-4">
@@ -147,9 +152,6 @@
       [filter]="true"
       [filterInputAutoFocus]="true"
       [metaKeySelection]="false"
-      [virtualScroll]="true"
-      [virtualScrollItemSize]="46"
-      [virtualScrollOptions]="{ scrollHeight: '320px' }"
       [containerStyle]="{ backgroundColor: 'var(--bg-color)' }"
       placeholder="Select"
       appendTo="body"

@@ -54,7 +54,11 @@ import { TreeSelectModule } from 'primeng/treeselect';
   templateUrl: './media-list.component.html',
   styleUrl: './media-list.component.scss',
 })
-export class MediaListComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class MediaListComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   medias: Media[] = [];
   totalRecords!: number;
   loading: boolean = false;
@@ -93,7 +97,10 @@ export class MediaListComponent{ filter: any; ngOnDestroy(){this.filter?.unsubsc
     this.loading = true;
     this.preferenceService.getMedias().subscribe((resp) => {
       this.loading = false;
-      this.medias = resp.results.map((result, idx) => ({ ...result, idx: idx + 1 }));
+      this.medias = resp.results.map((result, idx) => ({
+        ...result,
+        idx: idx + 1,
+      }));
       this.totalRecords = resp.count;
     });
   };
@@ -154,7 +161,6 @@ export class MediaListComponent{ filter: any; ngOnDestroy(){this.filter?.unsubsc
     const selectedIds = this.selectedMediaGroups.reduce(
       (mediaGroups, mediaGroup) => {
         if (mediaGroup.isSelectAll || mediaGroup.isParent) return mediaGroups;
-
         return [...mediaGroups, mediaGroup.media_id];
       },
       []
@@ -181,15 +187,24 @@ export class MediaListComponent{ filter: any; ngOnDestroy(){this.filter?.unsubsc
             this.selectedMedia?.user_media_type_id!,
             payload
           )
-          .subscribe(() => {
-            this.fetchData();
-            this.modalUpdateOpen = false;
-            this.selectedMediaGroups = [];
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Update success',
-              detail: 'Media has been updated.',
-            });
+          .subscribe({
+            next: () => {
+              this.fetchData();
+              this.modalUpdateOpen = false;
+              this.selectedMediaGroups = [];
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Update success',
+                detail: 'Media has been updated.',
+              });
+            },
+            error: () => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Failed to update media.',
+              });
+            },
           });
       });
   };
@@ -204,60 +219,60 @@ export class MediaListComponent{ filter: any; ngOnDestroy(){this.filter?.unsubsc
 
   openEditModal = async (media: Media) => {
     this.selectedMedia = media;
-    const response = await this.preferenceService
+
+    this.preferenceService
       .getMediaGroups(media.user_media_type_id)
-      .toPromise();
+      .subscribe((res) => {
+        const selectedGroup: any[] = [];
+        const actualData =
+          res?.data.map((mediaGroup) => {
+            let hasChosen = false;
+            const children = mediaGroup.media_list.map((mediaList) => {
+              hasChosen = mediaList.chosen;
+              if (hasChosen) {
+                selectedGroup.push({
+                  ...mediaList,
+                  key: mediaList.media_id,
+                  data: mediaList.media_id,
+                  label: mediaList.media_name,
+                  isParent: false,
+                  isSelectAll: false,
+                });
+              }
 
-    const selectedGroup: any[] = [];
-    const actualData =
-      response?.data.map((mediaGroup) => {
-        let hasChosen = false;
-        const children = mediaGroup.media_list.map((mediaList) => {
-          hasChosen = mediaList.chosen;
-          if (hasChosen) {
-            selectedGroup.push({
-              ...mediaList,
-              key: mediaList.media_id,
-              data: mediaList.media_id,
-              label: mediaList.media_name,
-              isParent: false,
-              isSelectAll: false,
+              return {
+                ...mediaList,
+                key: mediaList.media_id,
+                data: mediaList.media_id,
+                label: mediaList.media_name,
+                isParent: false,
+                isSelectAll: false,
+              };
             });
-          }
+            return {
+              children,
+              data: mediaGroup.media_type,
+              label: mediaGroup.media_type,
+              isParent: true,
+              isSelectAll: false,
+              partialSelected: hasChosen,
+            };
+          }) ?? [];
 
-          return {
-            ...mediaList,
-            key: mediaList.media_id,
-            data: mediaList.media_id,
-            label: mediaList.media_name,
-            isParent: false,
-            isSelectAll: false,
-          };
+        this.selectedMediaGroups = selectedGroup;
+        this.mediaGroupsOptions = [
+          {
+            label: 'Select all',
+            data: 'all',
+            children: actualData,
+            isSelectAll: true,
+          },
+        ];
+
+        this.editedValues.setValue({
+          media: media.user_media_type_name_def ?? '',
         });
-        return {
-          children,
-          data: mediaGroup.media_type,
-          label: mediaGroup.media_type,
-          isParent: true,
-          isSelectAll: false,
-          partialSelected: hasChosen,
-        };
-      }) ?? [];
-
-    this.selectedMediaGroups = selectedGroup;
-
-    this.mediaGroupsOptions = [
-      {
-        label: 'Select all',
-        data: 'all',
-        children: actualData,
-        isSelectAll: true,
-      },
-    ];
-
-    this.editedValues.setValue({
-      media: media.user_media_type_name_def ?? '',
-    });
-    this.modalUpdateOpen = true;
+        this.modalUpdateOpen = true;
+      });
   };
 }
