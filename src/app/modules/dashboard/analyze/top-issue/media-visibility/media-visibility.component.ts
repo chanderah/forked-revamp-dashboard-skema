@@ -1,32 +1,25 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import moment from 'moment';
+import { ChartModule } from 'primeng/chart';
+import { Observable } from 'rxjs';
 import {
   ActionButtonProps,
   ChartCardComponent,
 } from '../../../../../core/components/chart-card/chart-card.component';
-import { ChartModule } from 'primeng/chart';
-import { Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
+import { SpinnerComponent } from '../../../../../core/components/spinner/spinner.component';
+import { MediaVisibility } from '../../../../../core/models/media-visibility.model';
+import { AnalyzeService } from '../../../../../core/services/analyze.service';
+import { FilterService } from '../../../../../core/services/filter.service';
 import { AppState } from '../../../../../core/store';
 import { AnalyzeState } from '../../../../../core/store/analyze/analyze.reducer';
 import { selectAnalyzeState } from '../../../../../core/store/analyze/analyze.selectors';
 import {
-  FilterState,
-  initialState,
-} from '../../../../../core/store/filter/filter.reducer';
-import { selectFilterState } from '../../../../../core/store/filter/filter.selectors';
-import { getMediaVisibility } from '../../../../../core/store/analyze/analyze.actions';
-import { FilterRequestPayload } from '../../../../../core/models/request.model';
-import moment from 'moment';
-import { MediaVisibility } from '../../../../../core/models/media-visibility.model';
-import {
-  htmlLegendPlugin,
   barOpacityPlugin,
+  htmlLegendPlugin,
 } from '../../../../../shared/utils/ChartUtils';
-import { SpinnerComponent } from '../../../../../core/components/spinner/spinner.component';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { FilterService } from '../../../../../core/services/filter.service';
-import { AnalyzeService } from '../../../../../core/services/analyze.service';
 
 @Component({
   selector: 'app-media-visibility',
@@ -35,7 +28,11 @@ import { AnalyzeService } from '../../../../../core/services/analyze.service';
   templateUrl: './media-visibility.component.html',
   styleUrl: './media-visibility.component.scss',
 })
-export class MediaVisibilityComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class MediaVisibilityComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   visibilityChartLineData: any;
   visibilityChartLineOpts: any;
 
@@ -312,5 +309,4 @@ export class MediaVisibilityComponent{ filter: any; ngOnDestroy(){this.filter?.u
       visibilityBarDatasets,
     };
   };
-
 }
