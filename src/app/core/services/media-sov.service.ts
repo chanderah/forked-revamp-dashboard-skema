@@ -14,7 +14,7 @@ export class MediaSOVService {
 
   constructor(private http: HttpClient) {}
 
-  getMedias(filter: FilterRequestPayload): Observable<{ data: MediaSOV[] }> {
+  getMedias(filter: FilterRequestPayload) {
     const params = {
       start_date: filter.start_date ? filter.start_date + ' 00:00:00' : '',
       end_date: filter.end_date ? filter.end_date + ' 23:59:59' : '',
@@ -24,12 +24,16 @@ export class MediaSOVService {
       category_set: filter.category_set ?? '',
       user_media_type_id: filter.user_media_type_id ?? '',
     };
-    // console.log('params', params)
 
-    return this.http.get<{ data: MediaSOV[] }>(
-      `${this.baseUrl}/v3/media-sov/media-list`,
-      { params }
-    );
+    return this.http.get<{
+      data: MediaSOV[];
+      meta: {
+        total_data: number;
+        page: number;
+        max_size: number;
+        total_page: number;
+      };
+    }>(`${this.baseUrl}/v3/media-sov/media-list`, { params });
   }
 
   getLatestArticles(
