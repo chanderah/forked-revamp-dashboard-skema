@@ -18,4 +18,5 @@ export interface FilterRequestPayload {
   type_location?: string;
   media_categor?: string;
   search_field?: string;
+  media_category?: string;
 }

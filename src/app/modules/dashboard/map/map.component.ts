@@ -1,35 +1,31 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { Store } from '@ngrx/store';
 import {
   DomUtil,
   MapOptions,
-  circle,
   control,
   geoJSON,
   latLng,
-  polygon,
   tileLayer,
 } from 'leaflet';
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { DividerModule } from 'primeng/divider';
+import { DropdownModule } from 'primeng/dropdown';
+import { IconNewspaperComponent } from '../../../core/components/icons/newspaper/newspaper.component';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
+import { AllCount } from '../../../core/models/all-count.model';
+import { Article } from '../../../core/models/article.model';
+import { FilterRequestPayload } from '../../../core/models/request.model';
+import { FilterService } from '../../../core/services/filter.service';
 import { MapService } from '../../../core/services/map.service';
+import { AppState } from '../../../core/store';
 import {
   FilterState,
   initialState,
 } from '../../../core/store/filter/filter.reducer';
-import { FilterRequestPayload } from '../../../core/models/request.model';
-import { AllCount } from '../../../core/models/all-count.model';
-import { Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
-import { AppState } from '../../../core/store';
-import { selectFilterState } from '../../../core/store/filter/filter.selectors';
-import { DividerModule } from 'primeng/divider';
-import { IconNewspaperComponent } from '../../../core/components/icons/newspaper/newspaper.component';
-import { Article } from '../../../core/models/article.model';
-import { CommonModule } from '@angular/common';
-import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
-import { Router, RouterModule } from '@angular/router';
-import { DropdownModule } from 'primeng/dropdown';
-import { FormsModule } from '@angular/forms';
-import { FilterService } from '../../../core/services/filter.service';
 
 @Component({
   selector: 'app-map',
@@ -76,7 +72,6 @@ export class MapComponent {
     zoomControl: false,
   };
 
-
   constructor(
     private mapService: MapService,
     private store: Store<AppState>,
@@ -84,8 +79,7 @@ export class MapComponent {
     private ngZone: NgZone,
     private router: Router,
     private filterService: FilterService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.filter = this.filterService.subscribe(this.onFilterChange);
@@ -112,19 +106,17 @@ export class MapComponent {
     filter: FilterRequestPayload | FilterState | null,
     location = this.selectedLoc
   ) => {
-    this.selectedLoc = location;
-    let reqFilter = filter ?? initialState;
-    if (location)
-      // @ts-ignore
-      reqFilter = { ...reqFilter, geo_loc: location } as FilterRequestPayload;
     this.isLoadingArticles = true;
-    this.mapService
-      .getArticleByGeo(reqFilter as FilterRequestPayload)
-      .subscribe((data) => {
-        this.isLoadingArticles = false;
-        this.articles = data.data;
-        this.cdr.detectChanges(); // Trigger change detection
-      });
+    this.selectedLoc = location;
+
+    let req = filter ?? initialState;
+    if (location) req = { ...req, geo_loc: location };
+
+    this.mapService.getArticleByGeo(req).subscribe((res) => {
+      this.isLoadingArticles = false;
+      this.articles = res.data;
+      this.cdr.detectChanges();
+    });
   };
 
   addLegendControl = () => {
