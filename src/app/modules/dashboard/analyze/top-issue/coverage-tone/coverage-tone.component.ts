@@ -1,37 +1,32 @@
 import { Component } from '@angular/core';
-import { ChartModule } from 'primeng/chart';
-import { ChartCardComponent } from '../../../../../core/components/chart-card/chart-card.component';
-import { htmlLegendPlugin } from '../../../../../shared/utils/ChartUtils';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { AppState } from '../../../../../core/store';
-import { selectAnalyzeState } from '../../../../../core/store/analyze/analyze.selectors';
-import { selectFilterState } from '../../../../../core/store/filter/filter.selectors';
-import { Observable, Subject, forkJoin } from 'rxjs';
-import { AnalyzeState } from '../../../../../core/store/analyze/analyze.reducer';
-import {
-  FilterState,
-  initialState,
-} from '../../../../../core/store/filter/filter.reducer';
+import moment from 'moment';
+import { ChartModule } from 'primeng/chart';
+import { Observable, forkJoin } from 'rxjs';
+import { ChartCardComponent } from '../../../../../core/components/chart-card/chart-card.component';
 import { FilterRequestPayload } from '../../../../../core/models/request.model';
+import { ToneByCategory } from '../../../../../core/models/tone-by-category.model';
+import { ToneByMedia } from '../../../../../core/models/tone-by-media.model';
+import { Tones } from '../../../../../core/models/tone.model';
+import { FilterService } from '../../../../../core/services/filter.service';
+import { ToneService } from '../../../../../core/services/tone.service';
+import { AppState } from '../../../../../core/store';
 import {
   getToneByCategory,
+  getToneByMedia,
   getTones,
 } from '../../../../../core/store/analyze/analyze.actions';
-import { Tones } from '../../../../../core/models/tone.model';
-import moment from 'moment';
-import { ToneByCategory } from '../../../../../core/models/tone-by-category.model';
-import { getToneByMedia } from '../../../../../core/store/analyze/analyze.actions';
-import { ToneByMedia } from '../../../../../core/models/tone-by-media.model';
+import { AnalyzeState } from '../../../../../core/store/analyze/analyze.reducer';
+import { selectAnalyzeState } from '../../../../../core/store/analyze/analyze.selectors';
+import { FilterState } from '../../../../../core/store/filter/filter.reducer';
+import { htmlLegendPlugin } from '../../../../../shared/utils/ChartUtils';
 import {
   NEGATIVE_TONE,
   NEUTRAL_TONE,
   POSITIVE_TONE,
   TONE_MAP,
 } from '../../../../../shared/utils/Constants';
-import { Router } from '@angular/router';
-import { ToneService } from '../../../../../core/services/tone.service';
-import { AnalyzeService } from '../../../../../core/services/analyze.service';
-import { FilterService } from '../../../../../core/services/filter.service';
 
 const documentStyle = getComputedStyle(document.documentElement);
 @Component({
@@ -268,6 +263,7 @@ export class CoverageToneComponent {
   };
 
   initCoveragePie = (tonesRes: Tones) => {
+    console.log('tonesRes', tonesRes);
     const { datasets, labels, tones } = this.getCoveragePieData(tonesRes);
     this.coveragePieData = { labels, datasets, tones };
   };
@@ -353,32 +349,30 @@ export class CoverageToneComponent {
 
   getCoveragePieData = (tones: Tones) => {
     const documentStyle = getComputedStyle(document.documentElement);
-    const positiveColor = documentStyle.getPropertyValue('--positive-color');
-    const negativeColor = documentStyle.getPropertyValue('--negative-color');
-    const neutralColor = 'gray';
+    const colors: { [x: string]: string } = {
+      '0': 'gray',
+      '1': documentStyle.getPropertyValue('--positive-color'),
+      '-1': documentStyle.getPropertyValue('--negative-color'),
+    };
 
-    const datasets: any = [
-      {
-        data: [],
-        percentages: [],
-        backgroundColor: [positiveColor, negativeColor, neutralColor],
-      },
-    ];
-    const labels: string[] = ['Positive', 'Negative', 'Neutral'];
-    const toneValues: number[] = [POSITIVE_TONE, NEGATIVE_TONE, NEUTRAL_TONE];
-
-    const totalTones = tones.chart_bar.reduce((prev, chart) => {
-      return prev + chart.doc_count;
-    }, 0);
-
-    tones.chart_bar.forEach((chart) => {
-      datasets[0].data.push(chart.doc_count);
-      datasets[0].percentages.push(
-        ((chart.doc_count / totalTones) * 100).toFixed(0)
-      );
-    });
-
-    return { labels, datasets, tones: toneValues };
+    const totalTones = tones.chart_bar.reduce((prev, chart) => prev + chart.doc_count, 0); // prettier-ignore
+    return {
+      tones: [POSITIVE_TONE, NEGATIVE_TONE, NEUTRAL_TONE],
+      labels: [
+        TONE_MAP[POSITIVE_TONE],
+        TONE_MAP[NEGATIVE_TONE],
+        TONE_MAP[NEUTRAL_TONE],
+      ],
+      datasets: [
+        {
+          data: tones.chart_bar.map((v) => v.doc_count),
+          backgroundColor: tones.chart_bar.map((v) => colors[v.key.toString()]),
+          percentages: tones.chart_bar.map((v) =>
+            ((v.doc_count / totalTones) * 100).toFixed(0)
+          ),
+        },
+      ],
+    };
   };
 
   getCoverageChartData = (tones: Tones) => {
