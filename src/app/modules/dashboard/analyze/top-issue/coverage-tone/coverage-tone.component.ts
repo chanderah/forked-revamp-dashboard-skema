@@ -263,7 +263,6 @@ export class CoverageToneComponent {
   };
 
   initCoveragePie = (tonesRes: Tones) => {
-    console.log('tonesRes', tonesRes);
     const { datasets, labels, tones } = this.getCoveragePieData(tonesRes);
     this.coveragePieData = { labels, datasets, tones };
   };
