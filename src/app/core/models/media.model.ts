@@ -27,7 +27,7 @@ export interface MediaList {
 
 export interface MediaListUpdate {
   media_id: string;
-  choses: boolean;
+  chosen: boolean;
 }
 
 export interface WartawanMedia {
