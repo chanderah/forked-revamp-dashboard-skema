@@ -1,18 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { mergeMap, skip, Subscription, from, tap } from 'rxjs';
-import { HighchartsComponent } from '../../../core/components/highcharts/highcharts.component';
-import { ChartType } from '../../../core/models/social-media';
-import { SocialMediaService } from '../../../core/services/social-media.service';
-import { WordCloudComponent } from '../components/word-cloud/word-cloud.component';
-import { FilterService } from '../../../core/services/filter.service';
-import { IconNewspaperComponent } from '../../../core/components/icons/newspaper/newspaper.component';
-import { IconInfoComponent } from '../../../core/components/icons/info/info.component';
-import { FilterState } from '../../../core/store/filter/filter.reducer';
-import { CommonService } from '../../../core/services/common.service';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TooltipModule } from 'primeng/tooltip';
+import { from, mergeMap, skip, Subscription, tap } from 'rxjs';
+import { HighchartsComponent } from '../../../core/components/highcharts/highcharts.component';
+import { IconInfoComponent } from '../../../core/components/icons/info/info.component';
+import { IconNewspaperComponent } from '../../../core/components/icons/newspaper/newspaper.component';
+import { ChartType } from '../../../core/models/social-media';
+import { CommonService } from '../../../core/services/common.service';
+import { FilterService } from '../../../core/services/filter.service';
+import { SocialMediaService } from '../../../core/services/social-media.service';
+import { FilterState } from '../../../core/store/filter/filter.reducer';
 import { isDarkMode } from '../../../shared/utils/CommonUtils';
+import { WordCloudComponent } from '../components/word-cloud/word-cloud.component';
 
 @Component({
   selector: 'app-social-media-index',
@@ -44,7 +44,6 @@ export class SocialMediaIndexComponent implements OnInit, OnDestroy {
     {
       type: 'social-network-analysis',
       title: 'SNA',
-      // height: '600px',
       isLoading: true,
     },
     {
@@ -79,20 +78,14 @@ export class SocialMediaIndexComponent implements OnInit, OnDestroy {
     },
   ];
 
-  constructor(
-    private service: SocialMediaService,
-    private filterService: FilterService,
-    private commonService: CommonService
-  ) {}
+  constructor(private service: SocialMediaService, private filterService: FilterService, private commonService: CommonService) {}
 
   ngOnInit(): void {
     this.filterService.subscribe(({ start_date, end_date }: FilterState) => {
       this.getData(start_date, end_date);
     });
 
-    this.subscription = this.commonService.darkMode$
-      .pipe(skip(1))
-      .subscribe(() => window.location.reload());
+    this.subscription = this.commonService.darkMode$.pipe(skip(1)).subscribe(() => window.location.reload());
   }
 
   getData(startDate: string, endDate: string) {
@@ -105,11 +98,7 @@ export class SocialMediaIndexComponent implements OnInit, OnDestroy {
         mergeMap((v, i) =>
           this.service
             .getChart({ type: v.type, startDate, endDate })
-            .pipe(
-              mergeMap((res: any) => [
-                { type: v.type, data: res?.data, index: i },
-              ])
-            )
+            .pipe(mergeMap((res: any) => [{ type: v.type, data: res?.data, index: i }]))
         )
       )
       .subscribe((res) => {
@@ -121,10 +110,7 @@ export class SocialMediaIndexComponent implements OnInit, OnDestroy {
 
           if (res.type === 'emotion-map') {
             const { pointFormat } = res.data.tooltip;
-            res.data.tooltip.pointFormat = pointFormat.replace(
-              '<td style="color: #222">',
-              '<td>'
-            );
+            res.data.tooltip.pointFormat = pointFormat.replace('<td style="color: #222">', '<td>');
           }
 
           if (isDarkMode()) {
