@@ -152,6 +152,8 @@ export class SocialMediaOverviewComponent implements OnInit, OnDestroy {
     this.chartDetails.data = data;
     this.chartDetails.title = this.listCharts.find((v) => v.type === type)?.title ?? '';
 
+    console.log('data', data);
+
     if (this.pagingInfo.page === 1) this.pagingInfo.rowCount = 0;
     setTimeout(() => {
       const el = document.getElementById('chartDetails');
@@ -177,6 +179,9 @@ export class SocialMediaOverviewComponent implements OnInit, OnDestroy {
         break;
       case 'mention-graph':
         this.chartDetails.subtitle = data.id;
+        break;
+      case 'engaging-authors':
+        this.chartDetails.subtitle = author;
         break;
       default:
         this.chartDetails.subtitle = label;
