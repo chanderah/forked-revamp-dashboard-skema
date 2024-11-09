@@ -9,7 +9,7 @@ import { IconInfoComponent } from '../../../core/components/icons/info/info.comp
 import { IconNewspaperComponent } from '../../../core/components/icons/newspaper/newspaper.component';
 import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
 import { ImgFallbackDirective } from '../../../core/directive/img-fallback.directive';
-import { ChartType } from '../../../core/models/social-media';
+import { ChartDetails, ChartType } from '../../../core/models/social-media';
 import { CommonService } from '../../../core/services/common.service';
 import { FilterService } from '../../../core/services/filter.service';
 import { SocialMediaService } from '../../../core/services/social-media.service';
@@ -47,13 +47,7 @@ export class SocialMediaOverviewComponent implements OnInit, OnDestroy {
     rowCount: 0,
   };
 
-  chartDetails = {} as {
-    type: ChartType;
-    title: string;
-    subtitle: string;
-    data: any;
-    mentionsData: any[];
-  };
+  chartDetails = {} as ChartDetails;
 
   listCharts: {
     isLoading: boolean;
@@ -100,6 +94,7 @@ export class SocialMediaOverviewComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.filterService.subscribe((filter) => {
       this.filter = filter;
+      this.chartDetails = {} as ChartDetails;
       this.getData(filter.start_date, filter.end_date);
     });
 

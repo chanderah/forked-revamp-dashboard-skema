@@ -37,3 +37,11 @@ export type ChartType =
   | 'reach-by-platform'
   | 'mention-graph'
   | 'pages';
+
+export interface ChartDetails {
+  type: ChartType;
+  title: string;
+  subtitle: string;
+  data: any;
+  mentionsData: any[];
+}
