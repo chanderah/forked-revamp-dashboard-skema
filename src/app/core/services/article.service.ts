@@ -1,12 +1,12 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { HighlightsResponse } from '../models/highlights.model';
-import { FilterRequestPayload } from '../models/request.model';
+import { getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
 import { Article, ArticleResponse } from '../models/article.model';
 import { CategoryResponse } from '../models/category.model';
-import { BASE_URL } from '../api';
-import { getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
+import { HighlightsResponse } from '../models/highlights.model';
+import { FilterRequestPayload } from '../models/request.model';
+import { BASE_URL } from './../api/index';
 
 @Injectable({
   providedIn: 'root',
@@ -28,27 +28,22 @@ export class ArticleService {
       tone: filter.tone ?? '',
     };
 
-    return this.http.get<HighlightsResponse>(
-      `${this.baseUrl}/v3/media-sov/latest-articles`,
-      {
-        params,
-      }
-    );
+    return this.http.get<HighlightsResponse>(`${this.baseUrl}/v3/media-sov/latest-articles`, {
+      params,
+    });
   }
 
-  getUserEditingPlus(
-    filter: FilterRequestPayload
-  ): Observable<{ data: Article[]; recordsTotal: number }> {
-    return this.http.post<{ data: Article[]; recordsTotal: number }>(
-      `${this.baseUrl}/v1/user/editingplus/`,
-      {
-        ...filter,
-        media_id: 0,
-        maxSize: 20,
-        page: filter.page ?? 0,
-        size: filter.size ?? 10,
-      }
-    );
+  getUserEditingPlus(filter: FilterRequestPayload): Observable<{ data: Article[]; recordsTotal: number }> {
+    const isHourly = filter.start_date?.includes(' '); // space
+
+    return this.http.post<{ data: Article[]; recordsTotal: number }>(`${this.baseUrl}/${isHourly ? 'v3' : 'v1'}/user/editingplus/`, {
+      ...filter,
+      media_id: 0,
+      maxSize: 20,
+      max_size: 20,
+      page: filter.page ?? 0,
+      size: filter.size ?? 10,
+    });
   }
 
   getUserEditing(filter: FilterRequestPayload): Observable<ArticleResponse> {
@@ -61,84 +56,44 @@ export class ArticleService {
   }
 
   getArticlesByTone(filter: FilterRequestPayload): Observable<ArticleResponse> {
-    return this.http.post<ArticleResponse>(
-      `${this.baseUrl}/v1/dashboard/article-by-tone`,
-      {
-        ...filter,
-        media_id: filter.media_id ?? 0,
-        page: filter.page ?? 0,
-        maxSize: filter.maxSize ?? undefined,
-        size: filter.size ?? 10,
-      }
-    );
+    return this.http.post<ArticleResponse>(`${this.baseUrl}/v1/dashboard/article-by-tone`, {
+      ...filter,
+      media_id: filter.media_id ?? 0,
+      page: filter.page ?? 0,
+      maxSize: filter.maxSize ?? undefined,
+      size: filter.size ?? 10,
+    });
   }
 
-  getMediaCountArticles({
-    article_ids,
-    page,
-    size,
-  }: {
-    article_ids: number[];
-    page: number;
-    size: number;
-  }): Observable<any> {
-    return this.http.post<any>(
-      `${this.baseUrl}/v1/dashboard/media-count/articles`,
-      {
-        article_ids,
-        page,
-        size,
-      }
-    );
+  getMediaCountArticles({ article_ids, page, size }: { article_ids: number[]; page: number; size: number }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/v1/dashboard/media-count/articles`, {
+      article_ids,
+      page,
+      size,
+    });
   }
 
   getArticleById(articleId: string): Observable<{ data: Article }> {
-    return this.http.get<{ data: Article }>(
-      `${this.baseUrl}/v1/user/article/${articleId}`
-    );
+    return this.http.get<{ data: Article }>(`${this.baseUrl}/v1/user/article/${articleId}`);
   }
 
   getKeywordsByArticleId(articleId: string): Observable<{ data: string[] }> {
-    return this.http.post<{ data: string[] }>(
-      `${this.baseUrl}/v1/user/keywords-by-article-id/`,
-      { article_id: articleId }
-    );
+    return this.http.post<{ data: string[] }>(`${this.baseUrl}/v1/user/keywords-by-article-id/`, { article_id: articleId });
   }
 
   deleteArticle(articleIds: Record<string, string>[]): Observable<string> {
-    return this.http.post<string>(
-      `${this.baseUrl}/v1/user/article/delete`,
-      articleIds
-    );
+    return this.http.post<string>(`${this.baseUrl}/v1/user/article/delete`, articleIds);
   }
 
-  updateArticleTitle(payload: {
-    article_id: string;
-    category_id: string;
-    title: string;
-  }): Observable<string> {
-    return this.http.post<string>(
-      `${this.baseUrl}/v1/user/title/update`,
-      payload
-    );
+  updateArticleTitle(payload: { article_id: string; category_id: string; title: string }): Observable<string> {
+    return this.http.post<string>(`${this.baseUrl}/v1/user/title/update`, payload);
   }
 
-  updateArticleTone(payload: {
-    article_id: string[];
-    category_id: string[];
-    tone: number;
-  }): Observable<string> {
-    return this.http.post<string>(
-      `${this.baseUrl}/v1/user/tone/multiple/update`,
-      payload
-    );
+  updateArticleTone(payload: { article_id: string[]; category_id: string[]; tone: number }): Observable<string> {
+    return this.http.post<string>(`${this.baseUrl}/v1/user/tone/multiple/update`, payload);
   }
 
-  updateArticleIssue(payload: {
-    article_id: number[];
-    topic: string[];
-    new_topic: string;
-  }): Observable<string> {
+  updateArticleIssue(payload: { article_id: number[]; topic: string[]; new_topic: string }): Observable<string> {
     return this.http.put<string>(`${this.baseUrl}/v1/issue/update/`, payload);
   }
 
@@ -152,65 +107,42 @@ export class ArticleService {
     media_id: number;
     tone: number;
   }): Observable<string> {
-    return this.http.post<string>(
-      `${this.baseUrl}/v1/user/article/save`,
-      payload
-    );
+    return this.http.post<string>(`${this.baseUrl}/v1/user/article/save`, payload);
   }
 
-  updateArticleSummary(payload: {
-    article_id: number;
-    category_id: string;
-    summary: string;
-  }): Observable<string> {
-    return this.http.post<string>(
-      `${this.baseUrl}/v1/user/summary/update`,
-      payload
-    );
+  updateArticleSummary(payload: { article_id: number; category_id: string; summary: string }): Observable<string> {
+    return this.http.post<string>(`${this.baseUrl}/v1/user/summary/update`, payload);
   }
 
   getSubCategoriesDistinct(): Observable<CategoryResponse> {
-    return this.http.get<CategoryResponse>(
-      `${this.baseUrl}/v1/user/subcategories-distinct/`
-    );
+    return this.http.get<CategoryResponse>(`${this.baseUrl}/v1/user/subcategories-distinct/`);
   }
 
-  searchArticles(
-    filter: FilterRequestPayload
-  ): Observable<{ totalItems: number; results: Article[] }> {
-    return this.http.post<{ totalItems: number; results: Article[] }>(
-      `${this.baseUrl}/v1/search/`,
-      {
-        category_id: 'all',
-        page: filter.page ?? 0,
-        maxSize: filter.maxSize ?? 8,
-        size: filter.size ?? 0,
-        ...filter,
-      }
-    );
+  searchArticles(filter: FilterRequestPayload): Observable<{ totalItems: number; results: Article[] }> {
+    return this.http.post<{ totalItems: number; results: Article[] }>(`${this.baseUrl}/v1/search/`, {
+      category_id: 'all',
+      page: filter.page ?? 0,
+      maxSize: filter.maxSize ?? 8,
+      size: filter.size ?? 0,
+      ...filter,
+    });
   }
 
   downloadDocs(articles: Article[]): Observable<{ data: string }> {
     const user = getUserFromLocalStorage();
-    return this.http.post<{ data: string }>(
-      `${this.baseUrl}/v1/user/download/docxs`,
-      {
-        articles,
-        logo_name: user?.comp_icon ?? 'company/bpjs-kesehatan.png',
-      }
-    );
+    return this.http.post<{ data: string }>(`${this.baseUrl}/v1/user/download/docxs`, {
+      articles,
+      logo_name: user?.comp_icon ?? 'company/bpjs-kesehatan.png',
+    });
   }
 
   downloadPdfs(articles: Article[]): Observable<{ data: { link: string } }> {
     const user = getUserFromLocalStorage();
-    return this.http.post<{ data: { link: string } }>(
-      `${this.baseUrl}/v1/user/download/pdfs`,
-      {
-        articles,
-        doc_type: 1,
-        logo_name: user?.comp_icon ?? 'company/bpjs-kesehatan.png',
-      }
-    );
+    return this.http.post<{ data: { link: string } }>(`${this.baseUrl}/v1/user/download/pdfs`, {
+      articles,
+      doc_type: 1,
+      logo_name: user?.comp_icon ?? 'company/bpjs-kesehatan.png',
+    });
   }
 
   sendMail(emails: string, articles: Article[]) {
@@ -225,9 +157,7 @@ export class ArticleService {
     });
   }
 
-  getArticlesHeadlines(
-    filter: FilterRequestPayload
-  ): Observable<{ data: Article[] }> {
+  getArticlesHeadlines(filter: FilterRequestPayload): Observable<{ data: Article[] }> {
     const params = {
       start_date: filter.start_date ? filter.start_date + ' 00:00:00' : '',
       end_date: filter.end_date ? filter.end_date + ' 23:59:59' : '',
@@ -239,15 +169,10 @@ export class ArticleService {
       tone: filter.tone ?? '',
     };
 
-    return this.http.get<{ data: Article[] }>(
-      `${this.baseUrl}/v1/dashboard/article-headlines`,
-      { params }
-    );
+    return this.http.get<{ data: Article[] }>(`${this.baseUrl}/v1/dashboard/article-headlines`, { params });
   }
 
-  getTopArticles(
-    filter: FilterRequestPayload
-  ): Observable<{ data: Article[] }> {
+  getTopArticles(filter: FilterRequestPayload): Observable<{ data: Article[] }> {
     const params = {
       start_date: filter.start_date ? filter.start_date + ' 00:00:00' : '',
       end_date: filter.end_date ? filter.end_date + ' 23:59:59' : '',
@@ -259,19 +184,10 @@ export class ArticleService {
       tone: filter.tone ?? '',
     };
 
-    return this.http.get<{ data: Article[] }>(
-      `${this.baseUrl}/v1/dashboard/top-articles`,
-      { params }
-    );
+    return this.http.get<{ data: Article[] }>(`${this.baseUrl}/v1/dashboard/top-articles`, { params });
   }
 
-  deleteCategory(req: {
-    article_id: string;
-    category_id: string;
-  }): Observable<any> {
-    return this.http.post(
-      `${this.baseUrl}/v1/user/article/delete/category`,
-      req
-    );
+  deleteCategory(req: { article_id: string; category_id: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/v1/user/article/delete/category`, req);
   }
 }

@@ -1,51 +1,39 @@
-import { isEmpty, isValidEmail } from './../../../shared/utils/CommonUtils';
-import { Component, ViewChild } from '@angular/core';
-import { DividerModule } from 'primeng/divider';
-import { IconNewspaperComponent } from '../../../core/components/icons/newspaper/newspaper.component';
-import { IconPencilComponent } from '../../../core/components/icons/pencil/pencil.component';
-import { RouterModule } from '@angular/router';
-import { IconInfoComponent } from '../../../core/components/icons/info/info.component';
-import { ArticleService } from '../../../core/services/article.service';
-import { FilterRequestPayload } from '../../../core/models/request.model';
-import { Article } from '../../../core/models/article.model';
-import { TagModule } from 'primeng/tag';
-import { ButtonModule } from 'primeng/button';
-import { TableModule } from 'primeng/table';
-import { TagComponent } from '../../../core/components/tag/tag.component';
-import {
-  NEGATIVE_TONE,
-  NEUTRAL_TONE,
-  POSITIVE_TONE,
-  TONE_MAP,
-} from '../../../shared/utils/Constants';
-import { ButtonSecondaryComponent } from '../../../core/components/button-secondary/button-secondary.component';
-import { InputTextModule } from 'primeng/inputtext';
-import { TieredMenuModule } from 'primeng/tieredmenu';
-import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
-import { PaginatorModule } from 'primeng/paginator';
 import { CommonModule } from '@angular/common';
-import { debounceTime, distinctUntilChanged, forkJoin } from 'rxjs';
+import { Component, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { ChipModule } from 'primeng/chip';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DialogModule } from 'primeng/dialog';
-import { FilterService } from '../../../core/services/filter.service';
-import {
-  FormBuilder,
-  FormControl,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { FormatAmountPipe } from '../../../core/pipes/format-amount.pipe';
+import { DividerModule } from 'primeng/divider';
+import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
-import { ChipModule } from 'primeng/chip';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { Category } from '../../../core/models/category.model';
+import { PaginatorModule } from 'primeng/paginator';
+import { ColumnFilter, TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
+import { TieredMenuModule } from 'primeng/tieredmenu';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { getUserFromLocalStorage } from '../../../shared/utils/AuthUtils';
+import { debounceTime, distinctUntilChanged, forkJoin } from 'rxjs';
+import { ButtonSecondaryComponent } from '../../../core/components/button-secondary/button-secondary.component';
+import { IconInfoComponent } from '../../../core/components/icons/info/info.component';
+import { IconNewspaperComponent } from '../../../core/components/icons/newspaper/newspaper.component';
+import { IconPencilComponent } from '../../../core/components/icons/pencil/pencil.component';
+import { TagComponent } from '../../../core/components/tag/tag.component';
+import { Article } from '../../../core/models/article.model';
+import { Category } from '../../../core/models/category.model';
+import { FilterRequestPayload } from '../../../core/models/request.model';
 import { User } from '../../../core/models/user.model';
-import { ColumnFilter } from 'primeng/table';
+import { FormatAmountPipe } from '../../../core/pipes/format-amount.pipe';
+import { ArticleService } from '../../../core/services/article.service';
+import { FilterService } from '../../../core/services/filter.service';
+import { getUserFromLocalStorage } from '../../../shared/utils/AuthUtils';
+import { NEGATIVE_TONE, NEUTRAL_TONE, POSITIVE_TONE, TONE_MAP } from '../../../shared/utils/Constants';
+import { isEmpty, isValidEmail } from './../../../shared/utils/CommonUtils';
 
 const highlightKeywords = (content: string, keywords: string[]): string => {
   const cleanedKeywords = keywords.map((keyword) => keyword.replace(/"/g, ''));
@@ -87,17 +75,16 @@ const highlightKeywords = (content: string, keywords: string[]): string => {
   styleUrl: './newsindex.component.scss',
 })
 export class NewsindexComponent {
-  @ViewChild('filterField')
-  filterField!: ColumnFilter;
+  @ViewChild('columnFilter')
+  columnFilter!: ColumnFilter;
   filter: any;
 
   articles!: Article[];
-  clearArticles!: Article[];
-  totalRecords!: number;
   selectedArticles: Article[] = [];
   page: number = 0;
   first: number = 0;
   rows: number = 10;
+  totalRecords!: number;
   searchForm = this.fb.group({
     query: '',
     field: 'title',
@@ -118,8 +105,6 @@ export class NewsindexComponent {
   });
 
   sanitizedContent: SafeHtml | null = null;
-  selectedTones: any = [];
-
   searchFieldOptions = [
     { label: 'Title', value: 'title' },
     { label: 'Content', value: 'content' },
@@ -128,6 +113,7 @@ export class NewsindexComponent {
     label: TONE_MAP[key],
     value: key,
   }));
+  selectedTones = this.toneOptions;
 
   user: User | null = getUserFromLocalStorage();
 
@@ -178,42 +164,31 @@ export class NewsindexComponent {
       this.fetchData({ ...filter, page: this.page, size: this.rows });
     });
 
-    this.searchForm.valueChanges
-      .pipe(debounceTime(500), distinctUntilChanged())
-      .subscribe((v) => {
-        this.page = 0;
-        this.first = 0;
-        this.fetchData({ page: 0, term: v.query ?? '', size: this.rows });
-      });
+    this.searchForm.valueChanges.pipe(debounceTime(500), distinctUntilChanged()).subscribe((v) => {
+      this.page = 0;
+      this.first = 0;
+      this.fetchData({ page: 0, term: v.query ?? '', size: this.rows });
+    });
   }
 
   fetchData = (filter?: Partial<FilterRequestPayload>) => {
     this.isLoading = true;
-    if (this.filterField) {
-      this.filterField.overlayVisible = false;
+    if (this.columnFilter) {
+      this.columnFilter.overlayVisible = false;
     }
 
     this.articleService
       .getUserEditing({
         ...this.filterService.filter,
         ...filter,
-        term: this.searchForm.get('query')?.value,
-        search_field: this.searchForm.get('field')?.value,
-      } as FilterRequestPayload)
-      .subscribe((resp) => {
+        term: this.searchForm.get('query')?.value ?? '',
+        search_field: this.searchForm.get('field')?.value ?? '',
+        sentiments: this.selectedTones.map((option: any) => option.label.toLowerCase()).join(','),
+      })
+      .subscribe((res) => {
         this.isLoading = false;
-        const selectedToneValues = this.selectedTones.map(
-          (option: any) => +option.value
-        );
-        if (this.selectedTones.length) {
-          this.articles = resp.data.filter((article) =>
-            selectedToneValues.includes(article.tone)
-          );
-        } else {
-          this.articles = resp.data;
-        }
-        this.clearArticles = resp.data;
-        this.totalRecords = resp.recordsTotal;
+        this.articles = res.data;
+        this.totalRecords = res.recordsTotal;
       });
   };
 
@@ -254,11 +229,8 @@ export class NewsindexComponent {
   };
 
   updateTone = async (tone: number) => {
-    const article_id = this.selectedArticles.map(
-      ({ article_id }) => article_id
-    );
-    const category_id =
-      this.selectedArticles.map(({ category_id }) => category_id ?? '') ?? [];
+    const article_id = this.selectedArticles.map(({ article_id }) => article_id);
+    const category_id = this.selectedArticles.map(({ category_id }) => category_id ?? '') ?? [];
 
     this.articleService
       .updateArticleTone({
@@ -324,9 +296,7 @@ export class NewsindexComponent {
     }
 
     const currentCategories = this.editedCategories.map((v) => v.category_id);
-    const deletedCategories = this.editedArticle.categories.filter(
-      (v) => !currentCategories.includes(v)
-    );
+    const deletedCategories = this.editedArticle.categories.filter((v) => !currentCategories.includes(v));
 
     for (const v of deletedCategories) {
       apis.push(
@@ -372,20 +342,12 @@ export class NewsindexComponent {
   }
 
   openEditModal = async (article: Article) => {
-    const categoriesResp = await this.articleService
-      .getSubCategoriesDistinct()
-      .toPromise();
+    const categoriesResp = await this.articleService.getSubCategoriesDistinct().toPromise();
 
-    const keywordRes = await this.articleService
-      .getKeywordsByArticleId(article.article_id)
-      .toPromise();
+    const keywordRes = await this.articleService.getKeywordsByArticleId(article.article_id).toPromise();
 
-    const hightligtedWords = highlightKeywords(
-      article.content,
-      keywordRes?.data ?? []
-    );
-    this.sanitizedContent =
-      this.sanitizer.bypassSecurityTrustHtml(hightligtedWords);
+    const hightligtedWords = highlightKeywords(article.content, keywordRes?.data ?? []);
+    this.sanitizedContent = this.sanitizer.bypassSecurityTrustHtml(hightligtedWords);
 
     this.availableCategories = categoriesResp?.results ?? [];
     this.editedArticle = article;
@@ -458,25 +420,16 @@ export class NewsindexComponent {
     window.open(article.preview_link, '_blank');
   }
 
-  filterCallback() {
-    const selectedToneValues = this.selectedTones.map(
-      (option: any) => +option.value
-    );
-    if (this.selectedTones.length) {
-      this.articles = this.clearArticles.filter((article) =>
-        selectedToneValues.includes(article.tone)
-      );
-    } else {
-      this.articles = this.clearArticles;
-    }
-  }
-
   clear() {
-    this.selectedTones = [];
-    this.articles = this.clearArticles;
+    this.selectedTones = this.toneOptions;
+    this.fetchData;
   }
 
   ngOnDestroy() {
     this.filter?.unsubscribe?.();
+  }
+
+  get rowCount() {
+    return this.selectedTones.length;
   }
 }

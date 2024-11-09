@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ArticleService } from '../../../core/services/article.service';
-import { FilterState } from '../../../core/store/filter/filter.reducer';
-import { FilterRequestPayload } from '../../../core/models/request.model';
-import { FilterService } from '../../../core/services/filter.service';
-import { Article } from '../../../core/models/article.model';
-import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
-import { ArticleListComponent } from '../../../core/components/article-list/article-list.component';
-import { TONE_MAP } from '../../../shared/utils/Constants';
 import moment from 'moment';
+import { Subscription } from 'rxjs';
+import { ArticleListComponent } from '../../../core/components/article-list/article-list.component';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
+import { Article } from '../../../core/models/article.model';
+import { FilterRequestPayload } from '../../../core/models/request.model';
+import { ArticleService } from '../../../core/services/article.service';
+import { FilterService } from '../../../core/services/filter.service';
 
 @Component({
   selector: 'app-articles-by-media',
@@ -17,13 +16,15 @@ import moment from 'moment';
   templateUrl: './articles-by-media.component.html',
   styleUrl: './articles-by-media.component.scss',
 })
-export class ArticlesByMediaComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
-  mediaId: number | null = null;
-  mediaName: string | null = null;
-  date: string | null = null;
-  topic: string | null = null;
-  tone: number | null = null;
-  toneLabel: string | null = null;
+export class ArticlesByMediaComponent {
+  filter!: Subscription;
+
+  mediaId!: number;
+  mediaName!: string;
+  date: string | null;
+  topic!: string;
+  tone!: number;
+  toneLabel!: string;
   isTopic: boolean = false;
 
   articles: Article[] = [];
@@ -39,10 +40,8 @@ export class ArticlesByMediaComponent{ filter: any; ngOnDestroy(){this.filter?.u
     private articleService: ArticleService,
     private filterService: FilterService
   ) {
-    const mediaName = this.route.snapshot.queryParamMap.get('mediaName')!;
-    const topic = this.route.snapshot.queryParamMap.get('topic')!;
-    const date = this.route.snapshot.queryParamMap.get('date')!;
-    this.date = date
+    const { mediaName, topic, date } = route.snapshot.queryParams;
+    this.date = date;
 
     if (mediaName) {
       this.mediaName = mediaName;
@@ -61,19 +60,27 @@ export class ArticlesByMediaComponent{ filter: any; ngOnDestroy(){this.filter?.u
   }
 
   fetchArticlesPlus = (filter: FilterRequestPayload) => {
-    const req = {
-      ...filter,
-      category_id: this.mediaName,
-      start_date: this.date
-        ? moment(this.date).format('YYYY-MM-DD')
-        : filter.start_date,
-      end_date: this.date
-        ? moment(this.date).format('YYYY-MM-DD')
-        : filter.end_date,
-    };
     this.isLoading = true;
+
+    let startDate;
+    let endDate;
+
+    const isHourly = this.date?.includes('T');
+    if (isHourly) {
+      startDate = moment(this.date).utc().format('YYYY-MM-DD HH:mm:ss');
+      endDate = moment(startDate).endOf('hour').subtract(1, 'millisecond').format('YYYY-MM-DD HH:mm:ss');
+    } else {
+      startDate = this.date ? moment(this.date).format('YYYY-MM-DD') : filter.start_date;
+      endDate = this.date ? moment(this.date).format('YYYY-MM-DD') : filter.end_date;
+    }
+
     this.articleService
-      .getUserEditingPlus(req as FilterRequestPayload)
+      .getUserEditingPlus({
+        ...filter,
+        category_id: this.mediaName,
+        start_date: startDate,
+        end_date: endDate,
+      })
       .subscribe((data) => {
         this.isLoading = false;
         this.articles = data.data;
@@ -85,21 +92,15 @@ export class ArticlesByMediaComponent{ filter: any; ngOnDestroy(){this.filter?.u
     const req = {
       ...filter,
       topic: this.topic ?? undefined,
-      start_date: this.date
-        ? moment(this.date).format('YYYY-MM-DD')
-        : filter.start_date,
-      end_date: this.date
-        ? moment(this.date).format('YYYY-MM-DD')
-        : filter.end_date,
+      start_date: this.date ? moment(this.date).format('YYYY-MM-DD') : filter.start_date,
+      end_date: this.date ? moment(this.date).format('YYYY-MM-DD') : filter.end_date,
     };
     this.isLoading = true;
-    this.articleService
-      .getUserEditing(req as FilterRequestPayload)
-      .subscribe((data) => {
-        this.isLoading = false;
-        this.articles = data.data;
-        this.totalRecords = data.recordsTotal;
-      });
+    this.articleService.getUserEditing(req as FilterRequestPayload).subscribe((data) => {
+      this.isLoading = false;
+      this.articles = data.data;
+      this.totalRecords = data.recordsTotal;
+    });
   };
 
   onPageChange = (event: any) => {
@@ -120,4 +121,8 @@ export class ArticlesByMediaComponent{ filter: any; ngOnDestroy(){this.filter?.u
       });
     }
   };
+
+  ngOnDestroy() {
+    this.filter?.unsubscribe();
+  }
 }

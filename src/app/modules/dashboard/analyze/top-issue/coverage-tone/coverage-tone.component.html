@@ -6,24 +6,19 @@
           type="bar"
           [data]="coverageChartData"
           [options]="coverageChartOpts"
-          (onDataSelect)="onDataSelect($event, 'chart')"
-        ></p-chart>
+          (onDataSelect)="onDataSelect($event, 'chart')"></p-chart>
       </chart-card>
     </div>
     <div class="xl:col-6 lg:col-6 col-12">
       <chart-card title="Coverage Pie" id="coveragePie">
         <div class="flex align-items-center gap-6">
-          <div
-            id="coverage-legend-container"
-            class="flex align-items-center justify-content-center gap-6 w-full"
-          >
+          <div id="coverage-legend-container" class="flex align-items-center justify-content-center gap-6 w-full">
             <p-chart
               type="pie"
               [data]="coveragePieData"
               [options]="coveragePieOpts"
               [plugins]="coveragePiePlugins"
-              (onDataSelect)="onDataSelect($event, 'pie_category')"
-            ></p-chart>
+              (onDataSelect)="onDataSelect($event, 'pie_category')"></p-chart>
           </div>
         </div>
       </chart-card>
@@ -34,8 +29,7 @@
           type="bar"
           [data]="toneByMediaChartData"
           [options]="toneByMediaChartOpts"
-          (onDataSelect)="onDataSelect($event, 'media')"
-        ></p-chart>
+          (onDataSelect)="onDataSelect($event, 'media')"></p-chart>
       </chart-card>
     </div>
     <div class="xl:col-6 lg:col-6 col-12">
@@ -44,8 +38,7 @@
           type="bar"
           [data]="toneByCategChartData"
           [options]="toneByCategChartOpts"
-          (onDataSelect)="onDataSelect($event, 'bar_category')"
-        ></p-chart>
+          (onDataSelect)="onDataSelect($event, 'bar_category')"></p-chart>
       </chart-card>
     </div>
   </div>

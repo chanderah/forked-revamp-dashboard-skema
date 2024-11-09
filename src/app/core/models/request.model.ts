@@ -19,4 +19,5 @@ export interface FilterRequestPayload {
   media_categor?: string;
   search_field?: string;
   media_category?: string;
+  sentiments?: string;
 }

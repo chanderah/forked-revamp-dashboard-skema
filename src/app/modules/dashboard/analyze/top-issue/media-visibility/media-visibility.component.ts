@@ -5,10 +5,7 @@ import { Store } from '@ngrx/store';
 import moment from 'moment';
 import { ChartModule } from 'primeng/chart';
 import { Observable } from 'rxjs';
-import {
-  ActionButtonProps,
-  ChartCardComponent,
-} from '../../../../../core/components/chart-card/chart-card.component';
+import { ActionButtonProps, ChartCardComponent } from '../../../../../core/components/chart-card/chart-card.component';
 import { SpinnerComponent } from '../../../../../core/components/spinner/spinner.component';
 import { MediaVisibility } from '../../../../../core/models/media-visibility.model';
 import { AnalyzeService } from '../../../../../core/services/analyze.service';
@@ -16,10 +13,7 @@ import { FilterService } from '../../../../../core/services/filter.service';
 import { AppState } from '../../../../../core/store';
 import { AnalyzeState } from '../../../../../core/store/analyze/analyze.reducer';
 import { selectAnalyzeState } from '../../../../../core/store/analyze/analyze.selectors';
-import {
-  barOpacityPlugin,
-  htmlLegendPlugin,
-} from '../../../../../shared/utils/ChartUtils';
+import { barOpacityPlugin, htmlLegendPlugin } from '../../../../../shared/utils/ChartUtils';
 
 @Component({
   selector: 'app-media-visibility',
@@ -30,9 +24,7 @@ import {
 })
 export class MediaVisibilityComponent {
   filter: any;
-  ngOnDestroy() {
-    this.filter?.unsubscribe?.();
-  }
+
   visibilityChartLineData: any;
   visibilityChartLineOpts: any;
 
@@ -49,6 +41,7 @@ export class MediaVisibilityComponent {
 
   analyzeState: Observable<AnalyzeState>;
   isLoading: boolean = false;
+  isDrilldownVisibilityChart: boolean = false;
 
   constructor(
     private store: Store<AppState>,
@@ -81,25 +74,24 @@ export class MediaVisibilityComponent {
 
   ngOnInit() {
     this.initChartOpts();
-    this.filter = this.filterService.subscribe((filter) => {
-      this.isLoading = true;
-      this.analyzeService.getMediaVisibility(filter).subscribe((data) => {
-        this.isLoading = false;
-        this.initChartData(data.data);
-      });
+    this.filterService.subscribe((v) => {
+      this.filter = v;
+      this.getData();
+    });
+  }
+
+  getData() {
+    this.isLoading = true;
+    this.isDrilldownVisibilityChart = false;
+    this.analyzeService.getMediaVisibility(this.filter).subscribe((res) => {
+      this.isLoading = false;
+      this.initChartData(res.data);
     });
   }
 
   initChartData = (mediaVisibility: MediaVisibility[]) => {
     if (mediaVisibility.length) {
-      const {
-        lineDatasets,
-        lineLabels,
-        pieLabels,
-        pieDatasets,
-        visibilityBarDatasets,
-        barLabels,
-      } = this.getChartData(mediaVisibility);
+      const { lineDatasets, lineLabels, pieLabels, pieDatasets, visibilityBarDatasets, barLabels } = this.getChartData(mediaVisibility);
 
       this.visibilityPieData = { labels: pieLabels, datasets: pieDatasets };
       this.visibilityChartLineData = {
@@ -114,41 +106,78 @@ export class MediaVisibilityComponent {
   };
 
   onVisibilityPieSelect = (value: any, type: string) => {
-    let mediaLabel = null;
-    let date = null;
+    let mediaName;
+    let date;
 
-    if (type === 'pie') {
-      const currentData =
-        this.visibilityPieData.datasets[value.element.datasetIndex];
-      mediaLabel = currentData.mediaIds[value.element.index];
-    } else if (type === 'bar') {
-      const currentData =
-        this.visibilityChartBarData.datasets[value.element.datasetIndex];
-      mediaLabel = currentData.label;
-      date = currentData.date[value.element.index];
-    } else if (type === 'line') {
-      const currentData =
-        this.visibilityChartLineData.datasets[value.element.datasetIndex];
-      mediaLabel = currentData.label;
-      date = currentData.date[value.element.index];
+    if (type === 'line') {
+      const data = this.visibilityChartLineData.datasets[value.element.datasetIndex];
+      mediaName = data.label;
+      date = data.date[value.element.index];
+
+      const startDate = new Date(this.filter.start_date).getDate();
+      const endDate = new Date(this.filter.end_date).getDate();
+      if (startDate === endDate) {
+        this.router.navigate(['/dashboard/articles-by-media'], {
+          queryParams: { mediaName, date },
+        });
+        return;
+      }
+
+      this.onVisibilityChartDayClick(date, mediaName);
+    } else {
+      if (type === 'bar') {
+        const data = this.visibilityChartBarData.datasets[value.element.datasetIndex];
+        mediaName = data.label;
+        date = data.date[value.element.index];
+      } else if (type === 'pie') {
+        const data = this.visibilityPieData.datasets[value.element.datasetIndex];
+        mediaName = data.mediaIds[value.element.index];
+      }
+
+      this.router.navigate(['/dashboard/articles-by-media'], {
+        queryParams: { mediaName, date },
+      });
+    }
+  };
+
+  onVisibilityChartDayClick = (date: string, mediaName: string) => {
+    if (this.isDrilldownVisibilityChart) {
+      this.router.navigate(['/dashboard/articles-by-media'], {
+        queryParams: { mediaName, date },
+      });
+      return;
     }
 
-    this.router.navigate(['/dashboard/articles-by-media'], {
-      queryParams: { mediaName: mediaLabel, date },
-    });
+    this.isLoading = true;
+    this.analyzeService
+      .getMediaVisibility({
+        ...this.filterService.filter,
+        start_date: moment(date).startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+        end_date: moment(date).endOf('day').format('YYYY-MM-DD HH:mm:ss'),
+      })
+      .subscribe((res) => {
+        this.isDrilldownVisibilityChart = true;
+
+        const { lineDatasets, lineLabels, visibilityBarDatasets } = this.getChartData(res.data);
+        this.visibilityChartLineData = {
+          labels: lineLabels,
+          datasets: lineDatasets,
+        };
+        this.visibilityChartBarData = {
+          labels: lineLabels,
+          datasets: visibilityBarDatasets,
+        };
+        this.isLoading = false;
+      });
   };
 
   initChartOpts = () => {
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
-    const textColorSecondary = documentStyle.getPropertyValue(
-      '--text-color-secondary'
-    );
+    const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
     const isDarkModeStorage = window.localStorage.getItem('useDarkMode');
-    const isDarkMode = isDarkModeStorage
-      ? JSON.parse(isDarkModeStorage)
-      : false;
+    const isDarkMode = isDarkModeStorage ? JSON.parse(isDarkModeStorage) : false;
 
     this.visibilityPieOpts = {
       plugins: {
@@ -177,9 +206,7 @@ export class MediaVisibilityComponent {
             padding: 32,
             boxWidth: 14,
             boxHeight: 5,
-            color: isDarkMode
-              ? 'white'
-              : documentStyle.getPropertyValue('--text-color'),
+            color: isDarkMode ? 'white' : documentStyle.getPropertyValue('--text-color'),
           },
         },
       },
@@ -216,9 +243,7 @@ export class MediaVisibilityComponent {
           align: 'center',
           labels: {
             font: { size: 10 },
-            color: isDarkMode
-              ? 'white'
-              : documentStyle.getPropertyValue('--text-color'),
+            color: isDarkMode ? 'white' : documentStyle.getPropertyValue('--text-color'),
             boxWidth: 10,
             boxHeight: 5,
             filter: function (legendItem: any, chartData: any) {
@@ -274,9 +299,7 @@ export class MediaVisibilityComponent {
       media.category_id_per_day.buckets.forEach((bucket) => {
         tmpData.date.push(bucket.key_as_string);
       });
-      pieDatasets[0].percentages.push(
-        ((media.doc_count / totalTones) * 100).toFixed(0)
-      );
+      pieDatasets[0].percentages.push(((media.doc_count / totalTones) * 100).toFixed(0));
       pieDatasets[0].data.push(media.doc_count);
       pieDatasets[0].mediaIds.push(media.key);
 
@@ -284,12 +307,8 @@ export class MediaVisibilityComponent {
     });
 
     const visibilityBarDatasets = mediaVisibility.map((visibility) => {
-      const data = visibility.category_id_per_day.buckets.map(
-        (val) => val.doc_count
-      );
-      const date = visibility.category_id_per_day.buckets.map(
-        (val) => val.key_as_string
-      );
+      const data = visibility.category_id_per_day.buckets.map((val) => val.doc_count);
+      const date = visibility.category_id_per_day.buckets.map((val) => val.key_as_string);
       return {
         type: 'bar',
         data,
@@ -298,9 +317,12 @@ export class MediaVisibilityComponent {
       };
     });
 
-    const lineLabels = mediaVisibility[0].category_id_per_day.buckets.map(
-      (bucket) => moment(bucket.key_as_string).format('DD MMM')
-    );
+    const lineLabels = mediaVisibility[0].category_id_per_day.buckets.map((bucket) => {
+      return bucket.key_as_string.includes('T')
+        ? moment(bucket.key_as_string).utc().format('HH:mm')
+        : moment(bucket.key_as_string).format('DD MMM');
+    });
+
     return {
       lineLabels,
       lineDatasets,
