@@ -72,6 +72,7 @@
         <p-paginator
           #paginator
           *ngIf="pagingInfo.rowCount > 0"
+          class="pt-3"
           (onPageChange)="getChartDetails(chartDetails.type, chartDetails.data, $event.page ?? pagingInfo.page - 1)"
           [showFirstLastIcon]="false"
           [rows]="pagingInfo.size"
