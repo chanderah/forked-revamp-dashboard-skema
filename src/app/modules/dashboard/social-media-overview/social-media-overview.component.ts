@@ -197,10 +197,16 @@ export class SocialMediaOverviewComponent implements OnInit, OnDestroy {
         ...(type === 'share-of-sentiment' && { tone: tone.toLowerCase() }),
         ...(type === 'engaging-authors' && { author }),
       })
-      .subscribe((res) => {
-        this.chartDetails.mentionsData = res.data;
-        this.pagingInfo.rowCount = res.meta.totalRecords;
-        this.isLoading = false;
+      .subscribe({
+        next: (res) => {
+          this.chartDetails.mentionsData = res.data;
+          this.pagingInfo.rowCount = res.meta.totalRecords;
+          this.isLoading = false;
+        },
+        error: () => {
+          this.chartDetails.mentionsData.length = 0;
+          this.isLoading = false;
+        },
       });
   }
 
