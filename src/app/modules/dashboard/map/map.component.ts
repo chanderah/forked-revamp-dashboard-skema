@@ -140,10 +140,12 @@ export class MapComponent {
         onEachFeature: (feature, layer) => {
           const featureName = feature.properties.name;
           const tooltipContent = `${featureName}: ${getDataByLocation(featureName)?.value ?? 0}`;
+
           layer.bindTooltip(tooltipContent, {
             className: 'bg-color',
             // permanent: true,
           });
+
           layer.on({
             click: (e) => {
               const clickedFeatureName = e.target.feature.properties.name;
@@ -155,8 +157,10 @@ export class MapComponent {
             },
             mouseout: (e) => {
               const hoveredLayer = e.target;
+              const featureData = getDataByLocation(featureName);
+
               hoveredLayer.setStyle({
-                fillColor: this.getMapColor(getDataByLocation(featureName)?.value ?? 0),
+                fillColor: this.getMapColor(featureData?.value ?? 0),
                 fillOpacity: 1,
               });
             },
@@ -200,7 +204,6 @@ export class MapComponent {
 
     const min = Math.min(...this.mapLocationData.map((v) => v.value));
     const max = Math.max(...this.mapLocationData.map((v) => v.value));
-
     const level = this.getLevel(value, min, max);
     return colorGroup[level];
   }
