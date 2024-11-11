@@ -412,3 +412,11 @@ body.dark {
 .min-h-80vh {
   min-height: 80vh !important;
 }
+
+.bg-none {
+  background: none !important;
+}
+
+.bg-color {
+  background-color: var(--bg-color);
+}

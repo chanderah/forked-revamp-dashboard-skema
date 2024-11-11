@@ -4,28 +4,19 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { Store } from '@ngrx/store';
-import {
-  DomUtil,
-  MapOptions,
-  control,
-  geoJSON,
-  latLng,
-  tileLayer,
-} from 'leaflet';
+import { DomUtil, MapOptions, control, geoJSON, latLng, tileLayer } from 'leaflet';
 import { DividerModule } from 'primeng/divider';
 import { DropdownModule } from 'primeng/dropdown';
 import { IconNewspaperComponent } from '../../../core/components/icons/newspaper/newspaper.component';
 import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
-import { AllCount } from '../../../core/models/all-count.model';
+import { AllCount, Location } from '../../../core/models/all-count.model';
 import { Article } from '../../../core/models/article.model';
 import { FilterRequestPayload } from '../../../core/models/request.model';
 import { FilterService } from '../../../core/services/filter.service';
 import { MapService } from '../../../core/services/map.service';
 import { AppState } from '../../../core/store';
-import {
-  FilterState,
-  initialState,
-} from '../../../core/store/filter/filter.reducer';
+import { FilterState, initialState } from '../../../core/store/filter/filter.reducer';
+import { isDarkMode } from '../../../shared/utils/CommonUtils';
 
 @Component({
   selector: 'app-map',
@@ -48,6 +39,8 @@ export class MapComponent {
   ngOnDestroy() {
     this.filter?.unsubscribe?.();
   }
+
+  mapLocationData: Location[] = [];
   map: L.Map | null = null;
   geoJsonLayer: L.GeoJSON | null = null;
   selectedLoc: string | null = null;
@@ -91,21 +84,15 @@ export class MapComponent {
     });
   }
 
-  fetchAllCount = (
-    filter: FilterRequestPayload | FilterState = initialState
-  ) => {
-    this.mapService
-      .getAllCount(filter as FilterRequestPayload)
-      .subscribe((data) => {
-        this.addGeoJSONLayer(filter, data);
-        this.selectedLoc = null;
-      });
+  fetchAllCount = (filter: FilterRequestPayload | FilterState = initialState) => {
+    this.mapService.getAllCount(filter as FilterRequestPayload).subscribe((res) => {
+      this.mapLocationData = res.data;
+      this.addGeoJSONLayer(filter, res);
+      this.selectedLoc = null;
+    });
   };
 
-  fetchArticlesByGeo = (
-    filter: FilterRequestPayload | FilterState | null,
-    location = this.selectedLoc
-  ) => {
+  fetchArticlesByGeo = (filter: FilterRequestPayload | FilterState | null, location = this.selectedLoc) => {
     this.isLoadingArticles = true;
     this.selectedLoc = location;
 
@@ -144,20 +131,7 @@ export class MapComponent {
 
   addGeoJSONLayer(filter: any, data: AllCount): void {
     const getDataByLocation = (featureName: string) => {
-      return data.data.find(
-        (location) => location.key.toUpperCase() === featureName
-      );
-    };
-
-    const getOpacity = (value: number) => {
-      let opacity = 0.2;
-      if (value >= 1) opacity = 0.2;
-      if (value >= 5) opacity = 0.4;
-      if (value >= 10) opacity = 0.6;
-      if (value >= 15) opacity = 0.8;
-      if (value >= 20) opacity = 1;
-
-      return opacity;
+      return data.data.find((location) => location.key.toUpperCase() === featureName);
     };
 
     this.mapService.getGeoJsonData().subscribe((data) => {
@@ -165,10 +139,11 @@ export class MapComponent {
       this.geoJsonLayer = geoJSON(data, {
         onEachFeature: (feature, layer) => {
           const featureName = feature.properties.name;
-          const tooltipContent = `${featureName}: ${
-            getDataByLocation(featureName)?.value ?? 0
-          }`;
-          layer.bindTooltip(tooltipContent);
+          const tooltipContent = `${featureName}: ${getDataByLocation(featureName)?.value ?? 0}`;
+          layer.bindTooltip(tooltipContent, {
+            className: 'bg-color',
+            // permanent: true,
+          });
           layer.on({
             click: (e) => {
               const clickedFeatureName = e.target.feature.properties.name;
@@ -176,32 +151,58 @@ export class MapComponent {
             },
             mouseover: (e) => {
               const hoveredLayer = e.target;
-              hoveredLayer.setStyle({ fillColor: '#1999DC', fillOpacity: 1 });
+              hoveredLayer.setStyle({ fillColor: isDarkMode() ? '#f1f4fa' : '#111827', fillOpacity: 1 });
             },
             mouseout: (e) => {
               const hoveredLayer = e.target;
               hoveredLayer.setStyle({
-                fillColor: '#8A90AB',
-                fillOpacity: getOpacity(
-                  getDataByLocation(featureName)?.value ?? 0
-                ),
+                fillColor: this.getMapColor(getDataByLocation(featureName)?.value ?? 0),
+                fillOpacity: 1,
               });
             },
           });
         },
         style: (feature) => {
           const featureName = feature?.properties.name;
-          const value = getDataByLocation(featureName);
-          const opacity = getOpacity(value?.value ?? 0);
+          const featureData = getDataByLocation(featureName);
+
           return {
-            fillColor: '#8A90AB',
-            fillOpacity: opacity,
-            color: 'white', // Border color
-            weight: 1, // Border weight (in pixels)
+            fillColor: this.getMapColor(featureData?.value ?? 0),
+            fillOpacity: 1,
+            color: isDarkMode() ? '#19182b' : '#f1f4fa',
+            weight: 1,
           };
         },
       }).addTo(this.map);
     });
+  }
+
+  getLevel(num: number, min: number, max: number) {
+    if (num === 0) return 5;
+
+    const range = max - min;
+    const levelRange = range / 4;
+
+    if (num <= min + levelRange) return 4;
+    else if (num <= min + 2 * levelRange) return 3;
+    else if (num <= min + 3 * levelRange) return 2;
+    return 1;
+  }
+
+  getMapColor(value: number) {
+    const colorGroup: { [x: number]: string } = {
+      1: '#04351d',
+      2: '#074727',
+      3: '#0c643a',
+      4: '#2e8d58',
+      5: '#6ab277',
+    };
+
+    const min = Math.min(...this.mapLocationData.map((v) => v.value));
+    const max = Math.max(...this.mapLocationData.map((v) => v.value));
+
+    const level = this.getLevel(value, min, max);
+    return colorGroup[level];
   }
 
   onMapReady(map: L.Map) {
