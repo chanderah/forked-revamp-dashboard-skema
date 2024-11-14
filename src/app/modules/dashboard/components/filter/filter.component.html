@@ -1,0 +1,123 @@
+<div class="flex flex-column gap-2">
+  <span class="select-container">
+    <p-dropdown
+      [(ngModel)]="selectedPeriodic"
+      [options]="periodicOptions"
+      optionLabel="name"
+      optionValue="value"
+      placeholder="Yesterday"
+      styleClass="border-200"
+      [style]="{ backgroundColor: 'var(--bg-color)' }"
+      [disabled]="isCustom"></p-dropdown>
+    <label>Periodic</label>
+  </span>
+  <span class="select-container">
+    <p-dropdown
+      [(ngModel)]="selectedCategory"
+      [options]="categoryOptions"
+      (ngModelChange)="onChangeCategory($event)"
+      optionLabel="name"
+      optionValue="value"
+      placeholder="All Category"
+      styleClass="border-200"
+      [style]="{ backgroundColor: 'var(--bg-color)' }"
+      inputId="category"
+      [disabled]="isLoadingCategoryOptions"></p-dropdown>
+    <label for="category">Category</label>
+  </span>
+  <span class="select-container">
+    <p-dropdown
+      [(ngModel)]="selectedSubCategory"
+      [options]="subCategoryOptions"
+      optionLabel="name"
+      optionValue="value"
+      styleClass="border-200"
+      [style]="{ backgroundColor: 'var(--bg-color)' }"
+      placeholder="All Sub Category"
+      inputId="subCategory"
+      [disabled]="isLoadingSubCategoryOptions"></p-dropdown>
+    <label for="subCategory">Sub Category</label>
+  </span>
+  <span class="select-container">
+    <p-dropdown
+      [(ngModel)]="selectedMedia"
+      [options]="mediaOptions"
+      optionLabel="name"
+      optionValue="value"
+      placeholder="All Media"
+      styleClass="border-200"
+      [style]="{ backgroundColor: 'var(--bg-color)' }"
+      inputId="media"
+      [disabled]="isLoadingMediaOptions"></p-dropdown>
+    <label for="media">Media</label>
+  </span>
+  <ng-container *ngIf="isCustom">
+    <p-divider></p-divider>
+    <div class="flex flex-column gap-2 mb-2">
+      <div class="flex flex-column gap-1">
+        <label class="text-sm mb-1">From</label>
+        <div class="flex gap-2">
+          <span class="select-container">
+            <p-calendar
+              [(ngModel)]="startDate"
+              inputId="startDate"
+              class="datepicker"
+              styleClass="w-full"
+              dateFormat="yy-m-d"
+              [showButtonBar]="true"
+              styleClass="border-200"
+              [inputStyle]="{ backgroundColor: 'var(--bg-color)' }"></p-calendar>
+            <label for="startDate">Start Date</label>
+          </span>
+          <span class="select-container">
+            <p-calendar
+              [(ngModel)]="startTime"
+              inputId="startDate"
+              class="datepicker"
+              styleClass="border-200"
+              [inputStyle]="{ backgroundColor: 'var(--bg-color)' }"
+              styleClass="w-full"
+              [showButtonBar]="true"
+              [timeOnly]="true"></p-calendar>
+            <label for="startDate">Time</label>
+          </span>
+        </div>
+      </div>
+      <div class="flex flex-column gap-1">
+        <label class="text-sm mb-1">To</label>
+        <div class="flex gap-2">
+          <span class="select-container">
+            <p-calendar
+              [(ngModel)]="endDate"
+              inputId="endDate"
+              class="datepicker"
+              styleClass="w-full border-200"
+              [inputStyle]="{ backgroundColor: 'var(--bg-color)' }"
+              dateFormat="yy-m-d"
+              [showButtonBar]="true"></p-calendar>
+            <label for="endDate">End Date</label>
+          </span>
+          <span class="select-container">
+            <p-calendar
+              [(ngModel)]="endTime"
+              inputId="endDate"
+              class="datepicker"
+              styleClass="w-full border-200"
+              [inputStyle]="{ backgroundColor: 'var(--bg-color)' }"
+              [showButtonBar]="true"
+              [timeOnly]="true"></p-calendar>
+            <label for="endDate">Time</label>
+          </span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <div class="grid">
+    <div class="col-6">
+      <p-button label="Set Filter" (onClick)="onSetFilter()"></p-button>
+    </div>
+    <div class="col-6">
+      <p-button [label]="isCustom ? 'Close' : 'Custom'" severity="secondary" (onClick)="onClickCustom()"></p-button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,48 @@
+:host {
+  ::ng-deep .p-toolbar {
+    padding: 4px 30px 4px 30px;
+    border: 0;
+    border-radius: 0;
+    background-color: var(--bg-color);
+  }
+
+  ::ng-deep .nav .p-tabmenu-nav {
+    border: none;
+    background-color: var(--bg-color);
+  }
+
+  ::ng-deep .nav .p-menuitem-link {
+    border-color: var(--bg-color);
+    background-color: var(--bg-color);
+    padding: 12px 0;
+    margin: 0 12px;
+  }
+
+  ::ng-deep .nav .p-tabmenuitem.p-highlight .p-menuitem-link {
+    border-color: var(--primary-color);
+    border-width: 0 0 4px 0;
+  }
+  ::ng-deep .nav .p-tabmenuitem .p-menuitem-icon {
+    color: var(--text-color-secondary);
+  }
+  ::ng-deep .nav .p-tabmenuitem.p-highlight .p-menuitem-icon {
+    color: var(--primary-color);
+  }
+
+  ::ng-deep .logo-divider .p-divider-vertical {
+    padding: 0;
+    margin-left: 8px;
+    margin-right: 10px;
+    &::before {
+      border-left: 2px solid var(--primary-color);
+    }
+  }
+
+  ::ng-deep .breadcrumb .p-breadcrumb {
+    border: none;
+    font-size: small;
+    padding: 1rem 0;
+    background-color: var(--bg-color);
+  }
+
+}

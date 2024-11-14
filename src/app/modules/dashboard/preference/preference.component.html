@@ -1,0 +1,70 @@
+<section>
+  <p-tabView>
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <div class="flex gap-2">
+          <i class="pi pi-list"></i>
+          <span class="text-xs text-color font-normal">Media list</span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <app-media-list></app-media-list>
+      </ng-template>
+    </p-tabPanel>
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <div class="flex gap-2">
+          <i class="pi pi-file"></i>
+          <span class="text-xs text-color font-normal">Category List</span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <app-category-list></app-category-list>
+      </ng-template>
+    </p-tabPanel>
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <div class="flex gap-2">
+          <i class="pi pi-list"></i>
+          <span class="text-xs text-color font-normal">SubCategory List</span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <app-sub-category-list></app-sub-category-list>
+      </ng-template>
+    </p-tabPanel>
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <div class="flex gap-2">
+          <i class="pi pi-user"></i>
+          <span class="text-xs text-color font-normal">Spokeperson Alias</span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <app-spokeperson-alias></app-spokeperson-alias>
+      </ng-template>
+    </p-tabPanel>
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <div class="flex gap-2">
+          <i class="pi pi-volume-up"></i>
+          <span class="text-xs text-color font-normal">Stopword</span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <app-stopword></app-stopword>
+      </ng-template>
+    </p-tabPanel>
+    <p-tabPanel>
+      <ng-template pTemplate="header">
+        <div class="flex gap-2">
+          <i class="pi pi-file-export"></i>
+          <span class="text-xs text-color font-normal">File Export</span>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="content">
+        <app-file-export></app-file-export>
+      </ng-template>
+    </p-tabPanel>
+  </p-tabView>
+</section>

@@ -1,0 +1,43 @@
+<section>
+  <div class="flex align-items-center gap-2 mb-4">
+    <icon-car fill="var(--primary-color)"></icon-car>
+    <div class="text-sm font-semibold">Top Kota</div>
+    <icon-info></icon-info>
+  </div>
+  <spinner [spinning]="isAllCountLoading">
+    <div class="mb-4">
+      <p-table [value]="cities" [scrollable]="true" scrollHeight="300px">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="font-semibold"><p>City</p></th>
+            <th class="text-right">
+              <p>Total Article: {{ totalArticles }}</p>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-city>
+          <tr class="cursor-pointer" routerLink="/dashboard/map-articles" [queryParams]="{ location: city.key }">
+            <td>
+              <p>{{ city.key }}</p>
+            </td>
+            <td class="text-right">
+              <p>{{ city.value }}</p>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </spinner>
+  <spinner [spinning]="isWordCloudLoading">
+    <div style="background-color: var(--card-color)" class="border-1 border-200">
+      <angular-d3-cloud
+        [data]="wordCloud"
+        [width]="520"
+        [height]="200"
+        font="serif"
+        [rotate]="0"
+        [autoFill]="true"
+        [fontSizeMapper]="wordCloudFontSizeMapper"></angular-d3-cloud>
+    </div>
+  </spinner>
+</section>

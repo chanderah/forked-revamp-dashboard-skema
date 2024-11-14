@@ -1,0 +1,14 @@
+<section>
+  <div>
+    <div class="text-xl font-semibold" appTitleCase>Article {{ location ?? '' | titleCase }}</div>
+    <div class="text-sm mb-4">To see a list of distributors for your area, please click on your location on the map</div>
+  </div>
+  <spinner [spinning]="isLoading">
+    <article-list
+      [articles]="articles"
+      [onPageChange]="onPageChange"
+      [first]="first"
+      [rows]="rows"
+      [totalRecords]="totalRecords"></article-list>
+  </spinner>
+</section>

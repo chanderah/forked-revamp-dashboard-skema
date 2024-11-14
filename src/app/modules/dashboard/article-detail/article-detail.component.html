@@ -1,0 +1,125 @@
+<section>
+  <p-toast></p-toast>
+  <spinner [spinning]="isLoading">
+    <div class="flex flex-column gap-2">
+      <div class="text-sm flex gap-3 align-items-center">
+        <div class="cursor-pointer" (click)="goBack()">
+          <i class="pi pi-arrow-left"></i>
+        </div>
+        <div><span class="font-semibold">Posted:</span> {{ article?.datee ?? '-' }}</div>
+      </div>
+      <div class="text-3xl font-semibold">
+        {{ article?.title ?? '-' }}
+      </div>
+    </div>
+    <p-divider></p-divider>
+
+    <div class="flex justify-content-between">
+      <div class="flex">
+        <div class="text-sm">
+          <div>
+            <span class="font-semibold">Jurnalist:</span>
+            {{ article?.journalist ?? '-' }}
+          </div>
+          <div>
+            <span class="font-semibold">Media Name:</span>
+            {{ article?.media_name ?? '-' }}
+          </div>
+          <div>
+            <span class="font-semibold">Media Type:</span>
+            {{ article?.media_type ?? '-' }}
+          </div>
+        </div>
+        <p-divider layout="vertical"></p-divider>
+        <div class="text-sm">
+          <div>
+            <span class="font-semibold">Location:</span>
+            {{ article?.location ?? '-' }}
+          </div>
+          <div>
+            <span class="font-semibold">News Value:</span>
+            {{ article?.advalue_bw ?? 0 | formatAmount }}
+          </div>
+        </div>
+        <p-divider layout="vertical"></p-divider>
+        <div class="text-sm">
+          <div>
+            <span class="font-semibold">Ad Value:</span>
+            {{ article?.advalue_fc ?? 0 | formatAmount }}
+          </div>
+          <div>
+            <a class="font-semibold" [href]="article?.file_pdf" target="_blank">Source</a>
+          </div>
+        </div>
+      </div>
+      <tag *ngIf="article" [content]="article.toneLabel" [type]="article.tone ?? 0"></tag>
+    </div>
+
+    <button pButton class="mt-4" size="small" [outlined]="true" (click)="openEditModal()">Save Article</button>
+
+    <img
+      [src]="article?.image_url ?? ''"
+      class="h-30rem w-full my-6"
+      style="object-fit: cover"
+      imgFallback="https://placehold.co/600x400?text=No+Image+Available" />
+
+    <div class="mb-6 flex flex-column" *ngIf="article?.file_pdf && article?.media_type === 'media tv'">
+      <video style="object-fit: fill" [height]="500" controls>
+        <source [src]="article?.file_pdf" />
+      </video>
+    </div>
+
+    <div class="text-sm text-color" [innerHTML]="sanitizedContent ?? article?.content ?? ''"></div>
+  </spinner>
+</section>
+
+<p-dialog
+  header="Header"
+  [(visible)]="modalUpdateOpen"
+  [modal]="true"
+  [style]="{ width: '50rem' }"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
+  <ng-template pTemplate="header">
+    <div class="inline-flex align-items-center justify-content-center gap-2">
+      <span class="font-bold text-md">Save article</span>
+    </div>
+  </ng-template>
+  <div class="flex flex-column gap-2">
+    <label for="category" class="text-sm">Sentiment</label>
+    <div class="flex flex-wrap gap-3">
+      <div class="flex align-items-center">
+        <p-radioButton name="positive" [value]="1" [(ngModel)]="ingredient" inputId="ingredient1" />
+        <label for="ingredient1" class="ml-2"> Positive</label>
+      </div>
+
+      <div class="flex align-items-center">
+        <p-radioButton name="Neutral" [value]="0" [(ngModel)]="ingredient" inputId="ingredient2" />
+        <label for="ingredient2" class="ml-2"> Neutral </label>
+      </div>
+
+      <div class="flex align-items-center">
+        <p-radioButton name="Negative" [value]="-1" [(ngModel)]="ingredient" inputId="ingredient3" />
+        <label for="ingredient3" class="ml-2"> Negative </label>
+      </div>
+    </div>
+  </div>
+  <div class="mt-4">
+    <label class="text-sm">SubCategories</label>
+    <p-treeSelect
+      class="w-full md:w-20rem"
+      containerStyleClass="w-full border-200"
+      [(ngModel)]="selectedSubCategories"
+      [options]="subCategoryOptions"
+      [filter]="true"
+      [filterInputAutoFocus]="true"
+      [metaKeySelection]="false"
+      [containerStyle]="{ backgroundColor: 'var(--bg-color)' }"
+      placeholder="Select"
+      appendTo="body"
+      selectionMode="checkbox"></p-treeSelect>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button (click)="modalUpdateOpen = false" label="Cancel" pAutoFocus [outlined]="true"></p-button>
+    <p-button (click)="updateCategory()" label="Save" pAutoFocus [autofocus]="true"></p-button>
+  </ng-template>
+</p-dialog>

@@ -1,0 +1,16 @@
+.login {
+  height: 100vh;
+  background-color: var(--bg-color);
+}
+
+:host {
+  ::ng-deep .submit-btn {
+    width: 100%;
+  }
+
+  ::ng-deep .p-card {
+    width: 455px;
+    border-radius: 20px;
+    background-color: var(--card-color);
+  }
+}

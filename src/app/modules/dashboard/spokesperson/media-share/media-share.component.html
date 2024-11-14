@@ -1,0 +1,11 @@
+<div class="p-4 border-round border-1 border-200">
+  <div class="text-sm font-semibold mb-5">Media Share</div>
+  <div *ngIf="!selectedInfluencer" class="flex w-full justify-content-center align-items-center h-20rem">
+    <div>Select Spokeperson to see Media Share data</div>
+  </div>
+  <div *ngIf="selectedInfluencer" class="flex w-full justify-content-center align-items-center">
+    <div id="mediashare-legend-container">
+      <p-chart type="pie" [data]="data" [options]="options" [plugins]="plugins" (onDataSelect)="onDataSelect($event)"></p-chart>
+    </div>
+  </div>
+</div>

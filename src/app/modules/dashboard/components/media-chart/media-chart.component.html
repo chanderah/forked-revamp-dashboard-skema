@@ -1,0 +1,49 @@
+<chart-card [title]="title">
+  <div class="flex gap-6">
+    <div class="relative">
+      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%)">
+        <div class="flex flex-column align-items-center justify-content-center">
+          <div class="text-sm text-color-secondary">Total Artikel</div>
+          <div class="text-5xl font-semibold">{{ data.totalTones }}</div>
+        </div>
+      </div>
+      <p-chart type="doughnut" [data]="data" [options]="options" [plugins]="plugins" (onDataSelect)="onDataSelect($event)"></p-chart>
+    </div>
+    <div class="flex flex-column gap-4">
+      <div>
+        <div class="flex gap-2 mb-2">
+          <div style="background-color: #fb3b52; width: 10px; height: 20px"></div>
+          <div class="text-sm font-bold">Negative</div>
+        </div>
+        <div class="flex align-items-baseline gap-2">
+          <div class="font-bold text-3xl">
+            {{ data.combinedTones.negative }}
+          </div>
+          <div class="text-sm text-400">Artikel</div>
+        </div>
+      </div>
+      <div>
+        <div class="flex gap-2 mb-2">
+          <div style="background-color: gray; width: 10px; height: 20px"></div>
+          <div class="text-sm font-bold">Neutral</div>
+        </div>
+        <div class="flex align-items-baseline gap-2">
+          <div class="font-bold text-3xl">{{ data.combinedTones.neutral }}</div>
+          <div class="text-sm text-400">Artikel</div>
+        </div>
+      </div>
+      <div>
+        <div class="flex gap-2 mb-2">
+          <div style="background-color: #1b81e2; width: 10px; height: 20px"></div>
+          <div class="text-sm font-bold">Positive</div>
+        </div>
+        <div class="flex align-items-baseline gap-2">
+          <div class="font-bold text-3xl">
+            {{ data.combinedTones.positive }}
+          </div>
+          <div class="text-sm text-400">Artikel</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</chart-card>

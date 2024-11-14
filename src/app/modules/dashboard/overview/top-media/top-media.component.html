@@ -1,0 +1,14 @@
+<section>
+  <div class="flex align-items-center gap-2 mb-4">
+    <icon-globe fill="var(--primary-color)"></icon-globe>
+    <div class="text-sm font-semibold">Top 10 Media</div>
+    <icon-info></icon-info>
+  </div>
+  <spinner [spinning]="isLoading">
+    <div class="grid">
+      <div class="col-12 xl:col-6 lg:col-6 md:col-12" *ngFor="let chart of chartsData">
+        <app-media-chart [data]="chart" [title]="chart.media_name" [onSelectTone]="onSelectTone"></app-media-chart>
+      </div>
+    </div>
+  </spinner>
+</section>

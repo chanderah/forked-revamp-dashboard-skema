@@ -1,0 +1,18 @@
+:host {
+  ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    background: var(--bg-color);
+    padding: 0 20px 0 0;
+    border: 0;
+  }
+
+  ::ng-deep .p-datatable .p-datatable-tbody > tr {
+    background: var(--bg-color);
+    td {
+      border-color: var(--border-color);
+    }
+  }
+
+  ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+    padding: 0 20px 0 0;
+  }
+}
