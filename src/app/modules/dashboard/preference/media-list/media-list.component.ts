@@ -1,26 +1,27 @@
-import { Component } from '@angular/core';
-import { IconPencilComponent } from '../../../../core/components/icons/pencil/pencil.component';
-import { ButtonModule } from 'primeng/button';
-import { TableModule } from 'primeng/table';
-import { TONE_MAP } from '../../../../shared/utils/Constants';
-import { InputTextModule } from 'primeng/inputtext';
-import { TieredMenuModule } from 'primeng/tieredmenu';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { PaginatorModule } from 'primeng/paginator';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ConfirmationService, MessageService, TreeNode } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DialogModule } from 'primeng/dialog';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FormatAmountPipe } from '../../../../core/pipes/format-amount.pipe';
+import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { TableModule } from 'primeng/table';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { TabViewModule } from 'primeng/tabview';
-import { PreferenceService } from '../../../../core/services/preference.service';
-import { Media } from '../../../../core/models/media.model';
+import { TieredMenuModule } from 'primeng/tieredmenu';
 import { ToastModule } from 'primeng/toast';
-import { IconAlertComponent } from '../../../../core/components/icons/alert/alert.component';
 import { TreeSelectModule } from 'primeng/treeselect';
+import { forkJoin } from 'rxjs';
+import { IconAlertComponent } from '../../../../core/components/icons/alert/alert.component';
+import { IconPencilComponent } from '../../../../core/components/icons/pencil/pencil.component';
+import { Media } from '../../../../core/models/media.model';
+import { FormatAmountPipe } from '../../../../core/pipes/format-amount.pipe';
+import { PreferenceService } from '../../../../core/services/preference.service';
+import { TONE_MAP } from '../../../../shared/utils/Constants';
 
 @Component({
   selector: 'app-media-list',
@@ -50,132 +51,124 @@ import { TreeSelectModule } from 'primeng/treeselect';
   styleUrl: './media-list.component.scss',
 })
 export class MediaListComponent {
-  filter: any;
-  ngOnDestroy() {
-    this.filter?.unsubscribe?.();
-  }
-  medias: Media[] = [];
-  totalRecords!: number;
-  loading: boolean = false;
+  isLoading: boolean = false;
+  showDeleteModal: boolean = false;
+  showAddModal: boolean = false;
+  showUpdateModal: boolean = false;
+
   page: number = 0;
   first: number = 0;
   rows: number = 10;
+  totalRecords: number = 0;
 
-  modalAddOpen: boolean = false;
-  createValues = new FormGroup({
-    media: new FormControl('', [Validators.required]),
-  });
-  isCreating: boolean = false;
+  medias: Media[] = [];
+  selectedMedia!: Media;
 
-  selectedMedia: Media | null = null;
+  listMediaGroup: TreeNode[] = [];
+  listSelectedMediaGroup: TreeNode[] = [];
 
-  modalUpdateOpen: boolean = false;
-  selectedMediaGroups: any[] = [];
-  mediaGroupsOptions: any[] = [];
-  editedValues = new FormGroup({
-    media: new FormControl('', [Validators.required]),
-  });
-
-  isDeleting: boolean = false;
-  modalDeleteOpen: boolean = false;
+  form!: FormGroup;
 
   constructor(
     private preferenceService: PreferenceService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit() {
+    this.resetForm();
     this.fetchData();
   }
 
   fetchData = () => {
-    this.loading = true;
-    this.preferenceService.getMedias().subscribe((resp) => {
-      this.loading = false;
-      this.medias = resp.results.map((result, idx) => ({ ...result, idx: idx + 1 }));
-      this.totalRecords = resp.count;
+    this.isLoading = true;
+    this.showAddModal = this.showUpdateModal = this.showDeleteModal = false;
+    this.listMediaGroup.length = this.listSelectedMediaGroup.length = 0;
+
+    this.preferenceService.getMedias().subscribe((res) => {
+      this.isLoading = false;
+      this.medias = res.results.map((result, i) => ({
+        ...result,
+        i: i + 1,
+      }));
+      this.totalRecords = res.count;
     });
   };
 
-  onPageChange = (event: any) => {
-    this.page = event.page;
-    this.rows = event.rows;
-    this.first = event.first;
+  onPageChange = (e: PaginatorState) => {
+    if (e.page) this.page = e.page;
+    if (e.rows) this.rows = e.rows;
+    if (e.first) this.first = e.first;
   };
 
   deleteMedia = (media: Media) => {
     this.selectedMedia = media;
-    this.modalDeleteOpen = true;
+    this.showDeleteModal = true;
   };
 
   confirmDeleteMedia = () => {
-    const { user_media_type_id, user_media_type_name_def } = this.selectedMedia!;
-    this.isDeleting = true;
-    this.preferenceService
-      .deleteMedia(user_media_type_id)
-      .subscribe(() => {
-        this.fetchData();
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Delete success',
-          detail: `${user_media_type_name_def} has been deleted.`,
-        });
-      })
-      .add(() => {
-        this.isDeleting = false;
-        this.selectedMedia = null;
-        this.modalDeleteOpen = false;
+    this.isLoading = true;
+
+    this.preferenceService.deleteMedia(this.selectedMedia.user_media_type_id).subscribe(() => {
+      this.fetchData();
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Delete success',
+        detail: `${this.selectedMedia.user_media_type_name_def} has been deleted.`,
       });
+    });
   };
 
   createMedia = () => {
-    const { media } = this.createValues.controls;
-    this.isCreating = true;
-    this.preferenceService
-      .createMedia(media.value!)
-      .subscribe(() => {
-        this.modalAddOpen = false;
-        this.createValues.controls.media.setValue('');
-        this.fetchData();
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Create success',
-          detail: 'Media has been created.',
-        });
-      })
-      .add(() => {
-        this.isCreating = false;
+    this.isLoading = true;
+
+    this.preferenceService.createMedia(this.form.get('user_media_type_name_def')?.value).subscribe(() => {
+      this.fetchData();
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Create success',
+        detail: 'Media has been created.',
       });
+    });
   };
 
-  updateMedia = () => {
-    const selectedIds = this.selectedMediaGroups.reduce((mediaGroups, mediaGroup) => {
-      if (mediaGroup.isSelectAll || mediaGroup.isParent) return mediaGroups;
+  updateMedia = async () => {
+    if (this.isLoading) return;
 
-      return [...mediaGroups, mediaGroup.media_id];
-    }, []);
+    this.isLoading = true;
+    const selectedIds = this.listSelectedMediaGroup.map((v) => (!v.children?.length ? v.data : null)).filter((v) => !!v);
+    const media_list = [];
+    for (const v of this.listMediaGroup[0].children!) {
+      if (v.children) {
+        for (const media of v.children) {
+          media_list.push({
+            media_id: media.data as string,
+            chosen: selectedIds.includes(media.data),
+          });
+        }
+      }
+    }
 
-    const payload = this.mediaGroupsOptions[0].children.reduce((mediaGroups: any[], mediaGroup: any) => {
-      let ids: any[] = [];
-      mediaGroup.children.forEach((media: any) => {
-        const isChosen = selectedIds.includes(media.media_id);
-        ids.push({ media_id: `${media.media_id}`, chosen: isChosen });
-      });
-      return [...mediaGroups, ...ids];
-    }, []);
-
-    const { media } = this.editedValues.controls;
-    this.preferenceService.updateMedia(this.selectedMedia?.user_media_type_id!, media.value!).subscribe(() => {
-      this.preferenceService.updateSelectedMediaGroups(this.selectedMedia?.user_media_type_id!, payload).subscribe(() => {
+    forkJoin([
+      this.preferenceService.updateMedia(this.selectedMedia.user_media_type_id, this.selectedMedia.user_media_type_name_def),
+      this.preferenceService.updateSelectedMediaGroups(this.selectedMedia.user_media_type_id, media_list),
+    ]).subscribe({
+      next: () => {
         this.fetchData();
-        this.modalUpdateOpen = false;
-        this.selectedMediaGroups = [];
         this.messageService.add({
           severity: 'success',
           summary: 'Update success',
           detail: 'Media has been updated.',
         });
-      });
+      },
+      error: () => {
+        this.isLoading = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to update media.',
+        });
+      },
     });
   };
 
@@ -187,60 +180,71 @@ export class MediaListComponent {
     return TONE_MAP[tone] ?? '';
   }
 
-  openEditModal = async (media: Media) => {
+  preSelectNode(node: TreeNode) {
+    const { isAllChildSelected, isSomeChildSelected } = this.getNodeState(node);
+    if (isAllChildSelected) {
+      this.listSelectedMediaGroup.push(node);
+    } else if (isSomeChildSelected) {
+      node.partialSelected = true;
+    }
+    node.expanded = node.data === 'all';
+  }
+
+  getNodeState(node: TreeNode) {
+    let isAllChildSelected = false;
+    let isSomeChildSelected = false;
+
+    if (node.children && node.children.length) {
+      isAllChildSelected = node.children.every((child) => this.listSelectedMediaGroup.includes(child));
+      isSomeChildSelected = node.children.some((child) => this.listSelectedMediaGroup.includes(child));
+    }
+
+    return {
+      isAllChildSelected,
+      isSomeChildSelected,
+    };
+  }
+
+  openEditModal(media: Media) {
     this.selectedMedia = media;
-    const response = await this.preferenceService.getMediaGroups(media.user_media_type_id).toPromise();
 
-    const selectedGroup: any[] = [];
-    const actualData =
-      response?.data.map((mediaGroup) => {
-        let hasChosen = false;
-        const children = mediaGroup.media_list.map((mediaList) => {
-          hasChosen = mediaList.chosen;
-          if (hasChosen) {
-            selectedGroup.push({
-              ...mediaList,
-              key: mediaList.media_id,
-              data: mediaList.media_id,
-              label: mediaList.media_name,
-              isParent: false,
-              isSelectAll: false,
-            });
-          }
+    this.resetForm();
+    this.form.patchValue(media);
 
-          return {
-            ...mediaList,
-            key: mediaList.media_id,
-            data: mediaList.media_id,
-            label: mediaList.media_name,
-            isParent: false,
-            isSelectAll: false,
-          };
-        });
-        return {
-          children,
-          data: mediaGroup.media_type,
-          label: mediaGroup.media_type,
-          isParent: true,
-          isSelectAll: false,
-          partialSelected: hasChosen,
-        };
-      }) ?? [];
-
-    this.selectedMediaGroups = selectedGroup;
-
-    this.mediaGroupsOptions = [
-      {
-        label: 'Select all',
+    this.preferenceService.getMediaGroups(media.user_media_type_id).subscribe((res) => {
+      const node: TreeNode = {
+        label: 'Select All',
         data: 'all',
-        children: actualData,
-        isSelectAll: true,
-      },
-    ];
+        children: res.data.map((v) => {
+          const node: TreeNode = {
+            label: v.media_type,
+            data: v.media_type,
+            children: v.media_list.map((v) => {
+              const child = {
+                label: v.media_name,
+                data: v.media_id,
+              };
 
-    this.editedValues.setValue({
-      media: media.user_media_type_name_def ?? '',
+              if (v.chosen) this.listSelectedMediaGroup.push(child);
+              return child;
+            }),
+          };
+
+          setTimeout(() => this.preSelectNode(node));
+          return node;
+        }),
+      };
+
+      this.listMediaGroup = [node];
+      this.showUpdateModal = true;
+      setTimeout(() => this.preSelectNode(node));
     });
-    this.modalUpdateOpen = true;
-  };
+  }
+
+  resetForm() {
+    this.form = this.fb.group({
+      user_media_type_id: '',
+      user_media_type_name_def: ['', Validators.required],
+    });
+  }
 }
