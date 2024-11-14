@@ -1,23 +1,22 @@
-import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
-import { DomUtil, MapOptions, circle, control, geoJSON, latLng, polygon, tileLayer } from 'leaflet';
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { MapService } from '../../../core/services/map.service';
-import { FilterState, initialState } from '../../../core/store/filter/filter.reducer';
-import { FilterRequestPayload } from '../../../core/models/request.model';
-import { AllCount } from '../../../core/models/all-count.model';
-import { Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
-import { AppState } from '../../../core/store';
-import { selectFilterState } from '../../../core/store/filter/filter.selectors';
-import { DividerModule } from 'primeng/divider';
-import { IconNewspaperComponent } from '../../../core/components/icons/newspaper/newspaper.component';
-import { Article } from '../../../core/models/article.model';
 import { CommonModule } from '@angular/common';
-import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
-import { Router, RouterModule } from '@angular/router';
-import { DropdownModule } from 'primeng/dropdown';
+import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { Store } from '@ngrx/store';
+import { DomUtil, MapOptions, control, geoJSON, latLng, tileLayer } from 'leaflet';
+import { DividerModule } from 'primeng/divider';
+import { DropdownModule } from 'primeng/dropdown';
+import { IconNewspaperComponent } from '../../../core/components/icons/newspaper/newspaper.component';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
+import { AllCount, Location } from '../../../core/models/all-count.model';
+import { Article } from '../../../core/models/article.model';
+import { FilterRequestPayload } from '../../../core/models/request.model';
 import { FilterService } from '../../../core/services/filter.service';
+import { MapService } from '../../../core/services/map.service';
+import { AppState } from '../../../core/store';
+import { FilterState, initialState } from '../../../core/store/filter/filter.reducer';
+import { isDarkMode } from '../../../shared/utils/CommonUtils';
 
 @Component({
   selector: 'app-map',
@@ -40,6 +39,8 @@ export class MapComponent {
   ngOnDestroy() {
     this.filter?.unsubscribe?.();
   }
+
+  mapLocationData: Location[] = [];
   map: L.Map | null = null;
   geoJsonLayer: L.GeoJSON | null = null;
   selectedLoc: string | null = null;
@@ -84,23 +85,24 @@ export class MapComponent {
   }
 
   fetchAllCount = (filter: FilterRequestPayload | FilterState = initialState) => {
-    this.mapService.getAllCount(filter as FilterRequestPayload).subscribe((data) => {
-      this.addGeoJSONLayer(filter, data);
+    this.mapService.getAllCount(filter as FilterRequestPayload).subscribe((res) => {
+      this.mapLocationData = res.data;
+      this.addGeoJSONLayer(filter, res);
       this.selectedLoc = null;
     });
   };
 
   fetchArticlesByGeo = (filter: FilterRequestPayload | FilterState | null, location = this.selectedLoc) => {
-    this.selectedLoc = location;
-    let reqFilter = filter ?? initialState;
-    if (location)
-      // @ts-ignore
-      reqFilter = { ...reqFilter, geo_loc: location } as FilterRequestPayload;
     this.isLoadingArticles = true;
-    this.mapService.getArticleByGeo(reqFilter as FilterRequestPayload).subscribe((data) => {
+    this.selectedLoc = location;
+
+    let req = filter ?? initialState;
+    if (location) req = { ...req, geo_loc: location };
+
+    this.mapService.getArticleByGeo(req).subscribe((res) => {
       this.isLoadingArticles = false;
-      this.articles = data.data;
-      this.cdr.detectChanges(); // Trigger change detection
+      this.articles = res.data;
+      this.cdr.detectChanges();
     });
   };
 
@@ -132,24 +134,18 @@ export class MapComponent {
       return data.data.find((location) => location.key.toUpperCase() === featureName);
     };
 
-    const getOpacity = (value: number) => {
-      let opacity = 0.2;
-      if (value >= 1) opacity = 0.2;
-      if (value >= 5) opacity = 0.4;
-      if (value >= 10) opacity = 0.6;
-      if (value >= 15) opacity = 0.8;
-      if (value >= 20) opacity = 1;
-
-      return opacity;
-    };
-
     this.mapService.getGeoJsonData().subscribe((data) => {
       if (!this.map) return;
       this.geoJsonLayer = geoJSON(data, {
         onEachFeature: (feature, layer) => {
           const featureName = feature.properties.name;
           const tooltipContent = `${featureName}: ${getDataByLocation(featureName)?.value ?? 0}`;
-          layer.bindTooltip(tooltipContent);
+
+          layer.bindTooltip(tooltipContent, {
+            className: 'bg-color',
+            // permanent: true,
+          });
+
           layer.on({
             click: (e) => {
               const clickedFeatureName = e.target.feature.properties.name;
@@ -157,30 +153,59 @@ export class MapComponent {
             },
             mouseover: (e) => {
               const hoveredLayer = e.target;
-              hoveredLayer.setStyle({ fillColor: '#1999DC', fillOpacity: 1 });
+              hoveredLayer.setStyle({ fillColor: isDarkMode() ? '#f1f4fa' : '#111827', fillOpacity: 1 });
             },
             mouseout: (e) => {
               const hoveredLayer = e.target;
+              const featureData = getDataByLocation(featureName);
+
               hoveredLayer.setStyle({
-                fillColor: '#8A90AB',
-                fillOpacity: getOpacity(getDataByLocation(featureName)?.value ?? 0),
+                fillColor: this.getMapColor(featureData?.value ?? 0),
+                fillOpacity: 1,
               });
             },
           });
         },
         style: (feature) => {
           const featureName = feature?.properties.name;
-          const value = getDataByLocation(featureName);
-          const opacity = getOpacity(value?.value ?? 0);
+          const featureData = getDataByLocation(featureName);
+
           return {
-            fillColor: '#8A90AB',
-            fillOpacity: opacity,
-            color: 'white', // Border color
-            weight: 1, // Border weight (in pixels)
+            fillColor: this.getMapColor(featureData?.value ?? 0),
+            fillOpacity: 1,
+            color: isDarkMode() ? '#19182b' : '#f1f4fa',
+            weight: 1,
           };
         },
       }).addTo(this.map);
     });
+  }
+
+  getLevel(num: number, min: number, max: number) {
+    if (num === 0) return 5;
+
+    const range = max - min;
+    const levelRange = range / 4;
+
+    if (num <= min + levelRange) return 4;
+    else if (num <= min + 2 * levelRange) return 3;
+    else if (num <= min + 3 * levelRange) return 2;
+    return 1;
+  }
+
+  getMapColor(value: number) {
+    const colorGroup: { [x: number]: string } = {
+      1: '#04351d',
+      2: '#074727',
+      3: '#0c643a',
+      4: '#2e8d58',
+      5: '#6ab277',
+    };
+
+    const min = Math.min(...this.mapLocationData.map((v) => v.value));
+    const max = Math.max(...this.mapLocationData.map((v) => v.value));
+    const level = this.getLevel(value, min, max);
+    return colorGroup[level];
   }
 
   onMapReady(map: L.Map) {

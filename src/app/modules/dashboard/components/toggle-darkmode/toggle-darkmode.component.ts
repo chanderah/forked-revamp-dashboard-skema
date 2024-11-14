@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
-import { IconSunComponent } from '../../../../core/components/icons/sun/sun.component';
-import { IconMoonComponent } from '../../../../core/components/icons/moon/moon.component';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { IconMoonComponent } from '../../../../core/components/icons/moon/moon.component';
+import { IconSunComponent } from '../../../../core/components/icons/sun/sun.component';
+import { CommonService } from '../../../../core/services/common.service';
 
 @Component({
   selector: 'toggle-darkmode',
@@ -12,24 +13,9 @@ import { CommonModule } from '@angular/common';
   styleUrl: './toggle-darkmode.component.scss',
 })
 export class ToggleDarkmodeComponent {
-  filter: any;
-  ngOnDestroy() {
-    this.filter?.unsubscribe?.();
-  }
   checked: boolean = false;
 
-  constructor() {
-    const data = window.localStorage.getItem('useDarkMode');
-    if (data) {
-      const checked = JSON.parse(data);
-      this.checked = checked;
-      if (checked) window.document.body.classList.add('dark');
-      else window.document.body.classList.remove('dark');
-    }
+  constructor(public commonService: CommonService) {
+    this.checked = commonService.isDarkMode;
   }
-
-  onChange = (val: any) => {
-    window.document.body.classList.toggle('dark');
-    window.localStorage.setItem('useDarkMode', val);
-  };
 }

@@ -1,20 +1,20 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import moment from 'moment';
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
-import { InputTextModule } from 'primeng/inputtext';
-import { IconSearchComponent } from '../../../core/components/icons/search/search.component';
 import { DropdownModule } from 'primeng/dropdown';
-import moment from 'moment';
-import { PreferenceService } from '../../../core/services/preference.service';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { ArticleService } from '../../../core/services/article.service';
-import { FilterRequestPayload } from '../../../core/models/request.model';
-import { Article } from '../../../core/models/article.model';
-import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
+import { InputTextModule } from 'primeng/inputtext';
+import { PaginatorState } from 'primeng/paginator';
 import { ArticleListComponent } from '../../../core/components/article-list/article-list.component';
 import { IconArticleNotFoundComponent } from '../../../core/components/icons/article-notfound/article-notfound.component';
-import _ from 'lodash';
+import { IconSearchComponent } from '../../../core/components/icons/search/search.component';
+import { SpinnerComponent } from '../../../core/components/spinner/spinner.component';
+import { Article } from '../../../core/models/article.model';
+import { FilterRequestPayload } from '../../../core/models/request.model';
+import { ArticleService } from '../../../core/services/article.service';
+import { PreferenceService } from '../../../core/services/preference.service';
 
 interface Option {
   name: string;
@@ -42,10 +42,11 @@ const SEARCH_LOCAL_KEY = 'search_terms';
   styleUrl: './search.component.scss',
 })
 export class SearchComponent {
+  isLoading: boolean = false;
+  hasSearched = false;
+
   filter: any;
-  ngOnDestroy() {
-    this.filter?.unsubscribe?.();
-  }
+
   selectedMedia: string = 'all';
   searchTerm: string = '';
   selectedContent: string = 'title';
@@ -55,11 +56,8 @@ export class SearchComponent {
   articles: Article[] = [];
   page: number = 0;
   first: number = 0;
-  rows: number = 16;
+  rows: number = 8;
   totalRecords: number = 0;
-  isLoading: boolean = false;
-
-  hasSearched = false;
 
   contentOptions: Option[] = [
     { name: 'Title', value: 'title' },
@@ -74,27 +72,29 @@ export class SearchComponent {
     private articleService: ArticleService
   ) {
     this.getMediaOptions();
-    const existingSearch = window.localStorage.getItem(SEARCH_LOCAL_KEY);
+    const existingSearch = localStorage.getItem(SEARCH_LOCAL_KEY);
     if (existingSearch) {
       const searchTermsObj = JSON.parse(existingSearch);
       this.selectedMedia = searchTermsObj['media_category'] ?? 'all';
       this.searchTerm = searchTermsObj['term'] ?? '';
       this.selectedContent = searchTermsObj['search_field'] ?? 'title';
+
       if (searchTermsObj['start_date']) {
         this.startDate = moment(searchTermsObj['start_date']).toDate();
       }
       if (searchTermsObj['end_date']) {
         this.endDate = moment(searchTermsObj['end_date']).toDate();
       }
-      const payload: any = {
+
+      this.fetchArticles({
         start_date: moment(this.startDate).format('YYYY-MM-DD'),
         end_date: moment(this.endDate).format('YYYY-MM-DD'),
         search_field: this.selectedContent,
         media_category: this.selectedMedia,
-        page: 0,
+        size: this.rows,
+        maxSize: this.rows,
         term: this.searchTerm,
-      };
-      this.fetchArticles(payload);
+      });
     }
   }
 
@@ -116,10 +116,10 @@ export class SearchComponent {
     );
   };
 
-  fetchArticles = (filter: FilterRequestPayload) => {
+  fetchArticles = (req: FilterRequestPayload) => {
     this.isLoading = true;
     this.articleService
-      .searchArticles(filter)
+      .searchArticles(req)
       .subscribe(({ results, totalItems }) => {
         this.totalRecords = totalItems;
         this.articles = results;
@@ -131,35 +131,38 @@ export class SearchComponent {
   };
 
   onSearch() {
-    const payload: any = {
+    this.page = 0;
+    const payload = {
       start_date: moment(this.startDate).format('YYYY-MM-DD'),
       end_date: moment(this.endDate).format('YYYY-MM-DD'),
       search_field: this.selectedContent,
       media_category: this.selectedMedia,
-      page: 0,
+      page: this.page,
       term: this.searchTerm,
     };
     window.localStorage.setItem(SEARCH_LOCAL_KEY, JSON.stringify(payload));
     this.fetchArticles(payload);
   }
 
-  onPageChange = (event: any) => {
-    const payload = {
+  onPageChange = (e?: PaginatorState) => {
+    if (e) {
+      this.page = e.page!;
+      this.first = e.first!;
+    }
+
+    this.fetchArticles({
       start_date: moment(this.startDate).format('YYYY-MM-DD'),
       end_date: moment(this.endDate).format('YYYY-MM-DD'),
       search_field: this.selectedContent,
-      media_category: 'all',
-      page: 0,
+      media_category: this.selectedMedia,
       term: this.searchTerm,
-    };
-
-    this.page = event.page;
-    this.rows = event.rows;
-    this.first = event.first;
-    this.fetchArticles({
-      ...payload,
-      page: event.page,
-      size: event.rows,
+      page: this.page,
+      size: this.rows,
+      maxSize: this.rows,
     });
   };
+
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
 }

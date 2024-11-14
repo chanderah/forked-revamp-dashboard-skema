@@ -1,29 +1,31 @@
 import { mapToCanActivate, Route } from '@angular/router';
-import { OverviewComponent } from './overview/overview.component';
-import { DashboardComponent } from './dashboard.component';
-import { AnalyzeComponent } from './analyze/analyze.component';
-import { SpokespersonComponent } from './spokesperson/spokesperson.component';
-import { PreferenceComponent } from './preference/preference.component';
-import { ShareComponent } from './share/share.component';
-import { MediaSOVComponent } from './media-sov/media-sov.component';
-import { MapComponent } from './map/map.component';
-import { OverviewArticlesComponent } from './overview-articles/overview-articles.component';
-import { ArticleDetailComponent } from './article-detail/article-detail.component';
-import { MapArticlesComponent } from './map-articles/map-articles.component';
-import { ArticlesByToneComponent } from './articles-by-tone/articles-by-tone.component';
-import { NewsindexComponent } from './newsindex/newsindex.component';
-import { TopArticlesComponent } from './top-articles/top-articles.component';
-import { ArticlesByMediaComponent } from './articles-by-media/articles-by-media.component';
-import { SearchComponent } from './search/search.component';
-import { ArticlesComponent } from './articles/articles.component';
 import { AuthGuardService } from '../../core/guards/auth-guard.service';
+import { AnalyzeComponent } from './analyze/analyze.component';
+import { ArticleDetailComponent } from './article-detail/article-detail.component';
+import { ArticlesByMediaComponent } from './articles-by-media/articles-by-media.component';
+import { ArticlesByToneComponent } from './articles-by-tone/articles-by-tone.component';
+import { ArticlesComponent } from './articles/articles.component';
+import { DashboardComponent } from './dashboard.component';
+import { MapArticlesComponent } from './map-articles/map-articles.component';
+import { MapComponent } from './map/map.component';
+import { MediaSOVComponent } from './media-sov/media-sov.component';
+import { NewsindexComponent } from './newsindex/newsindex.component';
+import { OverviewArticlesComponent } from './overview-articles/overview-articles.component';
+import { OverviewComponent } from './overview/overview.component';
+import { PreferenceComponent } from './preference/preference.component';
+import { SearchComponent } from './search/search.component';
+import { ShareComponent } from './share/share.component';
+import { SocialMediaIndexComponent } from './social-media-index/social-media-index.component';
+import { SocialMediaOverviewComponent } from './social-media-overview/social-media-overview.component';
+import { SpokespersonComponent } from './spokesperson/spokesperson.component';
+import { TopArticlesComponent } from './top-articles/top-articles.component';
 
 interface ChildrenRoute extends Route {
   withFilter?: boolean;
 }
 
 interface DashboardRoutesProps extends Route {
-  children: ChildrenRoute[];
+  children?: ChildrenRoute[];
 }
 
 export const DashboardRoutes: DashboardRoutesProps[] = [
@@ -76,7 +78,6 @@ export const DashboardRoutes: DashboardRoutesProps[] = [
         path: 'map-articles',
         title: 'Map Articles',
         component: MapArticlesComponent,
-
         withFilter: true,
       },
       {
@@ -142,6 +143,19 @@ export const DashboardRoutes: DashboardRoutesProps[] = [
         component: SearchComponent,
         withFilter: false,
       },
+      {
+        path: 'social-media-index',
+        title: 'Social Media Index',
+        component: SocialMediaIndexComponent,
+        withFilter: true,
+      },
+      {
+        path: 'social-media-overview',
+        title: 'Social Media Overview',
+        component: SocialMediaOverviewComponent,
+        withFilter: true,
+      },
     ],
   },
+  { path: '**', redirectTo: '' },
 ];

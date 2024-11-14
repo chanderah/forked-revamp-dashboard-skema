@@ -1,5 +1,5 @@
 <div>
-  <input [(ngModel)]="checked" (ngModelChange)="onChange($event)" type="checkbox" class="checkbox" id="checkbox" />
+  <input [(ngModel)]="checked" (ngModelChange)="commonService.toggleDarkMode($event)" type="checkbox" class="checkbox" id="checkbox" />
   <label for="checkbox" class="checkbox-label">
     <icon-sun class="icon-sun" [fill]="!checked ? 'white' : '#8A90AB'"></icon-sun>
     <icon-moon class="icon-moon" [fill]="checked ? 'white' : '#8A90AB'"></icon-moon>

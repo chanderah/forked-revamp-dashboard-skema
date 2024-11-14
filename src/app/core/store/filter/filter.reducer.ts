@@ -7,8 +7,8 @@ export interface FilterState {
   category_id: string;
   category_set: number;
   user_media_type_id: number;
-  start_date?: string;
-  end_date?: string;
+  start_date: string;
+  end_date: string;
   maxSize?: number;
 }
 
