@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { FilterRequestPayload } from '../models/request.model';
-import { MediaVisibilityResponse } from '../models/media-visibility.model';
-import { TopIssueResponse } from '../models/issue.model';
+import { Injectable } from '@angular/core';
+import moment from 'moment';
+import { Observable } from 'rxjs';
 import { BASE_URL } from '../api';
+import { TopIssueResponse } from '../models/issue.model';
+import { MediaVisibilityResponse } from '../models/media-visibility.model';
+import { FilterRequestPayload } from '../models/request.model';
 
 @Injectable({
   providedIn: 'root',
@@ -14,9 +15,21 @@ export class AnalyzeService {
   constructor(private http: HttpClient) {}
 
   getMediaVisibility(filter: FilterRequestPayload): Observable<MediaVisibilityResponse> {
+    const startDate = new Date(filter.start_date!).getDate();
+    const endDate = new Date(filter.end_date!).getDate();
+    if (startDate === endDate) return this.getMediaVisibilityV3(filter);
+
     return this.http.post<MediaVisibilityResponse>(`${this.baseUrl}/v1/dashboard/media-visibility`, {
       ...filter,
       media_id: 0,
+    });
+  }
+
+  getMediaVisibilityV3(filter: FilterRequestPayload): Observable<MediaVisibilityResponse> {
+    return this.http.post<MediaVisibilityResponse>(`${this.baseUrl}/v3/dashboard/media-visibility`, {
+      ...filter,
+      start_date: moment(filter.start_date).startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+      end_date: moment(filter.end_date).endOf('day').format('YYYY-MM-DD HH:mm:ss'),
     });
   }
 

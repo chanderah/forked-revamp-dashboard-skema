@@ -1,6 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 import { getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
 
 @Injectable({
@@ -8,6 +8,7 @@ import { getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
 })
 export class DashboardService {
   private baseUrl = 'https://api.skema.co.id';
+
   constructor(private http: HttpClient) {}
 
   getLogo(): Observable<any> {

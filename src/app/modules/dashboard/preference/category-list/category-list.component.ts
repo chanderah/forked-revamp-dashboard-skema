@@ -1,18 +1,11 @@
 import { Component } from '@angular/core';
-import { DividerModule } from 'primeng/divider';
-import { IconNewspaperComponent } from '../../../../core/components/icons/newspaper/newspaper.component';
 import { IconPencilComponent } from '../../../../core/components/icons/pencil/pencil.component';
-import { RouterModule } from '@angular/router';
-import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
-import { Article } from '../../../../core/models/article.model';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
-import { TagComponent } from '../../../../core/components/tag/tag.component';
 import { TONE_MAP } from '../../../../shared/utils/Constants';
-import { ButtonSecondaryComponent } from '../../../../core/components/button-secondary/button-secondary.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { TieredMenuModule } from 'primeng/tieredmenu';
-import { ConfirmationService, MessageService, TreeNode } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { PaginatorModule } from 'primeng/paginator';
 import { CommonModule } from '@angular/common';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
@@ -176,15 +169,24 @@ export class CategoryListComponent {
 
     const { category } = this.editedValues.controls;
     this.preferenceService.updateCategoryName(this.selectedCategory?.category_set!, category.value!).subscribe(() => {
-      this.preferenceService.updateSubCategoriesChosen(this.selectedCategory?.category_set!, payload).subscribe(() => {
-        this.fetchData();
-        this.modalUpdateOpen = false;
-        this.selectedSubCategories = [];
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Update success',
-          detail: 'Category has been updated.',
-        });
+      this.preferenceService.updateSubCategoriesChosen(this.selectedCategory?.category_set!, payload).subscribe({
+        next: () => {
+          this.fetchData();
+          this.modalUpdateOpen = false;
+          this.selectedSubCategories = [];
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Update success',
+            detail: 'Category has been updated.',
+          });
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to update category.',
+          });
+        },
       });
     });
   };
@@ -199,42 +201,42 @@ export class CategoryListComponent {
 
   openEditModal = async (category: Category) => {
     this.selectedCategory = category;
-    const response = await this.preferenceService.getSubCategoriesChosen(category.category_set).toPromise();
+    this.preferenceService.getSubCategoriesChosen(category.category_set).subscribe((res) => {
+      const selected: any[] = [];
+      const actualData =
+        res?.data.map((categoryChosen) => {
+          if (categoryChosen.chosen) {
+            selected.push({
+              key: categoryChosen.category_id,
+              data: categoryChosen.category_id,
+              label: categoryChosen.category_id,
+              isSelectAll: false,
+            });
+          }
 
-    const selected: any[] = [];
-    const actualData =
-      response?.data.map((categoryChosen) => {
-        if (categoryChosen.chosen) {
-          selected.push({
+          return {
             key: categoryChosen.category_id,
             data: categoryChosen.category_id,
             label: categoryChosen.category_id,
             isSelectAll: false,
-          });
-        }
+          };
+        }) ?? [];
 
-        return {
-          key: categoryChosen.category_id,
-          data: categoryChosen.category_id,
-          label: categoryChosen.category_id,
-          isSelectAll: false,
-        };
-      }) ?? [];
+      this.selectedSubCategories = selected;
 
-    this.selectedSubCategories = selected;
+      this.subCategoryOptions = [
+        {
+          label: 'Select all',
+          data: 'all',
+          children: actualData,
+          isSelectAll: true,
+        },
+      ];
 
-    this.subCategoryOptions = [
-      {
-        label: 'Select all',
-        data: 'all',
-        children: actualData,
-        isSelectAll: true,
-      },
-    ];
-
-    this.editedValues.setValue({
-      category: category.descriptionz ?? '',
+      this.editedValues.setValue({
+        category: category.descriptionz ?? '',
+      });
+      this.modalUpdateOpen = true;
     });
-    this.modalUpdateOpen = true;
   };
 }

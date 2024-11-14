@@ -1,18 +1,19 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { HighlightsResponse } from '../models/highlights.model';
-import { FilterRequestPayload } from '../models/request.model';
+import { getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
 import { Article, ArticleResponse } from '../models/article.model';
 import { CategoryResponse } from '../models/category.model';
-import { BASE_URL } from '../api';
-import { getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
+import { HighlightsResponse } from '../models/highlights.model';
+import { FilterRequestPayload } from '../models/request.model';
+import { BASE_URL } from './../api/index';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ArticleService {
   private baseUrl = BASE_URL;
+
   constructor(private http: HttpClient) {}
 
   getHighlights(filter: FilterRequestPayload): Observable<HighlightsResponse> {
@@ -33,10 +34,13 @@ export class ArticleService {
   }
 
   getUserEditingPlus(filter: FilterRequestPayload): Observable<{ data: Article[]; recordsTotal: number }> {
-    return this.http.post<{ data: Article[]; recordsTotal: number }>(`${this.baseUrl}/v1/user/editingplus/`, {
+    const isHourly = filter.start_date?.includes(' '); // space
+
+    return this.http.post<{ data: Article[]; recordsTotal: number }>(`${this.baseUrl}/${isHourly ? 'v3' : 'v1'}/user/editingplus/`, {
       ...filter,
       media_id: 0,
       maxSize: 20,
+      max_size: 20,
       page: filter.page ?? 0,
       size: filter.size ?? 10,
     });
@@ -141,6 +145,18 @@ export class ArticleService {
     });
   }
 
+  sendMail(emails: string, articles: Article[]) {
+    return this.http.post(`${this.baseUrl}/v1/user/editing/send-mail`, {
+      email: emails.trim().replace(' ', ''),
+      data: articles.map((v) => {
+        return {
+          article_id: v.article_id,
+          category_id: v.category_id,
+        };
+      }),
+    });
+  }
+
   getArticlesHeadlines(filter: FilterRequestPayload): Observable<{ data: Article[] }> {
     const params = {
       start_date: filter.start_date ? filter.start_date + ' 00:00:00' : '',
@@ -169,5 +185,9 @@ export class ArticleService {
     };
 
     return this.http.get<{ data: Article[] }>(`${this.baseUrl}/v1/dashboard/top-articles`, { params });
+  }
+
+  deleteCategory(req: { article_id: string; category_id: string }): Observable<any> {
+    return this.http.post(`${this.baseUrl}/v1/user/article/delete/category`, req);
   }
 }
