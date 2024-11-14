@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/co
 import { IconNewspaperComponent } from '../../../../core/components/icons/newspaper/newspaper.component';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import Chart from 'chart.js/auto';
-import { color, getRelativePosition } from 'chart.js/helpers';
+import { color } from 'chart.js/helpers';
 import { TreemapController, TreemapElement } from 'chartjs-chart-treemap';
 import { ChartModule } from 'primeng/chart';
 import { TabMenuModule } from 'primeng/tabmenu';
@@ -16,12 +16,11 @@ import { IconPencilComponent } from '../../../../core/components/icons/pencil/pe
 import { ButtonSecondaryComponent } from '../../../../core/components/button-secondary/button-secondary.component';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 import { AppState } from '../../../../core/store';
 import { AnalyzeState } from '../../../../core/store/analyze/analyze.reducer';
 import { selectAnalyzeState } from '../../../../core/store/analyze/analyze.selectors';
 import { FilterState, initialState } from '../../../../core/store/filter/filter.reducer';
-import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { getTopIssue } from '../../../../core/store/analyze/analyze.actions';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
@@ -64,12 +63,9 @@ Chart.register(TreemapController, TreemapElement);
   styleUrl: './top-issue.component.scss',
 })
 export class TopIssueComponent {
+  @ViewChild('chartArea') private chartArea!: ElementRef<HTMLCanvasElement>;
+
   filter: any;
-  ngOnDestroy() {
-    this.filter?.unsubscribe?.();
-  }
-  // @ts-ignore
-  @ViewChild('chartArea') private chartArea: ElementRef<HTMLCanvasElement> = null;
 
   tabItems: MenuItem[] | undefined;
   activeTab: MenuItem | undefined;
@@ -91,8 +87,9 @@ export class TopIssueComponent {
   selectedCategories: any[] = [];
   columnsOptions: { label: string; value: string }[] = [];
   categoriesOptions: { label: string; value: number }[] = [];
-  isSelectAllColumns = false;
-  isSelectAllCategories = false;
+
+  isCheckedAllColumn = false;
+  isCheckedAllCategory = false;
 
   chart: any;
 
@@ -279,47 +276,27 @@ export class TopIssueComponent {
       .add(() => (this.isDownloading = false));
   };
 
-  onChangeColumn(event: any) {
-    const { value } = event;
-    if (value) this.isSelectAllColumns = value.length === this.columnsOptions.length;
-  }
-
-  onChangeCategory(event: any) {
-    const { value } = event;
-    if (value) this.isSelectAllCategories = value.length === this.categoriesOptions.length;
-  }
-
-  onSelectAllColumnsChange = (event: any) => {
-    this.selectedColumns = event.checked ? [...this.columnsOptions] : [];
-    this.isSelectAllColumns = event.checked;
-    event.updateModel(this.selectedColumns, event.originalEvent);
+  onCheckedAllColumn = (isChecked: boolean) => {
+    this.selectedColumns = isChecked ? [...this.columnsOptions] : [];
   };
 
-  onSelectAllCategoryChange = (event: any) => {
-    this.selectedCategories = event.checked ? [...this.categoriesOptions] : [];
-    this.isSelectAllCategories = event.checked;
-    event.updateModel(this.selectedCategories, event.originalEvent);
+  onCheckedAllCategory = (isChecked: boolean) => {
+    this.selectedCategories = isChecked ? [...this.categoriesOptions] : [];
   };
 
   openDownloadExcelModal = async () => {
-    const columns = await this.preferenceService.getColumns().toPromise();
-    const categories = await this.preferenceService.getCategories().toPromise();
-    if (columns?.data) {
-      this.columnsOptions = columns.data.map((col) => ({
-        label: col.name,
-        value: col.name,
-      }));
-    }
-    if (categories?.results) {
-      const categoriesOpts = categories.results.map((category) => ({
-        label: category.descriptionz,
-        value: category.category_set,
-      }));
-      this.categoriesOptions = categoriesOpts;
-      this.selectedCategories = categoriesOpts;
-      this.isSelectAllCategories = categoriesOpts.length ? true : false;
-    }
+    const columns = await lastValueFrom(this.preferenceService.getColumns());
+    const categories = await lastValueFrom(this.preferenceService.getCategories()); // prettier-ignore
 
+    this.columnsOptions = columns?.data.map((col) => ({
+      label: col.name,
+      value: col.name,
+    }));
+
+    this.categoriesOptions = this.selectedCategories = categories?.results.map((category) => ({
+      label: category.descriptionz,
+      value: category.category_set,
+    }));
     this.downloadExcelConfirmModalOpen = true;
   };
 
@@ -328,22 +305,23 @@ export class TopIssueComponent {
     const columns = this.selectedColumns.map(({ value }) => value);
     const categories = this.selectedCategories.map(({ value }) => value).join(',');
 
-    const { category_id, date_type, end_date, start_date, user_media_type_id } = this.filterService.filter;
-    const payload = {
-      columns,
-      category_set: categories,
-      category_id,
-      date_type,
-      end_date,
-      start_date,
-      user_media_type_id,
-      url: false,
-    };
+    const { category_id, date_type, end_date, start_date, user_media_type_id } = this.filterService.filter; // prettier-ignore
     this.analyzeService
-      .downloadExcel(payload)
-      .subscribe(({ data }) => {
-        window.open(data, '_blank')?.focus();
+      .downloadExcel({
+        url: false,
+        category_set: categories,
+        category_id,
+        columns,
+        date_type,
+        end_date,
+        start_date,
+        user_media_type_id,
       })
+      .subscribe(({ data }) => window.open(data, '_blank')?.focus())
       .add(() => (this.isDownloadingExcel = false));
   };
+
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
 }

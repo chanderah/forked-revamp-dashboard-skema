@@ -2,21 +2,25 @@
   <spinner [spinning]="isLoading">
     <div class="grid">
       <div class="col-12">
-        <chart-card id="visibilityChart" title="Visibility Chart" [actionButton]="visibilityChartActionButton">
+        <chart-card
+          id="visibilityChart"
+          title="Visibility Chart"
+          [actionButton]="visibilityChartActionButton"
+          [showBack]="isDrilldownVisibilityChart"
+          (onBack)="getData()">
           <p-chart
             *ngIf="!visibilityChartActionButton.toggle.value"
             type="line"
             [data]="visibilityChartLineData"
             [options]="visibilityChartLineOpts"
             (onDataSelect)="onVisibilityPieSelect($event, 'line')"></p-chart>
-          <div *ngIf="visibilityChartActionButton.toggle.value">
-            <p-chart
-              type="bar"
-              [data]="visibilityChartBarData"
-              [options]="visibilityChartBarOpts"
-              [plugins]="visibilityChartBarPlugins"
-              (onDataSelect)="onVisibilityPieSelect($event, 'bar')"></p-chart>
-          </div>
+          <p-chart
+            *ngIf="visibilityChartActionButton.toggle.value"
+            type="bar"
+            [data]="visibilityChartBarData"
+            [options]="visibilityChartBarOpts"
+            [plugins]="visibilityChartBarPlugins"
+            (onDataSelect)="onVisibilityPieSelect($event, 'bar')"></p-chart>
         </chart-card>
       </div>
       <div class="col-12">
