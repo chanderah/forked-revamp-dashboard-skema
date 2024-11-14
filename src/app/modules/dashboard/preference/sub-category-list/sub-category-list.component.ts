@@ -1,25 +1,26 @@
-import { Component } from '@angular/core';
-import { IconPencilComponent } from '../../../../core/components/icons/pencil/pencil.component';
-import { ButtonModule } from 'primeng/button';
-import { TableModule } from 'primeng/table';
-import { TONE_MAP } from '../../../../shared/utils/Constants';
-import { InputTextModule } from 'primeng/inputtext';
-import { TieredMenuModule } from 'primeng/tieredmenu';
-import { MessageService } from 'primeng/api';
-import { PaginatorModule } from 'primeng/paginator';
 import { CommonModule } from '@angular/common';
-import { DialogModule } from 'primeng/dialog';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import moment from 'moment';
+import { MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { CalendarModule } from 'primeng/calendar';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { PaginatorModule } from 'primeng/paginator';
+import { TableModule } from 'primeng/table';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { TabViewModule } from 'primeng/tabview';
-import { PreferenceService } from '../../../../core/services/preference.service';
+import { TieredMenuModule } from 'primeng/tieredmenu';
 import { ToastModule } from 'primeng/toast';
+import { forkJoin } from 'rxjs';
 import { IconAlertComponent } from '../../../../core/components/icons/alert/alert.component';
+import { IconPencilComponent } from '../../../../core/components/icons/pencil/pencil.component';
 import { Category } from '../../../../core/models/category.model';
-import { CalendarModule } from 'primeng/calendar';
-import moment from 'moment';
+import { PreferenceService } from '../../../../core/services/preference.service';
+import { TONE_MAP } from '../../../../shared/utils/Constants';
 
 @Component({
   selector: 'app-sub-category-list',
@@ -167,46 +168,68 @@ export class SubCategoryListComponent {
   };
 
   deleteKeyword = (keyword: string) => {
-    this.preferenceService.deleteCategoryKeyword(this.selectedCategory?.category_id!, keyword).subscribe(() => {
-      this.preferenceService.getCategoryKeywords(this.selectedCategory?.category_id!).subscribe((response) => {
-        this.existingKeywords = response?.data ?? [];
-      });
+    this.preferenceService.deleteCategoryKeyword(this.selectedCategory?.category_id!, keyword).subscribe({
+      next: () => {
+        this.preferenceService.getCategoryKeywords(this.selectedCategory?.category_id!).subscribe((response) => {
+          this.existingKeywords = response?.data ?? [];
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Deleted',
+            detail: 'Keyword has been successfully deleted.',
+          });
+        });
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to delete keyword.',
+        });
+      },
     });
   };
 
   updateCategory = async () => {
-    const { category, expired, startDate, keyword } = this.editedValues.controls;
-
-    const promises = [this.preferenceService.updateSubCategory(this.selectedCategory?.category_id!, category.value!).toPromise()];
-
-    if (keyword.value && startDate.value && expired.value) {
-      const payload: any = {
-        category_id: category.value!,
-        keyword: keyword.value,
-        start_date: moment(startDate.value).format('YYYY-MM-DD'),
-        end_date: moment(expired.value).format('YYYY-MM-DD'),
-      };
-
-      promises.push(this.preferenceService.createCategoryKeyword(payload).toPromise());
-    }
-
-    await Promise.allSettled(promises);
-    this.fetchKeyword(category.value!);
-    this.fetchData(category.value!);
-    this.selectedSubCategories = [];
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Update success',
-      detail: 'SubCategory has been updated.',
-    });
-
-    if (!expired.value || !startDate.value || !expired.value) {
-      this.messageService.add({
+    const { category, expired, startDate, keyword } = this.editedValues.value;
+    if (!expired || !startDate || !expired) {
+      return this.messageService.add({
         severity: 'warn',
         summary: 'Warning',
         detail: 'Keyword or Dates is required',
       });
     }
+
+    const apis = [this.preferenceService.updateSubCategory(this.selectedCategory?.category_id!, category!)];
+
+    if (keyword && startDate && expired) {
+      apis.push(
+        this.preferenceService.createCategoryKeyword({
+          category_id: category!,
+          keyword: keyword,
+          start_date: moment(startDate).format('YYYY-MM-DD'),
+          end_date: moment(expired).format('YYYY-MM-DD'),
+        })
+      );
+    }
+
+    forkJoin(apis).subscribe({
+      next: () => {
+        this.fetchData(category!);
+        this.modalUpdateOpen = false;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Updated',
+          detail: 'Data has been updated.',
+        });
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to update data.',
+        });
+      },
+    });
   };
 
   checkRestream = () => {
@@ -258,4 +281,8 @@ export class SubCategoryListComponent {
     this.selectedCategory = category;
     this.fetchKeyword(category.category_id);
   };
+
+  closeEditModal() {
+    this.modalUpdateOpen = false;
+  }
 }
