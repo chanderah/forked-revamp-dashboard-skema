@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
 
 @Injectable({ providedIn: 'root' })

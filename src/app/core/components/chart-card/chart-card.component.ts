@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -24,10 +24,8 @@ export interface ActionButtonProps {
   styleUrl: './chart-card.component.scss',
 })
 export class ChartCardComponent {
-  filter: any;
-  ngOnDestroy() {
-    this.filter?.unsubscribe?.();
-  }
   @Input() title!: string;
-  @Input() actionButton: ActionButtonProps | undefined;
+  @Input() actionButton!: ActionButtonProps;
+  @Input() showBack: boolean = false;
+  @Output() onBack = new EventEmitter<boolean>();
 }
