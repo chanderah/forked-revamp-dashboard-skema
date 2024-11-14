@@ -12,9 +12,13 @@ import { DividerModule } from 'primeng/divider';
   standalone: true,
   imports: [RouterModule, AvatarModule, CommonModule, ImgFallbackDirective, PaginatorModule, DividerModule],
   templateUrl: './article-list.component.html',
-  styleUrl: './article-list.component.scss'
+  styleUrl: './article-list.component.scss',
 })
-export class ArticleListComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class ArticleListComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   @Input() articles!: Article[];
   @Input() first!: number;
   @Input() rows!: number;

@@ -21,7 +21,7 @@ interface Option {
   value: string | number;
 }
 
-const SEARCH_LOCAL_KEY = 'search_terms'
+const SEARCH_LOCAL_KEY = 'search_terms';
 
 @Component({
   selector: 'app-search',
@@ -41,7 +41,11 @@ const SEARCH_LOCAL_KEY = 'search_terms'
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
 })
-export class SearchComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class SearchComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   selectedMedia: string = 'all';
   searchTerm: string = '';
   selectedContent: string = 'title';
@@ -67,20 +71,20 @@ export class SearchComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscrib
 
   constructor(
     private preferenceService: PreferenceService,
-    private articleService: ArticleService,
+    private articleService: ArticleService
   ) {
     this.getMediaOptions();
     const existingSearch = window.localStorage.getItem(SEARCH_LOCAL_KEY);
     if (existingSearch) {
-      const searchTermsObj = JSON.parse(existingSearch)
+      const searchTermsObj = JSON.parse(existingSearch);
       this.selectedMedia = searchTermsObj['media_category'] ?? 'all';
       this.searchTerm = searchTermsObj['term'] ?? '';
       this.selectedContent = searchTermsObj['search_field'] ?? 'title';
       if (searchTermsObj['start_date']) {
-        this.startDate = moment(searchTermsObj['start_date']).toDate()
+        this.startDate = moment(searchTermsObj['start_date']).toDate();
       }
       if (searchTermsObj['end_date']) {
-        this.endDate = moment(searchTermsObj['end_date']).toDate()
+        this.endDate = moment(searchTermsObj['end_date']).toDate();
       }
       const payload: any = {
         start_date: moment(this.startDate).format('YYYY-MM-DD'),
@@ -135,7 +139,7 @@ export class SearchComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscrib
       page: 0,
       term: this.searchTerm,
     };
-    window.localStorage.setItem(SEARCH_LOCAL_KEY, JSON.stringify(payload))
+    window.localStorage.setItem(SEARCH_LOCAL_KEY, JSON.stringify(payload));
     this.fetchArticles(payload);
   }
 

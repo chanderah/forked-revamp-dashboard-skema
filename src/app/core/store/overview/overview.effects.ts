@@ -13,23 +13,20 @@ export class OverviewEffects {
     private actions$: Actions,
     private overviewService: OverviewService,
     private articleService: ArticleService,
-    private toneService: ToneService,
+    private toneService: ToneService
   ) {}
   getMediaCount = createEffect(() =>
     this.actions$.pipe(
       ofType(OverviewActions.getMediaCount),
-      switchMap(({filter}) => {
+      switchMap(({ filter }) => {
         return this.overviewService.getMediaCount(filter).pipe(
           map((response) => {
-            if ((response as any).code === 401)
-              throw new Error((response as any).message);
+            if ((response as any).code === 401) throw new Error((response as any).message);
             return OverviewActions.getMediaCountSuccess({
               data: response.data,
             });
           }),
-          catchError((error) =>
-            of(OverviewActions.getMediaCountError({ error: error.message }))
-          )
+          catchError((error) => of(OverviewActions.getMediaCountError({ error: error.message })))
         );
       })
     )
@@ -38,16 +35,13 @@ export class OverviewEffects {
   getAllCount = createEffect(() =>
     this.actions$.pipe(
       ofType(OverviewActions.getAllCount),
-      switchMap(({filter}) => {
+      switchMap(({ filter }) => {
         return this.overviewService.getAllCount(filter).pipe(
           map((response) => {
-            if ((response as any).code === 401)
-              throw new Error((response as any).message);
+            if ((response as any).code === 401) throw new Error((response as any).message);
             return OverviewActions.getAllCountSuccess({ data: response });
           }),
-          catchError((error) =>
-            of(OverviewActions.getAllCountError({ error: error.message }))
-          )
+          catchError((error) => of(OverviewActions.getAllCountError({ error: error.message })))
         );
       })
     )
@@ -56,16 +50,13 @@ export class OverviewEffects {
   getWordCloud = createEffect(() =>
     this.actions$.pipe(
       ofType(OverviewActions.getWordCloud),
-      switchMap(({filter}) => {
+      switchMap(({ filter }) => {
         return this.overviewService.getWordCloud(filter).pipe(
           map((response) => {
-            if ((response as any).code === 401)
-              throw new Error((response as any).message);
+            if ((response as any).code === 401) throw new Error((response as any).message);
             return OverviewActions.getWordCloudSuccess({ data: response.data });
           }),
-          catchError((error) =>
-            of(OverviewActions.getWordCloudError({ error: error.message }))
-          )
+          catchError((error) => of(OverviewActions.getWordCloudError({ error: error.message })))
         );
       })
     )
@@ -74,18 +65,15 @@ export class OverviewEffects {
   getToneByMedia = createEffect(() =>
     this.actions$.pipe(
       ofType(OverviewActions.getToneByMedia),
-      switchMap(({filter}) => {
+      switchMap(({ filter }) => {
         return this.toneService.getToneByMedia(filter).pipe(
           map((response) => {
-            if ((response as any).code === 401)
-              throw new Error((response as any).message);
+            if ((response as any).code === 401) throw new Error((response as any).message);
             return OverviewActions.getToneByMediaSuccess({
               data: response.data,
             });
           }),
-          catchError((error) =>
-            of(OverviewActions.getToneByMediaError({ error: error.message }))
-          )
+          catchError((error) => of(OverviewActions.getToneByMediaError({ error: error.message })))
         );
       })
     )
@@ -94,18 +82,15 @@ export class OverviewEffects {
   getUserEditingPlus = createEffect(() =>
     this.actions$.pipe(
       ofType(OverviewActions.getUserEditingPlus),
-      switchMap(({filter}) => {
+      switchMap(({ filter }) => {
         return this.articleService.getUserEditingPlus(filter).pipe(
           map((response) => {
-            if ((response as any).code === 401)
-              throw new Error((response as any).message);
+            if ((response as any).code === 401) throw new Error((response as any).message);
             return OverviewActions.getUserEditingPlusSuccess({
               data: response.data,
             });
           }),
-          catchError((error) =>
-            of(OverviewActions.getUserEditingPlusError({ error: error.message }))
-          )
+          catchError((error) => of(OverviewActions.getUserEditingPlusError({ error: error.message })))
         );
       })
     )

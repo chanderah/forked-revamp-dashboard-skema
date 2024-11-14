@@ -7,7 +7,11 @@ import { Component, Input } from '@angular/core';
   templateUrl: './tag.component.html',
   styleUrl: './tag.component.scss',
 })
-export class TagComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class TagComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   @Input() content!: string;
   @Input() type!: 'positive' | 'negative' | 'neutral' | string | number;
 
@@ -21,20 +25,20 @@ export class TagComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.
     const neutralColor = documentStyle.getPropertyValue('--neutral-color');
 
     const colorMap: { [x: string]: string } = {
-      positive: positiveColor,
+      'positive': positiveColor,
       1: positiveColor,
-      neutral: 'gray',
+      'neutral': 'gray',
       0: 'gray',
-      negative: negativeColor,
+      'negative': negativeColor,
       '-1': negativeColor,
     };
 
     const bgColorMap: { [x: string]: string } = {
-      positive: '#e8f2fc',
+      'positive': '#e8f2fc',
       1: '#e8f2fc',
-      neutral: '#80808021',
+      'neutral': '#80808021',
       0: '#80808021',
-      negative: '#ffebee',
+      'negative': '#ffebee',
       '-1': '#ffebee',
     };
 

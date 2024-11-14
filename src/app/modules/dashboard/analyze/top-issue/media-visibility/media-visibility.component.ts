@@ -1,27 +1,18 @@
 import { Component } from '@angular/core';
-import {
-  ActionButtonProps,
-  ChartCardComponent,
-} from '../../../../../core/components/chart-card/chart-card.component';
+import { ActionButtonProps, ChartCardComponent } from '../../../../../core/components/chart-card/chart-card.component';
 import { ChartModule } from 'primeng/chart';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { AppState } from '../../../../../core/store';
 import { AnalyzeState } from '../../../../../core/store/analyze/analyze.reducer';
 import { selectAnalyzeState } from '../../../../../core/store/analyze/analyze.selectors';
-import {
-  FilterState,
-  initialState,
-} from '../../../../../core/store/filter/filter.reducer';
+import { FilterState, initialState } from '../../../../../core/store/filter/filter.reducer';
 import { selectFilterState } from '../../../../../core/store/filter/filter.selectors';
 import { getMediaVisibility } from '../../../../../core/store/analyze/analyze.actions';
 import { FilterRequestPayload } from '../../../../../core/models/request.model';
 import moment from 'moment';
 import { MediaVisibility } from '../../../../../core/models/media-visibility.model';
-import {
-  htmlLegendPlugin,
-  barOpacityPlugin,
-} from '../../../../../shared/utils/ChartUtils';
+import { htmlLegendPlugin, barOpacityPlugin } from '../../../../../shared/utils/ChartUtils';
 import { SpinnerComponent } from '../../../../../core/components/spinner/spinner.component';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -35,7 +26,11 @@ import { AnalyzeService } from '../../../../../core/services/analyze.service';
   templateUrl: './media-visibility.component.html',
   styleUrl: './media-visibility.component.scss',
 })
-export class MediaVisibilityComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class MediaVisibilityComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   visibilityChartLineData: any;
   visibilityChartLineOpts: any;
 
@@ -95,14 +90,7 @@ export class MediaVisibilityComponent{ filter: any; ngOnDestroy(){this.filter?.u
 
   initChartData = (mediaVisibility: MediaVisibility[]) => {
     if (mediaVisibility.length) {
-      const {
-        lineDatasets,
-        lineLabels,
-        pieLabels,
-        pieDatasets,
-        visibilityBarDatasets,
-        barLabels,
-      } = this.getChartData(mediaVisibility);
+      const { lineDatasets, lineLabels, pieLabels, pieDatasets, visibilityBarDatasets, barLabels } = this.getChartData(mediaVisibility);
       this.visibilityChartLineData = {
         labels: lineLabels,
         datasets: lineDatasets,
@@ -120,17 +108,14 @@ export class MediaVisibilityComponent{ filter: any; ngOnDestroy(){this.filter?.u
     let mediaLabel = null;
     let date = null;
     if (type === 'pie') {
-      const currentData =
-        this.visibilityPieData.datasets[value.element.datasetIndex];
+      const currentData = this.visibilityPieData.datasets[value.element.datasetIndex];
       mediaLabel = currentData.mediaIds[value.element.index];
     } else if (type === 'bar') {
-      const currentData =
-        this.visibilityChartBarData.datasets[value.element.datasetIndex];
+      const currentData = this.visibilityChartBarData.datasets[value.element.datasetIndex];
       mediaLabel = currentData.label;
       date = currentData.date[value.element.index];
     } else if (type === 'line') {
-      const currentData =
-        this.visibilityChartLineData.datasets[value.element.datasetIndex];
+      const currentData = this.visibilityChartLineData.datasets[value.element.datasetIndex];
       mediaLabel = currentData.label;
       date = currentData.date[value.element.index];
     }
@@ -143,14 +128,10 @@ export class MediaVisibilityComponent{ filter: any; ngOnDestroy(){this.filter?.u
   initChartOpts = () => {
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
-    const textColorSecondary = documentStyle.getPropertyValue(
-      '--text-color-secondary'
-    );
+    const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
     const isDarkModeStorage = window.localStorage.getItem('useDarkMode');
-    const isDarkMode = isDarkModeStorage
-      ? JSON.parse(isDarkModeStorage)
-      : false;
+    const isDarkMode = isDarkModeStorage ? JSON.parse(isDarkModeStorage) : false;
 
     this.visibilityPieOpts = {
       plugins: {
@@ -179,9 +160,7 @@ export class MediaVisibilityComponent{ filter: any; ngOnDestroy(){this.filter?.u
             padding: 32,
             boxWidth: 14,
             boxHeight: 5,
-            color: isDarkMode
-              ? 'white'
-              : documentStyle.getPropertyValue('--text-color'),
+            color: isDarkMode ? 'white' : documentStyle.getPropertyValue('--text-color'),
           },
         },
       },
@@ -218,9 +197,7 @@ export class MediaVisibilityComponent{ filter: any; ngOnDestroy(){this.filter?.u
           align: 'center',
           labels: {
             font: { size: 10 },
-            color: isDarkMode
-              ? 'white'
-              : documentStyle.getPropertyValue('--text-color'),
+            color: isDarkMode ? 'white' : documentStyle.getPropertyValue('--text-color'),
             boxWidth: 10,
             boxHeight: 5,
             filter: function (legendItem: any, chartData: any) {
@@ -276,9 +253,7 @@ export class MediaVisibilityComponent{ filter: any; ngOnDestroy(){this.filter?.u
       media.category_id_per_day.buckets.forEach((bucket) => {
         tmpData.date.push(bucket.key_as_string);
       });
-      pieDatasets[0].percentages.push(
-        ((media.doc_count / totalTones) * 100).toFixed(0)
-      );
+      pieDatasets[0].percentages.push(((media.doc_count / totalTones) * 100).toFixed(0));
       pieDatasets[0].data.push(media.doc_count);
       pieDatasets[0].mediaIds.push(media.key);
 
@@ -286,12 +261,8 @@ export class MediaVisibilityComponent{ filter: any; ngOnDestroy(){this.filter?.u
     });
 
     const visibilityBarDatasets = mediaVisibility.map((visibility) => {
-      const data = visibility.category_id_per_day.buckets.map(
-        (val) => val.doc_count
-      );
-      const date = visibility.category_id_per_day.buckets.map(
-        (val) => val.key_as_string
-      );
+      const data = visibility.category_id_per_day.buckets.map((val) => val.doc_count);
+      const date = visibility.category_id_per_day.buckets.map((val) => val.key_as_string);
       return {
         type: 'bar',
         data,
@@ -300,9 +271,7 @@ export class MediaVisibilityComponent{ filter: any; ngOnDestroy(){this.filter?.u
       };
     });
 
-    const lineLabels = mediaVisibility[0].category_id_per_day.buckets.map(
-      (bucket) => moment(bucket.key_as_string).format('DD MMM')
-    );
+    const lineLabels = mediaVisibility[0].category_id_per_day.buckets.map((bucket) => moment(bucket.key_as_string).format('DD MMM'));
     return {
       lineLabels,
       lineDatasets,
@@ -312,5 +281,4 @@ export class MediaVisibilityComponent{ filter: any; ngOnDestroy(){this.filter?.u
       visibilityBarDatasets,
     };
   };
-
 }

@@ -17,7 +17,11 @@ import moment from 'moment';
   templateUrl: './articles-by-media.component.html',
   styleUrl: './articles-by-media.component.scss',
 })
-export class ArticlesByMediaComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class ArticlesByMediaComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   mediaId: number | null = null;
   mediaName: string | null = null;
   date: string | null = null;
@@ -42,7 +46,7 @@ export class ArticlesByMediaComponent{ filter: any; ngOnDestroy(){this.filter?.u
     const mediaName = this.route.snapshot.queryParamMap.get('mediaName')!;
     const topic = this.route.snapshot.queryParamMap.get('topic')!;
     const date = this.route.snapshot.queryParamMap.get('date')!;
-    this.date = date
+    this.date = date;
 
     if (mediaName) {
       this.mediaName = mediaName;
@@ -64,42 +68,30 @@ export class ArticlesByMediaComponent{ filter: any; ngOnDestroy(){this.filter?.u
     const req = {
       ...filter,
       category_id: this.mediaName,
-      start_date: this.date
-        ? moment(this.date).format('YYYY-MM-DD')
-        : filter.start_date,
-      end_date: this.date
-        ? moment(this.date).format('YYYY-MM-DD')
-        : filter.end_date,
+      start_date: this.date ? moment(this.date).format('YYYY-MM-DD') : filter.start_date,
+      end_date: this.date ? moment(this.date).format('YYYY-MM-DD') : filter.end_date,
     };
     this.isLoading = true;
-    this.articleService
-      .getUserEditingPlus(req as FilterRequestPayload)
-      .subscribe((data) => {
-        this.isLoading = false;
-        this.articles = data.data;
-        this.totalRecords = data.recordsTotal;
-      });
+    this.articleService.getUserEditingPlus(req as FilterRequestPayload).subscribe((data) => {
+      this.isLoading = false;
+      this.articles = data.data;
+      this.totalRecords = data.recordsTotal;
+    });
   };
 
   fetchArticles = (filter: FilterRequestPayload) => {
     const req = {
       ...filter,
       topic: this.topic ?? undefined,
-      start_date: this.date
-        ? moment(this.date).format('YYYY-MM-DD')
-        : filter.start_date,
-      end_date: this.date
-        ? moment(this.date).format('YYYY-MM-DD')
-        : filter.end_date,
+      start_date: this.date ? moment(this.date).format('YYYY-MM-DD') : filter.start_date,
+      end_date: this.date ? moment(this.date).format('YYYY-MM-DD') : filter.end_date,
     };
     this.isLoading = true;
-    this.articleService
-      .getUserEditing(req as FilterRequestPayload)
-      .subscribe((data) => {
-        this.isLoading = false;
-        this.articles = data.data;
-        this.totalRecords = data.recordsTotal;
-      });
+    this.articleService.getUserEditing(req as FilterRequestPayload).subscribe((data) => {
+      this.isLoading = false;
+      this.articles = data.data;
+      this.totalRecords = data.recordsTotal;
+    });
   };
 
   onPageChange = (event: any) => {

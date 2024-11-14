@@ -31,8 +31,7 @@ export const htmlLegendPlugin = {
     }
 
     let percentages = [];
-    if (chart.data.datasets.length)
-      percentages = chart.data.datasets[0].percentages;
+    if (chart.data.datasets.length) percentages = chart.data.datasets[0].percentages;
 
     // Reuse the built-in legendItems generator
     const items = chart.options.plugins.legend.labels.generateLabels(chart);
@@ -51,10 +50,7 @@ export const htmlLegendPlugin = {
           // Pie and doughnut charts only have a single dataset and visibility is per item
           chart.toggleDataVisibility(item.index);
         } else {
-          chart.setDatasetVisibility(
-            item.datasetIndex,
-            !chart.isDatasetVisible(item.datasetIndex)
-          );
+          chart.setDatasetVisibility(item.datasetIndex, !chart.isDatasetVisible(item.datasetIndex));
         }
         chart.update();
       };
@@ -86,7 +82,7 @@ export const htmlLegendPlugin = {
       labelContainer.style.alignItems = 'center';
       labelContainer.appendChild(boxSpan);
       labelContainer.appendChild(textContainer);
-      
+
       const valueContainer = document.createElement('div');
       valueContainer.style.display = 'flex';
       valueContainer.style.alignItems = 'baseline';
@@ -126,10 +122,7 @@ export const barOpacityPlugin = {
   id: 'barOpacityPlugin',
   beforeDraw: function (chart, _, options) {
     chart.data.datasets.forEach((dataset) => {
-      dataset.backgroundColor = dataset.backgroundColor.replace(
-        '0.5',
-        `${options.opacity}`
-      );
+      dataset.backgroundColor = dataset.backgroundColor.replace('0.5', `${options.opacity}`);
     });
   },
 };

@@ -19,7 +19,11 @@ import { Subject } from 'rxjs';
   templateUrl: './articles-by-tone.component.html',
   styleUrl: './articles-by-tone.component.scss',
 })
-export class ArticlesByToneComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class ArticlesByToneComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   mediaId: number | null = null;
   mediaName: string | null = null;
   tone: number | null = null;
@@ -67,21 +71,15 @@ export class ArticlesByToneComponent{ filter: any; ngOnDestroy(){this.filter?.un
       media_id: this?.mediaId ?? 0,
       tone: this?.tone ?? 0,
       category_id: this.category_id ?? 'all',
-      start_date: this.date
-        ? moment(this.date).format('YYYY-MM-DD')
-        : filter.start_date,
-      end_date: this.date
-        ? moment(this.date).format('YYYY-MM-DD')
-        : filter.end_date,
+      start_date: this.date ? moment(this.date).format('YYYY-MM-DD') : filter.start_date,
+      end_date: this.date ? moment(this.date).format('YYYY-MM-DD') : filter.end_date,
     };
     this.isLoading = true;
-    this.articleService
-      .getArticlesByTone(req as FilterRequestPayload)
-      .subscribe((data) => {
-        this.isLoading = false;
-        this.articles = data.data;
-        this.totalRecords = data.recordsTotal;
-      });
+    this.articleService.getArticlesByTone(req as FilterRequestPayload).subscribe((data) => {
+      this.isLoading = false;
+      this.articles = data.data;
+      this.totalRecords = data.recordsTotal;
+    });
   };
 
   onPageChange = (event: any) => {

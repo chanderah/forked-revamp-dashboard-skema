@@ -9,8 +9,11 @@ import { TopIssueComponent } from './top-issue/top-issue.component';
   standalone: true,
   imports: [LatestNewsComponent, MediaSentimentComponent, FeaturedNewsComponent, TopIssueComponent],
   templateUrl: './analyze.component.html',
-  styleUrl: './analyze.component.scss'
+  styleUrl: './analyze.component.scss',
 })
-export class AnalyzeComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
-
+export class AnalyzeComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
 }

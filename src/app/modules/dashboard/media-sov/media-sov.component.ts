@@ -7,16 +7,15 @@ import { SentimentComponent } from './sentiment/sentiment.component';
 @Component({
   selector: 'app-media-sov',
   standalone: true,
-  imports: [
-    MediaNameComponent,
-    LatestNewsComponent,
-    StatementsComponent,
-    SentimentComponent,
-  ],
+  imports: [MediaNameComponent, LatestNewsComponent, StatementsComponent, SentimentComponent],
   templateUrl: './media-sov.component.html',
   styleUrl: './media-sov.component.scss',
 })
-export class MediaSOVComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class MediaSOVComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   media: any = null;
   tone: any = null;
 

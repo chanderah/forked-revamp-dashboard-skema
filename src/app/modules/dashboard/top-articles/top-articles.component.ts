@@ -31,7 +31,11 @@ import { FilterService } from '../../../core/services/filter.service';
   templateUrl: './top-articles.component.html',
   styleUrl: './top-articles.component.scss',
 })
-export class TopArticlesComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class TopArticlesComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   type: string | null = null;
   index: string = '0';
   articles: Article[] = [];

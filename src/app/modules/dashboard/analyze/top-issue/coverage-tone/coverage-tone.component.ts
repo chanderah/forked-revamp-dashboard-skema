@@ -8,26 +8,15 @@ import { selectAnalyzeState } from '../../../../../core/store/analyze/analyze.se
 import { selectFilterState } from '../../../../../core/store/filter/filter.selectors';
 import { Observable, Subject, forkJoin } from 'rxjs';
 import { AnalyzeState } from '../../../../../core/store/analyze/analyze.reducer';
-import {
-  FilterState,
-  initialState,
-} from '../../../../../core/store/filter/filter.reducer';
+import { FilterState, initialState } from '../../../../../core/store/filter/filter.reducer';
 import { FilterRequestPayload } from '../../../../../core/models/request.model';
-import {
-  getToneByCategory,
-  getTones,
-} from '../../../../../core/store/analyze/analyze.actions';
+import { getToneByCategory, getTones } from '../../../../../core/store/analyze/analyze.actions';
 import { Tones } from '../../../../../core/models/tone.model';
 import moment from 'moment';
 import { ToneByCategory } from '../../../../../core/models/tone-by-category.model';
 import { getToneByMedia } from '../../../../../core/store/analyze/analyze.actions';
 import { ToneByMedia } from '../../../../../core/models/tone-by-media.model';
-import {
-  NEGATIVE_TONE,
-  NEUTRAL_TONE,
-  POSITIVE_TONE,
-  TONE_MAP,
-} from '../../../../../shared/utils/Constants';
+import { NEGATIVE_TONE, NEUTRAL_TONE, POSITIVE_TONE, TONE_MAP } from '../../../../../shared/utils/Constants';
 import { Router } from '@angular/router';
 import { ToneService } from '../../../../../core/services/tone.service';
 import { AnalyzeService } from '../../../../../core/services/analyze.service';
@@ -80,11 +69,7 @@ export class CoverageToneComponent {
   ngOnInit() {
     this.filter = this.filterService.subscribe((filter) => {
       this.isLoading = true;
-      forkJoin([
-        this.toneService.getTones(filter),
-        this.toneService.getToneByCategory(filter),
-        this.toneService.getToneByMedia(filter),
-      ])
+      forkJoin([this.toneService.getTones(filter), this.toneService.getToneByCategory(filter), this.toneService.getToneByMedia(filter)])
         .subscribe(([tones, toneByCategory, toneByMedia]) => {
           this.initCoveragePie(tones.data);
           this.initCoverageChart(tones.data);
@@ -273,12 +258,7 @@ export class CoverageToneComponent {
   };
 
   initCoverageChart = (tones: Tones) => {
-    const {
-      negativeValues,
-      neutralValues,
-      positiveValues,
-      labels: chartLabels,
-    } = this.getCoverageChartData(tones);
+    const { negativeValues, neutralValues, positiveValues, labels: chartLabels } = this.getCoverageChartData(tones);
 
     this.coverageChartData = {
       labels: chartLabels,
@@ -373,9 +353,7 @@ export class CoverageToneComponent {
 
     tones.chart_bar.forEach((chart) => {
       datasets[0].data.push(chart.doc_count);
-      datasets[0].percentages.push(
-        ((chart.doc_count / totalTones) * 100).toFixed(0)
-      );
+      datasets[0].percentages.push(((chart.doc_count / totalTones) * 100).toFixed(0));
     });
 
     return { labels, datasets, tones: toneValues };
@@ -394,9 +372,7 @@ export class CoverageToneComponent {
       });
     });
 
-    const labels = tones.chart_bar[0].tone_per_day.buckets.map((bucket) =>
-      moment(bucket.key_as_string).format('MM-DD-YYYY')
-    );
+    const labels = tones.chart_bar[0].tone_per_day.buckets.map((bucket) => moment(bucket.key_as_string).format('MM-DD-YYYY'));
     return { labels, negativeValues, positiveValues, neutralValues };
   };
 
@@ -408,8 +384,7 @@ export class CoverageToneComponent {
     let date = null;
 
     if (type === 'chart') {
-      const currentData =
-        this.coverageChartData.datasets[value.element.datasetIndex];
+      const currentData = this.coverageChartData.datasets[value.element.datasetIndex];
       tone = currentData.tone;
       date = currentData.date[value.element.index];
     } else if (type === 'pie_category') {
@@ -420,18 +395,15 @@ export class CoverageToneComponent {
       };
       tone = toneMap[value.element.index];
     } else if (type === 'media') {
-      const currentData =
-        this.toneByMediaChartData.datasets[value.element.datasetIndex];
+      const currentData = this.toneByMediaChartData.datasets[value.element.datasetIndex];
       const cMediaName = this.toneByMediaChartData.labels[value.element.index];
       const cMediaId = currentData.mediaIds[value.element.index];
       tone = currentData.tone;
       mediaName = cMediaName;
       mediaId = cMediaId;
     } else if (type === 'bar_category') {
-      const currentData =
-        this.toneByCategChartData.datasets[value.element.datasetIndex];
-      categoryName =
-        this.toneByCategChartData.labels[value.element.datasetIndex];
+      const currentData = this.toneByCategChartData.datasets[value.element.datasetIndex];
+      categoryName = this.toneByCategChartData.labels[value.element.datasetIndex];
       tone = currentData.tone;
     }
 

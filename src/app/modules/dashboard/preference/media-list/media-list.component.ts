@@ -10,12 +10,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { CommonModule } from '@angular/common';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DialogModule } from 'primeng/dialog';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormatAmountPipe } from '../../../../core/pipes/format-amount.pipe';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -54,7 +49,11 @@ import { TreeSelectModule } from 'primeng/treeselect';
   templateUrl: './media-list.component.html',
   styleUrl: './media-list.component.scss',
 })
-export class MediaListComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class MediaListComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   medias: Media[] = [];
   totalRecords!: number;
   loading: boolean = false;
@@ -110,8 +109,7 @@ export class MediaListComponent{ filter: any; ngOnDestroy(){this.filter?.unsubsc
   };
 
   confirmDeleteMedia = () => {
-    const { user_media_type_id, user_media_type_name_def } =
-      this.selectedMedia!;
+    const { user_media_type_id, user_media_type_name_def } = this.selectedMedia!;
     this.isDeleting = true;
     this.preferenceService
       .deleteMedia(user_media_type_id)
@@ -151,47 +149,34 @@ export class MediaListComponent{ filter: any; ngOnDestroy(){this.filter?.unsubsc
   };
 
   updateMedia = () => {
-    const selectedIds = this.selectedMediaGroups.reduce(
-      (mediaGroups, mediaGroup) => {
-        if (mediaGroup.isSelectAll || mediaGroup.isParent) return mediaGroups;
+    const selectedIds = this.selectedMediaGroups.reduce((mediaGroups, mediaGroup) => {
+      if (mediaGroup.isSelectAll || mediaGroup.isParent) return mediaGroups;
 
-        return [...mediaGroups, mediaGroup.media_id];
-      },
-      []
-    );
+      return [...mediaGroups, mediaGroup.media_id];
+    }, []);
 
-    const payload = this.mediaGroupsOptions[0].children.reduce(
-      (mediaGroups: any[], mediaGroup: any) => {
-        let ids: any[] = [];
-        mediaGroup.children.forEach((media: any) => {
-          const isChosen = selectedIds.includes(media.media_id);
-          ids.push({ media_id: `${media.media_id}`, chosen: isChosen });
-        });
-        return [...mediaGroups, ...ids];
-      },
-      []
-    );
+    const payload = this.mediaGroupsOptions[0].children.reduce((mediaGroups: any[], mediaGroup: any) => {
+      let ids: any[] = [];
+      mediaGroup.children.forEach((media: any) => {
+        const isChosen = selectedIds.includes(media.media_id);
+        ids.push({ media_id: `${media.media_id}`, chosen: isChosen });
+      });
+      return [...mediaGroups, ...ids];
+    }, []);
 
     const { media } = this.editedValues.controls;
-    this.preferenceService
-      .updateMedia(this.selectedMedia?.user_media_type_id!, media.value!)
-      .subscribe(() => {
-        this.preferenceService
-          .updateSelectedMediaGroups(
-            this.selectedMedia?.user_media_type_id!,
-            payload
-          )
-          .subscribe(() => {
-            this.fetchData();
-            this.modalUpdateOpen = false;
-            this.selectedMediaGroups = [];
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Update success',
-              detail: 'Media has been updated.',
-            });
-          });
+    this.preferenceService.updateMedia(this.selectedMedia?.user_media_type_id!, media.value!).subscribe(() => {
+      this.preferenceService.updateSelectedMediaGroups(this.selectedMedia?.user_media_type_id!, payload).subscribe(() => {
+        this.fetchData();
+        this.modalUpdateOpen = false;
+        this.selectedMediaGroups = [];
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Update success',
+          detail: 'Media has been updated.',
+        });
       });
+    });
   };
 
   getValue(event: Event): string {
@@ -204,9 +189,7 @@ export class MediaListComponent{ filter: any; ngOnDestroy(){this.filter?.unsubsc
 
   openEditModal = async (media: Media) => {
     this.selectedMedia = media;
-    const response = await this.preferenceService
-      .getMediaGroups(media.user_media_type_id)
-      .toPromise();
+    const response = await this.preferenceService.getMediaGroups(media.user_media_type_id).toPromise();
 
     const selectedGroup: any[] = [];
     const actualData =

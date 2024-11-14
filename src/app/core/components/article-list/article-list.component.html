@@ -1,42 +1,28 @@
 <div class="grid mb-4">
   <div class="col-3 no-underline" *ngFor="let article of articles">
     <div class="mb-1">
-      <a [routerLink]="['/dashboard/articles', article.article_id]" [queryParams]="{search: search}">
+      <a [routerLink]="['/dashboard/articles', article.article_id]" [queryParams]="{ search: search }">
         <img
           [src]="article.image_url"
           [alt]="article.title"
           class="h-10rem w-full"
           style="object-fit: cover"
-          imgFallback="https://placehold.co/600x400?text=No+Image+Available"
-        />
+          imgFallback="https://placehold.co/600x400?text=No+Image+Available" />
       </a>
     </div>
     <div>
-      <a
-        class="no-underline"
-        [routerLink]="['/dashboard/articles', article.article_id]"
-      >
-        <div
-          class="mb-1 font-semibold text-sm text-color white-space-nowrap text-overflow-ellipsis overflow-hidden"
-          style="width: 240px"
-        >
+      <a class="no-underline" [routerLink]="['/dashboard/articles', article.article_id]">
+        <div class="mb-1 font-semibold text-sm text-color white-space-nowrap text-overflow-ellipsis overflow-hidden" style="width: 240px">
           {{ article.title }}
         </div>
-        <div
-          class="mt-0 mb-2 text-xs text-color-secondary white-space-nowrap text-overflow-ellipsis overflow-hidden"
-          style="width: 240px"
-        >
+        <div class="mt-0 mb-2 text-xs text-color-secondary white-space-nowrap text-overflow-ellipsis overflow-hidden" style="width: 240px">
           {{ article.content }}
         </div>
       </a>
       <div class="flex justify-content-between align-items-center">
         <div class="flex gap-1 align-items-center">
           <div>
-            <p-avatar
-              [label]="article.journalist[0]"
-              pBadge
-              shape="circle"
-            ></p-avatar>
+            <p-avatar [label]="article.journalist[0]" pBadge shape="circle"></p-avatar>
           </div>
           <div>
             <div class="font-light" style="font-size: 0.6rem">
@@ -49,7 +35,7 @@
         </div>
         <div class="text-color-secondary mr-2" style="font-size: 0.6rem">
           <i class="pi pi-globe" style="font-size: 0.6rem"></i>
-          {{ article.datee.split(" ")[0] }}
+          {{ article.datee.split(' ')[0] }}
         </div>
       </div>
     </div>
@@ -63,8 +49,7 @@
   [totalRecords]="totalRecords"
   [templateLeft]="customLeftTemplate"
   [showFirstLastIcon]="false"
-  styleClass="p-0"
->
+  styleClass="p-0">
   <ng-template #customLeftTemplate let-state>
     <span class="text-sm text-color">Total Articles:</span>
     <span class="text-sm text-color font-semibold">

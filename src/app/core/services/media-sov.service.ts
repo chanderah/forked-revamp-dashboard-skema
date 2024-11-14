@@ -25,15 +25,10 @@ export class MediaSOVService {
     };
     // console.log('params', params)
 
-    return this.http.get<{ data: MediaSOV[] }>(
-      `${this.baseUrl}/v3/media-sov/media-list`,
-      { params }
-    );
+    return this.http.get<{ data: MediaSOV[] }>(`${this.baseUrl}/v3/media-sov/media-list`, { params });
   }
 
-  getLatestArticles(
-    filter: FilterRequestPayload
-  ): Observable<{ data: Article[] }> {
+  getLatestArticles(filter: FilterRequestPayload): Observable<{ data: Article[] }> {
     const params = {
       start_date: filter.start_date ? filter.start_date + ' 00:00:00' : '',
       end_date: filter.end_date ? filter.end_date + ' 23:59:59' : '',
@@ -45,10 +40,7 @@ export class MediaSOVService {
       tone: filter.tone ?? '',
     };
 
-    return this.http.get<{ data: Article[] }>(
-      `${this.baseUrl}/v3/media-sov/latest-articles`,
-      { params }
-    );
+    return this.http.get<{ data: Article[] }>(`${this.baseUrl}/v3/media-sov/latest-articles`, { params });
   }
 
   getMediaTones(filter: FilterRequestPayload): Observable<{ data: MediaTone }> {
@@ -61,9 +53,6 @@ export class MediaSOVService {
       category_id: filter.category_id ?? '',
     };
 
-    return this.http.get<{ data: MediaTone }>(
-      `${this.baseUrl}/v3/media-sov/media-tones`,
-      { params }
-    );
+    return this.http.get<{ data: MediaTone }>(`${this.baseUrl}/v3/media-sov/media-tones`, { params });
   }
 }

@@ -9,12 +9,7 @@ import { MessageService } from 'primeng/api';
 import { PaginatorModule } from 'primeng/paginator';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TabMenuModule } from 'primeng/tabmenu';
@@ -51,7 +46,11 @@ import moment from 'moment';
   templateUrl: './sub-category-list.component.html',
   styleUrl: './sub-category-list.component.scss',
 })
-export class SubCategoryListComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class SubCategoryListComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   categories: Category[] = [];
   totalRecords!: number;
   loading: boolean = false;
@@ -168,26 +167,17 @@ export class SubCategoryListComponent{ filter: any; ngOnDestroy(){this.filter?.u
   };
 
   deleteKeyword = (keyword: string) => {
-    this.preferenceService
-      .deleteCategoryKeyword(this.selectedCategory?.category_id!, keyword)
-      .subscribe(() => {
-        this.preferenceService
-          .getCategoryKeywords(this.selectedCategory?.category_id!)
-          .subscribe((response) => {
-            this.existingKeywords = response?.data ?? [];
-          });
+    this.preferenceService.deleteCategoryKeyword(this.selectedCategory?.category_id!, keyword).subscribe(() => {
+      this.preferenceService.getCategoryKeywords(this.selectedCategory?.category_id!).subscribe((response) => {
+        this.existingKeywords = response?.data ?? [];
       });
+    });
   };
 
   updateCategory = async () => {
-    const { category, expired, startDate, keyword } =
-      this.editedValues.controls;
+    const { category, expired, startDate, keyword } = this.editedValues.controls;
 
-    const promises = [
-      this.preferenceService
-        .updateSubCategory(this.selectedCategory?.category_id!, category.value!)
-        .toPromise(),
-    ];
+    const promises = [this.preferenceService.updateSubCategory(this.selectedCategory?.category_id!, category.value!).toPromise()];
 
     if (keyword.value && startDate.value && expired.value) {
       const payload: any = {
@@ -197,9 +187,7 @@ export class SubCategoryListComponent{ filter: any; ngOnDestroy(){this.filter?.u
         end_date: moment(expired.value).format('YYYY-MM-DD'),
       };
 
-      promises.push(
-        this.preferenceService.createCategoryKeyword(payload).toPromise()
-      );
+      promises.push(this.preferenceService.createCategoryKeyword(payload).toPromise());
     }
 
     await Promise.allSettled(promises);
@@ -236,15 +224,13 @@ export class SubCategoryListComponent{ filter: any; ngOnDestroy(){this.filter?.u
     const start = moment(startDate.value).format('YYYY-MM-DD');
     const end = moment(endDate.value).format('YYYY-MM-DD');
 
-    this.preferenceService
-      .restream([category.value!], start, end)
-      .subscribe(() => {
-        this.modalRestreamOpen = false;
-        this.messageService.add({
-          severity: 'success',
-          detail: 'Restream success.',
-        });
+    this.preferenceService.restream([category.value!], start, end).subscribe(() => {
+      this.modalRestreamOpen = false;
+      this.messageService.add({
+        severity: 'success',
+        detail: 'Restream success.',
       });
+    });
   };
 
   getValue(event: Event): string {
@@ -256,18 +242,16 @@ export class SubCategoryListComponent{ filter: any; ngOnDestroy(){this.filter?.u
   }
 
   fetchKeyword = (category: any) => {
-    this.preferenceService
-      .getCategoryKeywords(category)
-      .subscribe((response) => {
-        this.editedValues.setValue({
-          category: category ?? '',
-          keyword: '',
-          startDate: '',
-          expired: '',
-        });
-        this.existingKeywords = response?.data ?? [];
-        this.modalUpdateOpen = true;
+    this.preferenceService.getCategoryKeywords(category).subscribe((response) => {
+      this.editedValues.setValue({
+        category: category ?? '',
+        keyword: '',
+        startDate: '',
+        expired: '',
       });
+      this.existingKeywords = response?.data ?? [];
+      this.modalUpdateOpen = true;
+    });
   };
 
   openEditModal = async (category: Category) => {

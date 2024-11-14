@@ -2,10 +2,7 @@
   <div class="flex align-items-center justify-content-between px-4">
     <div class="flex-grow-1 text-center ml-8 mb-3 pt-4">
       <div class="text-xl font-semibold">Map Analysis</div>
-      <div class="text-sm">
-        To see a list of distributors for your area, please click on your
-        location on the map
-      </div>
+      <div class="text-sm">To see a list of distributors for your area, please click on your location on the map</div>
     </div>
 
     <div class="card flex justify-content-center">
@@ -18,8 +15,7 @@
         dataKey="value"
         optionLabel="name"
         optionValue="value"
-        placeholder="Select filter"
-      ></p-dropdown>
+        placeholder="Select filter"></p-dropdown>
     </div>
   </div>
 
@@ -30,17 +26,14 @@
         style="background-color: var(--bg-color)"
         leaflet
         (leafletMapReady)="onMapReady($event)"
-        [leafletOptions]="options"
-      ></div>
+        [leafletOptions]="options"></div>
     </div>
   </spinner>
 
   <ng-container *ngIf="selectedLoc">
     <spinner [spinning]="this.isLoadingArticles">
       <div class="bg-primary py-5 px-6 mt-4">
-        <div class="text-center font-semibold text-xl pb-4">
-          Article of {{ selectedLoc }}
-        </div>
+        <div class="text-center font-semibold text-xl pb-4">Article of {{ selectedLoc }}</div>
 
         <p-divider></p-divider>
 
@@ -48,14 +41,9 @@
           <div
             class="col-3 flex gap-2 text-sm cursor-pointer"
             *ngFor="let article of articles"
-            (click)="navigateInsideZone(article.article_id)"
-          >
+            (click)="navigateInsideZone(article.article_id)">
             <div>
-              <icon-newspaper
-                fill="white"
-                [width]="18"
-                [height]="18"
-              ></icon-newspaper>
+              <icon-newspaper fill="white" [width]="18" [height]="18"></icon-newspaper>
             </div>
             <div>
               <div>{{ article.datee }}</div>

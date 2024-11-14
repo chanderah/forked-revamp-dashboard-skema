@@ -19,17 +19,15 @@ export interface ActionButtonProps {
 @Component({
   selector: 'chart-card',
   standalone: true,
-  imports: [
-    ButtonModule,
-    CardModule,
-    CommonModule,
-    ToggleButtonModule,
-    FormsModule,
-  ],
+  imports: [ButtonModule, CardModule, CommonModule, ToggleButtonModule, FormsModule],
   templateUrl: './chart-card.component.html',
   styleUrl: './chart-card.component.scss',
 })
-export class ChartCardComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class ChartCardComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   @Input() title!: string;
   @Input() actionButton: ActionButtonProps | undefined;
 }

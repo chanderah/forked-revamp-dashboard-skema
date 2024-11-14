@@ -16,19 +16,15 @@ import { setMedia } from '../../../../core/store/media-sov/media-sov.actions';
 @Component({
   selector: 'app-media-name',
   standalone: true,
-  imports: [
-    IconMicComponent,
-    IconInfoComponent,
-    ScrollerModule,
-    CommonModule,
-    ImgFallbackDirective,
-    SpinnerComponent,
-    CommonModule,
-  ],
+  imports: [IconMicComponent, IconInfoComponent, ScrollerModule, CommonModule, ImgFallbackDirective, SpinnerComponent, CommonModule],
   templateUrl: './media-name.component.html',
   styleUrl: './media-name.component.scss',
 })
-export class MediaNameComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class MediaNameComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   medias: MediaSOV[] = [];
   isLoading: boolean = false;
   selectedMedia: MediaSOV | null = null;
@@ -75,10 +71,7 @@ export class MediaNameComponent{ filter: any; ngOnDestroy(){this.filter?.unsubsc
   }
 
   onLazyLoad(event: any) {
-    const h =
-      event.target.scrollHeight -
-      event.target.scrollTop -
-      event.target.clientHeight;
+    const h = event.target.scrollHeight - event.target.scrollTop - event.target.clientHeight;
 
     if (h === 0 && this.medias.length > 0) {
       if (this.medias.length >= this.total) return;

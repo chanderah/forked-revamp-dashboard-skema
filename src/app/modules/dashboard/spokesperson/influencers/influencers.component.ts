@@ -5,10 +5,7 @@ import { AppState } from '../../../../core/store';
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import {
-  FilterState,
-  initialState,
-} from '../../../../core/store/filter/filter.reducer';
+import { FilterState, initialState } from '../../../../core/store/filter/filter.reducer';
 import { SpokespersonState } from '../../../../core/store/spokesperson/spokesperson.reducer';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { InfluencerCount } from '../../../../core/models/influencer.model';
@@ -24,18 +21,15 @@ import { setInfluencer } from '../../../../core/store/spokesperson/spokesperson.
 @Component({
   selector: 'app-influencers',
   standalone: true,
-  imports: [
-    IconMicComponent,
-    IconInfoComponent,
-    ScrollerModule,
-    CommonModule,
-    ImgFallbackDirective,
-    SpinnerComponent,
-  ],
+  imports: [IconMicComponent, IconInfoComponent, ScrollerModule, CommonModule, ImgFallbackDirective, SpinnerComponent],
   templateUrl: './influencers.component.html',
   styleUrl: './influencers.component.scss',
 })
-export class InfluencersComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class InfluencersComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   spokespersonState: Observable<SpokespersonState>;
   influencerCount: InfluencerCount[] = [];
   isLoading: boolean = false;
@@ -86,10 +80,7 @@ export class InfluencersComponent{ filter: any; ngOnDestroy(){this.filter?.unsub
   }
 
   onLazyLoad(event: any) {
-    const h =
-      event.target.scrollHeight -
-      event.target.scrollTop -
-      event.target.clientHeight;
+    const h = event.target.scrollHeight - event.target.scrollTop - event.target.clientHeight;
 
     if (h === 0 && this.influencerCount.length > 0) {
       if (this.influencerCount.length >= this.total) return;

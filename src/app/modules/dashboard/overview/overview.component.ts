@@ -9,15 +9,13 @@ import { HeadlineNewsComponent } from './headline-news/headline-news.component';
 @Component({
   selector: 'app-overview',
   standalone: true,
-  imports: [
-    OverviewTilesComponent,
-    TopCityComponent,
-    TopArticleComponent,
-    TopMediaComponent,
-    DividerModule,
-    HeadlineNewsComponent,
-  ],
+  imports: [OverviewTilesComponent, TopCityComponent, TopArticleComponent, TopMediaComponent, DividerModule, HeadlineNewsComponent],
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.scss',
 })
-export class OverviewComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}}
+export class OverviewComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
+}

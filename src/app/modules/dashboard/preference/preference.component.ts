@@ -17,9 +17,14 @@ import { FileExportComponent } from './file-export/file-export.component';
     SubCategoryListComponent,
     SpokepersonAliasComponent,
     StopwordComponent,
-    FileExportComponent
+    FileExportComponent,
   ],
   templateUrl: './preference.component.html',
   styleUrl: './preference.component.scss',
 })
-export class PreferenceComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}}
+export class PreferenceComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
+}

@@ -1,8 +1,6 @@
 <section>
   <div class="mb-4">
-    <div class="text-xl font-semibold" appTitleCase>
-      Article of {{ mediaName ?? topic }}
-    </div>
+    <div class="text-xl font-semibold" appTitleCase>Article of {{ mediaName ?? topic }}</div>
   </div>
   <spinner [spinning]="isLoading">
     <article-list
@@ -10,7 +8,6 @@
       [onPageChange]="onPageChange"
       [first]="first"
       [rows]="rows"
-      [totalRecords]="totalRecords"
-    ></article-list>
+      [totalRecords]="totalRecords"></article-list>
   </spinner>
 </section>

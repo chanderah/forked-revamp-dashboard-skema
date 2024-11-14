@@ -17,12 +17,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { CommonModule } from '@angular/common';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DialogModule } from 'primeng/dialog';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormatAmountPipe } from '../../../../core/pipes/format-amount.pipe';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -61,7 +56,11 @@ import { Category } from '../../../../core/models/category.model';
   templateUrl: './category-list.component.html',
   styleUrl: './category-list.component.scss',
 })
-export class CategoryListComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class CategoryListComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   categories: Category[] = [];
   totalRecords!: number;
   loading: boolean = false;
@@ -160,48 +159,34 @@ export class CategoryListComponent{ filter: any; ngOnDestroy(){this.filter?.unsu
   };
 
   updateCategory = () => {
-    const selectedIds = this.selectedSubCategories.reduce(
-      (subCategories, subCategory) => {
-        if (subCategory.isSelectAll || subCategory.isParent)
-          return subCategories;
-        return [...subCategories, subCategory.data];
-      },
-      []
-    );
+    const selectedIds = this.selectedSubCategories.reduce((subCategories, subCategory) => {
+      if (subCategory.isSelectAll || subCategory.isParent) return subCategories;
+      return [...subCategories, subCategory.data];
+    }, []);
 
-    const payload = this.subCategoryOptions[0].children.reduce(
-      (subCategories: any[], subCategory: any) => {
-        let ids: any[] = [];
-        const isChosen = selectedIds.includes(subCategory.data);
-        ids.push({
-          category_id: `${subCategory.data}`,
-          chosen: isChosen,
-        });
-        return [...subCategories, ...ids];
-      },
-      []
-    );
+    const payload = this.subCategoryOptions[0].children.reduce((subCategories: any[], subCategory: any) => {
+      let ids: any[] = [];
+      const isChosen = selectedIds.includes(subCategory.data);
+      ids.push({
+        category_id: `${subCategory.data}`,
+        chosen: isChosen,
+      });
+      return [...subCategories, ...ids];
+    }, []);
 
     const { category } = this.editedValues.controls;
-    this.preferenceService
-      .updateCategoryName(this.selectedCategory?.category_set!, category.value!)
-      .subscribe(() => {
-        this.preferenceService
-          .updateSubCategoriesChosen(
-            this.selectedCategory?.category_set!,
-            payload
-          )
-          .subscribe(() => {
-            this.fetchData();
-            this.modalUpdateOpen = false;
-            this.selectedSubCategories = [];
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Update success',
-              detail: 'Category has been updated.',
-            });
-          });
+    this.preferenceService.updateCategoryName(this.selectedCategory?.category_set!, category.value!).subscribe(() => {
+      this.preferenceService.updateSubCategoriesChosen(this.selectedCategory?.category_set!, payload).subscribe(() => {
+        this.fetchData();
+        this.modalUpdateOpen = false;
+        this.selectedSubCategories = [];
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Update success',
+          detail: 'Category has been updated.',
+        });
       });
+    });
   };
 
   getValue(event: Event): string {
@@ -214,9 +199,7 @@ export class CategoryListComponent{ filter: any; ngOnDestroy(){this.filter?.unsu
 
   openEditModal = async (category: Category) => {
     this.selectedCategory = category;
-    const response = await this.preferenceService
-      .getSubCategoriesChosen(category.category_set)
-      .toPromise();
+    const response = await this.preferenceService.getSubCategoriesChosen(category.category_set).toPromise();
 
     const selected: any[] = [];
     const actualData =

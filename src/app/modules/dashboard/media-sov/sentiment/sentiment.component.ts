@@ -11,11 +11,7 @@ import { FilterService } from '../../../../core/services/filter.service';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 import { MediaSOVState } from '../../../../core/store/media-sov/media-sov.reducer';
 import { selectMediaSOVState } from '../../../../core/store/media-sov/media-sov.selectors';
-import {
-  NEGATIVE_TONE,
-  NEUTRAL_TONE,
-  POSITIVE_TONE,
-} from '../../../../shared/utils/Constants';
+import { NEGATIVE_TONE, NEUTRAL_TONE, POSITIVE_TONE } from '../../../../shared/utils/Constants';
 import { setTone } from '../../../../core/store/media-sov/media-sov.actions';
 import _ from 'lodash';
 
@@ -26,15 +22,19 @@ import _ from 'lodash';
   templateUrl: './sentiment.component.html',
   styleUrl: './sentiment.component.scss',
 })
-export class SentimentComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class SentimentComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   isLoading: boolean = false;
   chartData: any;
   options: any;
   plugins = [htmlLegendPlugin];
   mediaSOVState: Observable<MediaSOVState>;
 
-  @Input() media: any
-  @Input() setTone: any
+  @Input() media: any;
+  @Input() setTone: any;
 
   constructor(
     private mediaSOVService: MediaSOVService,
@@ -71,10 +71,7 @@ export class SentimentComponent{ filter: any; ngOnDestroy(){this.filter?.unsubsc
 
   ngOnChanges(changes: any) {
     const { media } = changes;
-    if (
-      !media.firstChange &&
-      !_.isEqual(media.currentValue, media.previousValue)
-    ) {
+    if (!media.firstChange && !_.isEqual(media.currentValue, media.previousValue)) {
       this.fetchData({
         ...this.filterService.filter,
         media_id: media.currentValue?.media_id,
@@ -84,8 +81,7 @@ export class SentimentComponent{ filter: any; ngOnDestroy(){this.filter?.unsubsc
 
   getChartData = (mediaTone: MediaTone) => {
     const totalTones = mediaTone.total_articles;
-    const getPercentage = (toneVal: number) =>
-      ((toneVal / totalTones) * 100).toFixed(0);
+    const getPercentage = (toneVal: number) => ((toneVal / totalTones) * 100).toFixed(0);
 
     const documentStyle = getComputedStyle(document.documentElement);
     const positiveColor = documentStyle.getPropertyValue('--positive-color');
@@ -98,17 +94,9 @@ export class SentimentComponent{ filter: any; ngOnDestroy(){this.filter?.unsubsc
 
     const pieDatasets: any = [
       {
-        data: [
-          mediaTone.tone_articles.positive,
-          mediaTone.tone_articles.negative,
-          mediaTone.tone_articles.neutral,
-        ],
+        data: [mediaTone.tone_articles.positive, mediaTone.tone_articles.negative, mediaTone.tone_articles.neutral],
         tones: [POSITIVE_TONE, NEGATIVE_TONE, NEUTRAL_TONE],
-        percentages: [
-          getPercentage(positive),
-          getPercentage(negative),
-          getPercentage(neutral),
-        ],
+        percentages: [getPercentage(positive), getPercentage(negative), getPercentage(neutral)],
         backgroundColor: [positiveColor, negativeColor, 'gray'],
       },
     ];
@@ -128,7 +116,7 @@ export class SentimentComponent{ filter: any; ngOnDestroy(){this.filter?.unsubsc
     const currentData = this.chartData.datasets[value.element.datasetIndex];
     const tone = currentData.tones[value.element.index];
     // this.store.dispatch(setTone({ tone }));
-    this.setTone(tone)
+    this.setTone(tone);
   };
 
   initChartOpts = () => {

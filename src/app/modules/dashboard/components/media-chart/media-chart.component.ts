@@ -12,7 +12,11 @@ import { ChartCardComponent } from '../../../../core/components/chart-card/chart
   templateUrl: './media-chart.component.html',
   styleUrl: './media-chart.component.scss',
 })
-export class MediaChartComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class MediaChartComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   @Input() data!: any;
   @Input() title!: string;
   @Input() onSelectTone!: (media_id: number, media_name: string, tone: number) => void;
@@ -51,9 +55,9 @@ export class MediaChartComponent{ filter: any; ngOnDestroy(){this.filter?.unsubs
   }
 
   onDataSelect = (value: any) => {
-    const mediaId = this.data.media_id
-    const mediaName = this.data.media_name
-    const tone = this.data.toneValues[value.element.index]
-    this.onSelectTone(mediaId, mediaName, tone)
+    const mediaId = this.data.media_id;
+    const mediaName = this.data.media_name;
+    const tone = this.data.toneValues[value.element.index];
+    this.onSelectTone(mediaId, mediaName, tone);
   };
 }

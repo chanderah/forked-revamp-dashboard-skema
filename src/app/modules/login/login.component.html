@@ -9,21 +9,12 @@
       <h3>Conventional Media Dashboard</h3>
       <h6>News - Information - Insight</h6>
     </div>
-    <form
-      [formGroup]="loginForm"
-      (submit)="login()"
-      class="mt-6 flex flex-column gap-3"
-    >
+    <form [formGroup]="loginForm" (submit)="login()" class="mt-6 flex flex-column gap-3">
       <div class="flex flex-column gap-2">
         <label for="username" class="font-bold">Username</label>
         <span class="p-input-icon-right">
           <i class="pi pi-user"></i>
-          <input
-            pInputText
-            formControlName="username"
-            id="username"
-            class="w-full"
-          />
+          <input pInputText formControlName="username" id="username" class="w-full" />
         </span>
       </div>
       <div class="flex flex-column gap-2">
@@ -34,8 +25,7 @@
           [toggleMask]="true"
           [feedback]="false"
           styleClass="w-full"
-          inputStyleClass="w-full"
-        />
+          inputStyleClass="w-full" />
       </div>
       <div class="flex justify-content-between align-items-center">
         <div class="flex align-items-center gap-1">
@@ -44,16 +34,8 @@
         </div>
         <p>Forgot Password?</p>
       </div>
-      <p-button
-        label="Sign in"
-        styleClass="submit-btn"
-        type="submit"
-        [disabled]="!loginForm.valid"
-        [loading]="isLoading"
-      ></p-button>
+      <p-button label="Sign in" styleClass="submit-btn" type="submit" [disabled]="!loginForm.valid" [loading]="isLoading"></p-button>
     </form>
-    <ng-template pTemplate="footer"
-      ><p class="text-center">copyright © conventional media</p></ng-template
-    >
+    <ng-template pTemplate="footer"><p class="text-center">copyright © conventional media</p></ng-template>
   </p-card>
 </div>

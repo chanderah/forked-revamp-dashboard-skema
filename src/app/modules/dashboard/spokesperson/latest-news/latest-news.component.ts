@@ -7,10 +7,7 @@ import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { AppState } from '../../../../core/store';
-import {
-  FilterState,
-  initialState,
-} from '../../../../core/store/filter/filter.reducer';
+import { FilterState, initialState } from '../../../../core/store/filter/filter.reducer';
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { getLatestNews } from '../../../../core/store/spokesperson/spokesperson.actions';
 import { SpokespersonState } from '../../../../core/store/spokesperson/spokesperson.reducer';
@@ -27,14 +24,7 @@ import _ from 'lodash';
 @Component({
   selector: 'app-latest-news',
   standalone: true,
-  imports: [
-    IconNewspaperComponent,
-    IconInfoComponent,
-    CommonModule,
-    ImgFallbackDirective,
-    SpinnerComponent,
-    RouterLink,
-  ],
+  imports: [IconNewspaperComponent, IconInfoComponent, CommonModule, ImgFallbackDirective, SpinnerComponent, RouterLink],
   templateUrl: './latest-news.component.html',
   styleUrl: './latest-news.component.scss',
 })
@@ -76,10 +66,7 @@ export class LatestNewsComponent {
 
   ngOnChanges(changes: any) {
     const { influencer } = changes;
-    if (
-      !influencer.firstChange &&
-      !_.isEqual(influencer.currentValue, influencer.previousValue)
-    ) {
+    if (!influencer.firstChange && !_.isEqual(influencer.currentValue, influencer.previousValue)) {
       this.fetchData({
         ...this.filterService.filter,
         spokeperson_name: influencer?.currentValue ?? undefined,

@@ -11,14 +11,18 @@ import { CommonModule } from '@angular/common';
   templateUrl: './toggle-darkmode.component.html',
   styleUrl: './toggle-darkmode.component.scss',
 })
-export class ToggleDarkmodeComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class ToggleDarkmodeComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   checked: boolean = false;
 
   constructor() {
     const data = window.localStorage.getItem('useDarkMode');
     if (data) {
       const checked = JSON.parse(data);
-      this.checked = checked
+      this.checked = checked;
       if (checked) window.document.body.classList.add('dark');
       else window.document.body.classList.remove('dark');
     }

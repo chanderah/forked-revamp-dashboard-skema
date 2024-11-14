@@ -1,7 +1,7 @@
 export interface Tone {
-  positive?: number;
-  negative?: number;
-  neutral?: number;
+  'positive'?: number;
+  'negative'?: number;
+  'neutral'?: number;
   'media favorability index'?: number;
 }
 

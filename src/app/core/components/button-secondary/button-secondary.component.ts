@@ -8,7 +8,11 @@ import { ButtonModule } from 'primeng/button';
   templateUrl: './button-secondary.component.html',
   styleUrl: './button-secondary.component.scss',
 })
-export class ButtonSecondaryComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class ButtonSecondaryComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   @Input() label: string = '';
   @Input() icon: string | undefined;
 }

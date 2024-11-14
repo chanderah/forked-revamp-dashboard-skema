@@ -11,9 +11,7 @@ export class DashboardService {
   constructor(private http: HttpClient) {}
 
   getLogo(): Observable<any> {
-    const user = getUserFromLocalStorage()
-    return this.http.get<any>(
-      `${this.baseUrl}/media/${user?.comp_icon}`
-    );
+    const user = getUserFromLocalStorage();
+    return this.http.get<any>(`${this.baseUrl}/media/${user?.comp_icon}`);
   }
 }

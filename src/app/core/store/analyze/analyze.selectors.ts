@@ -1,5 +1,4 @@
 import { createFeatureSelector } from '@ngrx/store';
 import { AnalyzeState } from './analyze.reducer';
 
-export const selectAnalyzeState =
-  createFeatureSelector<AnalyzeState>('analyze');
+export const selectAnalyzeState = createFeatureSelector<AnalyzeState>('analyze');

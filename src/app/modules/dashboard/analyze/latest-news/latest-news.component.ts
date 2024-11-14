@@ -10,10 +10,7 @@ import { AppState } from '../../../../core/store';
 import { Store } from '@ngrx/store';
 import { AnalyzeState } from '../../../../core/store/analyze/analyze.reducer';
 import { Observable, Subject } from 'rxjs';
-import {
-  FilterState,
-  initialState,
-} from '../../../../core/store/filter/filter.reducer';
+import { FilterState, initialState } from '../../../../core/store/filter/filter.reducer';
 import { getHighlights } from '../../../../core/store/analyze/analyze.actions';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { Article } from '../../../../core/models/article.model';
@@ -44,9 +41,7 @@ export class LatestNewsComponent {
   analyzeState: Observable<AnalyzeState>;
   articles: Article[] = [];
   isLoading: boolean = false;
-  responsiveOptions:
-    | { breakpoint: string; numVisible: number; numScroll: number }[]
-    | undefined;
+  responsiveOptions: { breakpoint: string; numVisible: number; numScroll: number }[] | undefined;
 
   constructor(
     private store: Store<AppState>,
@@ -75,7 +70,7 @@ export class LatestNewsComponent {
   }
 
   ngOnDestroy() {
-    this.filter.unsubscribe()
+    this.filter.unsubscribe();
   }
 
   ngOnInit() {

@@ -1,9 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { IconNewspaperComponent } from '../../../../core/components/icons/newspaper/newspaper.component';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import Chart from 'chart.js/auto';
@@ -25,10 +20,7 @@ import { Observable } from 'rxjs';
 import { AppState } from '../../../../core/store';
 import { AnalyzeState } from '../../../../core/store/analyze/analyze.reducer';
 import { selectAnalyzeState } from '../../../../core/store/analyze/analyze.selectors';
-import {
-  FilterState,
-  initialState,
-} from '../../../../core/store/filter/filter.reducer';
+import { FilterState, initialState } from '../../../../core/store/filter/filter.reducer';
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { getTopIssue } from '../../../../core/store/analyze/analyze.actions';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
@@ -77,8 +69,7 @@ export class TopIssueComponent {
     this.filter?.unsubscribe?.();
   }
   // @ts-ignore
-  @ViewChild('chartArea') private chartArea: ElementRef<HTMLCanvasElement> =
-    null;
+  @ViewChild('chartArea') private chartArea: ElementRef<HTMLCanvasElement> = null;
 
   tabItems: MenuItem[] | undefined;
   activeTab: MenuItem | undefined;
@@ -144,8 +135,7 @@ export class TopIssueComponent {
     if (ctx.type !== 'data') return 'transparent';
 
     const dataIndex = ctx.dataIndex;
-    const maxDataIndex =
-      ctx.chart.data.datasets[ctx.datasetIndex].data.length - 1;
+    const maxDataIndex = ctx.chart.data.datasets[ctx.datasetIndex].data.length - 1;
 
     const isDarkModeStorage = window.localStorage.getItem('useDarkMode');
     let isDarkMode = false;
@@ -177,17 +167,13 @@ export class TopIssueComponent {
           const datasetIndex = elements[0].datasetIndex;
           const index = elements[0].index;
           const value = this.chart.data.datasets[datasetIndex].data[index];
-          this.router.navigateByUrl(
-            `/dashboard/articles-by-media?topic=${value._data.key}`
-          );
+          this.router.navigateByUrl(`/dashboard/articles-by-media?topic=${value._data.key}`);
         },
       },
     });
     this.chart = chart;
 
-    this.store.dispatch(
-      getTopIssue({ filter: initialState as FilterRequestPayload })
-    );
+    this.store.dispatch(getTopIssue({ filter: initialState as FilterRequestPayload }));
 
     const isDarkModeStorage = window.localStorage.getItem('useDarkMode');
     let isDarkMode = false;
@@ -200,12 +186,10 @@ export class TopIssueComponent {
       this.isLoading = topIssue.isLoading;
       this.isDataExist = Object.keys(topIssue.data ?? {}).length > 0;
 
-      const dataArray = Object.entries(topIssue.data ?? {}).map(
-        ([key, value]) => ({
-          key,
-          value,
-        })
-      );
+      const dataArray = Object.entries(topIssue.data ?? {}).map(([key, value]) => ({
+        key,
+        value,
+      }));
       dataArray.sort((a, b) => (b?.value ?? 0) - (a?.value ?? 0));
 
       chart.data = {
@@ -274,9 +258,7 @@ export class TopIssueComponent {
     const images = [];
 
     for (const chart of charts) {
-      const captureElement: HTMLElement = document.getElementById(
-        chart.key
-      ) as HTMLElement;
+      const captureElement: HTMLElement = document.getElementById(chart.key) as HTMLElement;
 
       const image = await this.getImage(captureElement);
       images.push({ label: chart.label, image });
@@ -299,15 +281,12 @@ export class TopIssueComponent {
 
   onChangeColumn(event: any) {
     const { value } = event;
-    if (value)
-      this.isSelectAllColumns = value.length === this.columnsOptions.length;
+    if (value) this.isSelectAllColumns = value.length === this.columnsOptions.length;
   }
 
   onChangeCategory(event: any) {
     const { value } = event;
-    if (value)
-      this.isSelectAllCategories =
-        value.length === this.categoriesOptions.length;
+    if (value) this.isSelectAllCategories = value.length === this.categoriesOptions.length;
   }
 
   onSelectAllColumnsChange = (event: any) => {
@@ -347,12 +326,9 @@ export class TopIssueComponent {
   downloadExcel = () => {
     this.isDownloadingExcel = true;
     const columns = this.selectedColumns.map(({ value }) => value);
-    const categories = this.selectedCategories
-      .map(({ value }) => value)
-      .join(',');
+    const categories = this.selectedCategories.map(({ value }) => value).join(',');
 
-    const { category_id, date_type, end_date, start_date, user_media_type_id } =
-      this.filterService.filter;
+    const { category_id, date_type, end_date, start_date, user_media_type_id } = this.filterService.filter;
     const payload = {
       columns,
       category_set: categories,

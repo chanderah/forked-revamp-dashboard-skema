@@ -6,11 +6,7 @@
   </div>
   <spinner [spinning]="isAllCountLoading">
     <div class="mb-4">
-      <p-table
-        [value]="cities"
-        [scrollable]="true"
-        scrollHeight="300px"
-      >
+      <p-table [value]="cities" [scrollable]="true" scrollHeight="300px">
         <ng-template pTemplate="header">
           <tr>
             <th class="font-semibold"><p>City</p></th>
@@ -20,11 +16,7 @@
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-city>
-          <tr
-            class="cursor-pointer"
-            routerLink="/dashboard/map-articles"
-            [queryParams]="{ location: city.key }"
-          >
+          <tr class="cursor-pointer" routerLink="/dashboard/map-articles" [queryParams]="{ location: city.key }">
             <td>
               <p>{{ city.key }}</p>
             </td>
@@ -37,10 +29,7 @@
     </div>
   </spinner>
   <spinner [spinning]="isWordCloudLoading">
-    <div
-      style="background-color: var(--card-color)"
-      class="border-1 border-200"
-    >
+    <div style="background-color: var(--card-color)" class="border-1 border-200">
       <angular-d3-cloud
         [data]="wordCloud"
         [width]="520"
@@ -48,8 +37,7 @@
         font="serif"
         [rotate]="0"
         [autoFill]="true"
-        [fontSizeMapper]="wordCloudFontSizeMapper"
-      ></angular-d3-cloud>
+        [fontSizeMapper]="wordCloudFontSizeMapper"></angular-d3-cloud>
     </div>
   </spinner>
 </section>

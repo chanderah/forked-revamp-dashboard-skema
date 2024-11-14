@@ -8,16 +8,10 @@ import { Observable } from 'rxjs';
 import { AppState } from '../../../../core/store';
 import { AnalyzeState } from '../../../../core/store/analyze/analyze.reducer';
 import { selectAnalyzeState } from '../../../../core/store/analyze/analyze.selectors';
-import {
-  FilterState,
-  initialState,
-} from '../../../../core/store/filter/filter.reducer';
+import { FilterState, initialState } from '../../../../core/store/filter/filter.reducer';
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
-import {
-  getArticlesByTone,
-  getTones,
-} from '../../../../core/store/analyze/analyze.actions';
+import { getArticlesByTone, getTones } from '../../../../core/store/analyze/analyze.actions';
 import { ChartBar, Tones } from '../../../../core/models/tone.model';
 import moment from 'moment';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
@@ -28,13 +22,7 @@ import { ToneService } from '../../../../core/services/tone.service';
 @Component({
   selector: 'app-media-sentiment',
   standalone: true,
-  imports: [
-    CardModule,
-    IconInfoComponent,
-    IconRadioComponent,
-    ChartModule,
-    SpinnerComponent,
-  ],
+  imports: [CardModule, IconInfoComponent, IconRadioComponent, ChartModule, SpinnerComponent],
   templateUrl: './media-sentiment.component.html',
   styleUrl: './media-sentiment.component.scss',
 })
@@ -75,8 +63,7 @@ export class MediaSentimentComponent {
     const positiveColor = documentStyle.getPropertyValue('--positive-color');
     const neutralColor = documentStyle.getPropertyValue('--neutral-color');
 
-    const { labels, negativeValues, neutralValues, positiveValues, dates } =
-      this.getChartData(tones.chart_bar ?? []);
+    const { labels, negativeValues, neutralValues, positiveValues, dates } = this.getChartData(tones.chart_bar ?? []);
 
     this.chartData = {
       labels,
@@ -113,14 +100,10 @@ export class MediaSentimentComponent {
   initChartOpts = () => {
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
-    const textColorSecondary = documentStyle.getPropertyValue(
-      '--text-color-secondary'
-    );
+    const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
     const isDarkModeStorage = window.localStorage.getItem('useDarkMode');
-    const isDarkMode = isDarkModeStorage
-      ? JSON.parse(isDarkModeStorage)
-      : false;
+    const isDarkMode = isDarkModeStorage ? JSON.parse(isDarkModeStorage) : false;
 
     this.options = {
       maintainAspectRatio: false,

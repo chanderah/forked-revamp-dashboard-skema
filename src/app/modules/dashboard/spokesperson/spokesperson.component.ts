@@ -7,16 +7,15 @@ import { MediaShareComponent } from './media-share/media-share.component';
 @Component({
   selector: 'app-spokesperson',
   standalone: true,
-  imports: [
-    InfluencersComponent,
-    LatestNewsComponent,
-    StatementsComponent,
-    MediaShareComponent,
-  ],
+  imports: [InfluencersComponent, LatestNewsComponent, StatementsComponent, MediaShareComponent],
   templateUrl: './spokesperson.component.html',
   styleUrl: './spokesperson.component.scss',
 })
-export class SpokespersonComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class SpokespersonComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   influencer: any = null;
   media: any = null;
 

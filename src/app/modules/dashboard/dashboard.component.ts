@@ -1,13 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MenubarModule } from 'primeng/menubar';
 import { TabMenuModule } from 'primeng/tabmenu';
-import {
-  NavigationEnd,
-  Router,
-  RouterLink,
-  RouterModule,
-  RouterOutlet,
-} from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterModule, RouterOutlet } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { AvatarModule } from 'primeng/avatar';
@@ -25,10 +19,7 @@ import { IconNotesComponent } from '../../core/components/icons/notes/notes.comp
 import { IconPeopleComponent } from '../../core/components/icons/people/people.component';
 import { IconPreferenceComponent } from '../../core/components/icons/preference/preference.component';
 import { User } from '../../core/models/user.model';
-import {
-  USER_KEY,
-  getUserFromLocalStorage,
-} from '../../shared/utils/AuthUtils';
+import { USER_KEY, getUserFromLocalStorage } from '../../shared/utils/AuthUtils';
 import { ToggleDarkmodeComponent } from './components/toggle-darkmode/toggle-darkmode.component';
 import { TieredMenuModule } from 'primeng/tieredmenu';
 import { IconGlobeComponent } from '../../core/components/icons/globe/globe.component';
@@ -89,7 +80,10 @@ export class DashboardComponent implements OnInit {
     7: 'Analyst',
   };
 
-  constructor(private router: Router, private store: Store<AppState>) {
+  constructor(
+    private router: Router,
+    private store: Store<AppState>
+  ) {
     this.router.events.subscribe(() => {
       let currentRoute = this.router.routerState.root;
       while (currentRoute.firstChild) {
@@ -139,24 +133,22 @@ export class DashboardComponent implements OnInit {
       },
     ];
     this.navItems = navItems.filter((navItem: any) => {
-      return this.user?.menu
-        ?.map((m) => m.toLowerCase())
-        .includes(navItem.routerLink);
+      return this.user?.menu?.map((m) => m.toLowerCase()).includes(navItem.routerLink);
     });
 
     const breadCrumbLabelMap: { [x: string]: string } = {
-      overview: 'Overview',
-      analyze: 'Analyze',
-      spokesperson: 'Spokesperson',
+      'overview': 'Overview',
+      'analyze': 'Analyze',
+      'spokesperson': 'Spokesperson',
       'media-sov': 'Media SOV',
       'news-index': 'News Index',
-      preference: 'Preference',
+      'preference': 'Preference',
       'overview-articles': 'Articles',
-      map: 'Map',
+      'map': 'Map',
       'map-articles': 'Map Articles',
-      articles: 'Article',
-      share: 'Share',
-      search: 'Search',
+      'articles': 'Article',
+      'share': 'Share',
+      'search': 'Search',
     };
 
     this.router.events.subscribe((route) => {

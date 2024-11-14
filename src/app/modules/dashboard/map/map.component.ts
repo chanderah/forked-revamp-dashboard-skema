@@ -1,20 +1,8 @@
 import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
-import {
-  DomUtil,
-  MapOptions,
-  circle,
-  control,
-  geoJSON,
-  latLng,
-  polygon,
-  tileLayer,
-} from 'leaflet';
+import { DomUtil, MapOptions, circle, control, geoJSON, latLng, polygon, tileLayer } from 'leaflet';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { MapService } from '../../../core/services/map.service';
-import {
-  FilterState,
-  initialState,
-} from '../../../core/store/filter/filter.reducer';
+import { FilterState, initialState } from '../../../core/store/filter/filter.reducer';
 import { FilterRequestPayload } from '../../../core/models/request.model';
 import { AllCount } from '../../../core/models/all-count.model';
 import { Store } from '@ngrx/store';
@@ -76,7 +64,6 @@ export class MapComponent {
     zoomControl: false,
   };
 
-
   constructor(
     private mapService: MapService,
     private store: Store<AppState>,
@@ -84,8 +71,7 @@ export class MapComponent {
     private ngZone: NgZone,
     private router: Router,
     private filterService: FilterService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.filter = this.filterService.subscribe(this.onFilterChange);
@@ -97,34 +83,25 @@ export class MapComponent {
     });
   }
 
-  fetchAllCount = (
-    filter: FilterRequestPayload | FilterState = initialState
-  ) => {
-    this.mapService
-      .getAllCount(filter as FilterRequestPayload)
-      .subscribe((data) => {
-        this.addGeoJSONLayer(filter, data);
-        this.selectedLoc = null;
-      });
+  fetchAllCount = (filter: FilterRequestPayload | FilterState = initialState) => {
+    this.mapService.getAllCount(filter as FilterRequestPayload).subscribe((data) => {
+      this.addGeoJSONLayer(filter, data);
+      this.selectedLoc = null;
+    });
   };
 
-  fetchArticlesByGeo = (
-    filter: FilterRequestPayload | FilterState | null,
-    location = this.selectedLoc
-  ) => {
+  fetchArticlesByGeo = (filter: FilterRequestPayload | FilterState | null, location = this.selectedLoc) => {
     this.selectedLoc = location;
     let reqFilter = filter ?? initialState;
     if (location)
       // @ts-ignore
       reqFilter = { ...reqFilter, geo_loc: location } as FilterRequestPayload;
     this.isLoadingArticles = true;
-    this.mapService
-      .getArticleByGeo(reqFilter as FilterRequestPayload)
-      .subscribe((data) => {
-        this.isLoadingArticles = false;
-        this.articles = data.data;
-        this.cdr.detectChanges(); // Trigger change detection
-      });
+    this.mapService.getArticleByGeo(reqFilter as FilterRequestPayload).subscribe((data) => {
+      this.isLoadingArticles = false;
+      this.articles = data.data;
+      this.cdr.detectChanges(); // Trigger change detection
+    });
   };
 
   addLegendControl = () => {
@@ -152,9 +129,7 @@ export class MapComponent {
 
   addGeoJSONLayer(filter: any, data: AllCount): void {
     const getDataByLocation = (featureName: string) => {
-      return data.data.find(
-        (location) => location.key.toUpperCase() === featureName
-      );
+      return data.data.find((location) => location.key.toUpperCase() === featureName);
     };
 
     const getOpacity = (value: number) => {
@@ -173,9 +148,7 @@ export class MapComponent {
       this.geoJsonLayer = geoJSON(data, {
         onEachFeature: (feature, layer) => {
           const featureName = feature.properties.name;
-          const tooltipContent = `${featureName}: ${
-            getDataByLocation(featureName)?.value ?? 0
-          }`;
+          const tooltipContent = `${featureName}: ${getDataByLocation(featureName)?.value ?? 0}`;
           layer.bindTooltip(tooltipContent);
           layer.on({
             click: (e) => {
@@ -190,9 +163,7 @@ export class MapComponent {
               const hoveredLayer = e.target;
               hoveredLayer.setStyle({
                 fillColor: '#8A90AB',
-                fillOpacity: getOpacity(
-                  getDataByLocation(featureName)?.value ?? 0
-                ),
+                fillOpacity: getOpacity(getDataByLocation(featureName)?.value ?? 0),
               });
             },
           });

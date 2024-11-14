@@ -19,7 +19,6 @@ export class ImgFallbackDirective {
   @HostListener('error', ['$event'])
   handleImageError(event: Event): void {
     const image = event.target as HTMLInputElement;
-    image.src =
-      this.imgFallback ?? 'https://placehold.co/600x400?text=Hello+World';
+    image.src = this.imgFallback ?? 'https://placehold.co/600x400?text=Hello+World';
   }
 }

@@ -71,11 +71,12 @@ export const DashboardRoutes: DashboardRoutesProps[] = [
         component: MapComponent,
         canActivate: mapToCanActivate([AuthGuardService]),
         withFilter: true,
-      },{
+      },
+      {
         path: 'map-articles',
         title: 'Map Articles',
         component: MapArticlesComponent,
-        
+
         withFilter: true,
       },
       {

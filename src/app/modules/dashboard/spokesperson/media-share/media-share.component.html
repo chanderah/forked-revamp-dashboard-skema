@@ -4,14 +4,8 @@
     <div>Select Spokeperson to see Media Share data</div>
   </div>
   <div *ngIf="selectedInfluencer" class="flex w-full justify-content-center align-items-center">
-    <div id="mediashare-legend-container" >
-      <p-chart
-        type="pie"
-        [data]="data"
-        [options]="options"
-        [plugins]="plugins"
-        (onDataSelect)="onDataSelect($event)"
-      ></p-chart>
+    <div id="mediashare-legend-container">
+      <p-chart type="pie" [data]="data" [options]="options" [plugins]="plugins" (onDataSelect)="onDataSelect($event)"></p-chart>
     </div>
   </div>
 </div>

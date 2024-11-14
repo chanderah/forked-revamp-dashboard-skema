@@ -12,12 +12,7 @@ import { TagModule } from 'primeng/tag';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { TagComponent } from '../../../core/components/tag/tag.component';
-import {
-  NEGATIVE_TONE,
-  NEUTRAL_TONE,
-  POSITIVE_TONE,
-  TONE_MAP,
-} from '../../../shared/utils/Constants';
+import { NEGATIVE_TONE, NEUTRAL_TONE, POSITIVE_TONE, TONE_MAP } from '../../../shared/utils/Constants';
 import { ButtonSecondaryComponent } from '../../../core/components/button-secondary/button-secondary.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { TieredMenuModule } from 'primeng/tieredmenu';
@@ -114,13 +109,9 @@ export class NewsindexComponent {
   user: User | null = getUserFromLocalStorage();
 
   filterCallback() {
-    const selectedToneValues = this.selectedTones.map(
-      (option: any) => +option.value
-    );
+    const selectedToneValues = this.selectedTones.map((option: any) => +option.value);
     if (this.selectedTones.length) {
-      this.articles = this.clearArticles.filter((article) =>
-        selectedToneValues.includes(article.tone)
-      );
+      this.articles = this.clearArticles.filter((article) => selectedToneValues.includes(article.tone));
     } else {
       this.articles = this.clearArticles;
     }
@@ -175,14 +166,12 @@ export class NewsindexComponent {
     this.filter = this.filterService.subscribe((filter) => {
       this.fetchData({ ...filter, page: this.page, size: this.rows });
     });
-    this.searchText$
-      .pipe(debounceTime(500), distinctUntilChanged())
-      .subscribe((value) => {
-        this.page = 0;
-        this.first = 0;
-        this.term = value;
-        this.fetchData({ page: 0, term: value, size: this.rows });
-      });
+    this.searchText$.pipe(debounceTime(500), distinctUntilChanged()).subscribe((value) => {
+      this.page = 0;
+      this.first = 0;
+      this.term = value;
+      this.fetchData({ page: 0, term: value, size: this.rows });
+    });
   }
 
   fetchData = (filter?: Partial<FilterRequestPayload>) => {
@@ -191,17 +180,13 @@ export class NewsindexComponent {
       .getUserEditing({
         ...this.filterService.filter,
         ...filter,
-        term: this.term
+        term: this.term,
       } as FilterRequestPayload)
       .subscribe((resp) => {
         this.loading = false;
-        const selectedToneValues = this.selectedTones.map(
-          (option: any) => +option.value
-        );
+        const selectedToneValues = this.selectedTones.map((option: any) => +option.value);
         if (this.selectedTones.length) {
-          this.articles = resp.data.filter((article) =>
-            selectedToneValues.includes(article.tone)
-          );
+          this.articles = resp.data.filter((article) => selectedToneValues.includes(article.tone));
         } else {
           this.articles = resp.data;
         }
@@ -247,11 +232,8 @@ export class NewsindexComponent {
   };
 
   updateTone = async (tone: number) => {
-    const article_id = this.selectedArticles.map(
-      ({ article_id }) => article_id
-    );
-    const category_id =
-      this.selectedArticles.map(({ category_id }) => category_id ?? '') ?? [];
+    const article_id = this.selectedArticles.map(({ article_id }) => article_id);
+    const category_id = this.selectedArticles.map(({ category_id }) => category_id ?? '') ?? [];
 
     this.articleService
       .updateArticleTone({
@@ -316,15 +298,7 @@ export class NewsindexComponent {
           this.editedCategories.map((val) => val.category_id)
         )
       ) {
-        const {
-          advalue_bw,
-          advalue_fc,
-          article_id,
-          circulation,
-          datee,
-          media_id,
-          tone,
-        } = this.editedArticle ?? {};
+        const { advalue_bw, advalue_fc, article_id, circulation, datee, media_id, tone } = this.editedArticle ?? {};
         promises.push(
           this.articleService
             .updateArticleSave({
@@ -372,20 +346,12 @@ export class NewsindexComponent {
   }
 
   openEditModal = async (article: Article) => {
-    const categoriesResp = await this.articleService
-      .getSubCategoriesDistinct()
-      .toPromise();
+    const categoriesResp = await this.articleService.getSubCategoriesDistinct().toPromise();
 
-    const keywordRes = await this.articleService
-      .getKeywordsByArticleId(article.article_id)
-      .toPromise();
+    const keywordRes = await this.articleService.getKeywordsByArticleId(article.article_id).toPromise();
 
-    const hightligtedWords = highlightKeywords(
-      article.content,
-      keywordRes?.data ?? []
-    );
-    this.sanitizedContent =
-      this.sanitizer.bypassSecurityTrustHtml(hightligtedWords);
+    const hightligtedWords = highlightKeywords(article.content, keywordRes?.data ?? []);
+    this.sanitizedContent = this.sanitizer.bypassSecurityTrustHtml(hightligtedWords);
 
     this.availableCategories = categoriesResp?.results ?? [];
     this.editedArticle = article;

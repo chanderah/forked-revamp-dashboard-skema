@@ -26,16 +26,13 @@
     </div>
     <div class="flex gap-4">
       <div class="flex flex-column gap-2 flex-1">
-        <label for="editorDesk" class="text-sm font-semibold"
-          >Editor Desk</label
-        >
+        <label for="editorDesk" class="text-sm font-semibold">Editor Desk</label>
         <p-selectButton
           id="editorDesk"
           [options]="editorDeskOptions"
           formControlName="editorDesk"
           optionLabel="name"
-          optionValue="value"
-        ></p-selectButton>
+          optionValue="value"></p-selectButton>
       </div>
       <div class="flex flex-column gap-2 flex-1">
         <label for="media" class="text-sm font-semibold">Media Select</label>
@@ -50,18 +47,11 @@
           styleClass="w-full border-1 border-200"
           [panelStyle]="{ backgroundColor: 'var(--bg-color)' }"
           [virtualScroll]="true"
-          [virtualScrollItemSize]="38"
-        ></p-multiSelect>
+          [virtualScrollItemSize]="38"></p-multiSelect>
       </div>
     </div>
     <file-upload [form]="formGroup"></file-upload>
-    <textarea
-      rows="5"
-      cols="30"
-      pInputTextarea
-      placeholder="Content"
-      formControlName="content"
-    ></textarea>
+    <textarea rows="5" cols="30" pInputTextarea placeholder="Content" formControlName="content"></textarea>
     <p-button
       label="Send Email"
       (onClick)="sendEmail()"
@@ -71,7 +61,6 @@
         !formGroup.controls.headline.valid &&
         !formGroup.controls.editorDesk.valid &&
         !formGroup.controls.subline.valid
-      "
-    ></p-button>
+      "></p-button>
   </form>
 </section>

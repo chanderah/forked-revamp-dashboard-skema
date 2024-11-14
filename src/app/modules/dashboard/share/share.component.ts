@@ -8,12 +8,7 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { MessageService } from 'primeng/api';
 import { ShareService } from '../../../core/services/share.service';
 import { WartawanMedia } from '../../../core/models/media.model';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FileUploadComponent } from '../../../core/components/file-upload/file-upload.component';
 import { ToastModule } from 'primeng/toast';
 
@@ -35,7 +30,11 @@ import { ToastModule } from 'primeng/toast';
   templateUrl: './share.component.html',
   styleUrl: './share.component.scss',
 })
-export class ShareComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class ShareComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   isLoadingMedias: boolean = false;
   mediaOptions: WartawanMedia[] = [];
   editorDeskOptions: { name: string; value: string }[] = [
@@ -73,8 +72,7 @@ export class ShareComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe
   };
 
   sendEmail = async () => {
-    const { cc, content, editorDesk, headline, media, subline, image } =
-      this.formGroup.controls;
+    const { cc, content, editorDesk, headline, media, subline, image } = this.formGroup.controls;
 
     let images: any;
     if (image.value) {

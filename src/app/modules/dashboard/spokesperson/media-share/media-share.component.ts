@@ -21,7 +21,11 @@ import _ from 'lodash';
   templateUrl: './media-share.component.html',
   styleUrl: './media-share.component.scss',
 })
-export class MediaShareComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class MediaShareComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   data: any;
   options: any;
   plugins = [htmlLegendPlugin];
@@ -41,9 +45,7 @@ export class MediaShareComponent{ filter: any; ngOnDestroy(){this.filter?.unsubs
     this.spokepersonState = this.store.select(selectSpokespersonState);
   }
 
-  fetchData = async (
-    filter: FilterRequestPayload & { spokeperson_name?: string }
-  ) => {
+  fetchData = async (filter: FilterRequestPayload & { spokeperson_name?: string }) => {
     if (!filter.spokeperson_name) return;
     this.isLoading = true;
     this.influencerService
@@ -88,10 +90,7 @@ export class MediaShareComponent{ filter: any; ngOnDestroy(){this.filter?.unsubs
 
   ngOnChanges(changes: any) {
     const { influencer } = changes;
-    if (
-      !influencer.firstChange &&
-      !_.isEqual(influencer.currentValue, influencer.previousValue)
-    ) {
+    if (!influencer.firstChange && !_.isEqual(influencer.currentValue, influencer.previousValue)) {
       this.selectedInfluencer = influencer?.currentValue;
       this.fetchData({
         ...this.filterService.filter,
@@ -106,9 +105,7 @@ export class MediaShareComponent{ filter: any; ngOnDestroy(){this.filter?.unsubs
 
     mediaShares.forEach((media) => {
       pieLabels.push(media.media_name);
-      pieDatasets[0].percentages.push(
-        ((media.doc_count / totalDocCount) * 100).toFixed(0)
-      );
+      pieDatasets[0].percentages.push(((media.doc_count / totalDocCount) * 100).toFixed(0));
       pieDatasets[0].data.push(media.doc_count);
       pieDatasets[0].mediaIds.push(media.media_id);
     });

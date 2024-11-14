@@ -2,16 +2,10 @@ import { Component, Input } from '@angular/core';
 import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import {
-  Influencer,
-  InfluencerQuotes,
-} from '../../../../core/models/influencer.model';
+import { Influencer, InfluencerQuotes } from '../../../../core/models/influencer.model';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { AppState } from '../../../../core/store';
-import {
-  FilterState,
-  initialState,
-} from '../../../../core/store/filter/filter.reducer';
+import { FilterState, initialState } from '../../../../core/store/filter/filter.reducer';
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { getInfluencer } from '../../../../core/store/spokesperson/spokesperson.actions';
 import { SpokespersonState } from '../../../../core/store/spokesperson/spokesperson.reducer';
@@ -29,25 +23,21 @@ import _ from 'lodash';
 @Component({
   selector: 'app-statements',
   standalone: true,
-  imports: [
-    IconDialogueComponent,
-    IconInfoComponent,
-    ScrollerModule,
-    CommonModule,
-    ImgFallbackDirective,
-    SpinnerComponent,
-    RouterLink,
-  ],
+  imports: [IconDialogueComponent, IconInfoComponent, ScrollerModule, CommonModule, ImgFallbackDirective, SpinnerComponent, RouterLink],
   templateUrl: './statements.component.html',
   styleUrl: './statements.component.scss',
 })
-export class StatementsComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class StatementsComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   spokespersonState: Observable<SpokespersonState>;
   influencers: InfluencerQuotes[] = [];
   isLoading: boolean = false;
   selectedMedia: number | null = null;
   selectedInfluencer: string | null = null;
-  total: number = 0
+  total: number = 0;
 
   @Input() influencer: any;
   @Input() media: any;
@@ -93,11 +83,7 @@ export class StatementsComponent{ filter: any; ngOnDestroy(){this.filter?.unsubs
 
   ngOnChanges(changes: any) {
     const { influencer, media } = changes;
-    if (
-      media &&
-      !media.firstChange &&
-      !_.isEqual(media.currentValue, media.previousValue)
-    ) {
+    if (media && !media.firstChange && !_.isEqual(media.currentValue, media.previousValue)) {
       this.selectedMedia = media.currentValue;
       this.fetchData({
         ...this.filterService.filter,
@@ -106,11 +92,7 @@ export class StatementsComponent{ filter: any; ngOnDestroy(){this.filter?.unsubs
       });
     }
 
-    if (
-      influencer &&
-      !influencer.firstChange &&
-      !_.isEqual(influencer.currentValue, influencer.previousValue)
-    ) {
+    if (influencer && !influencer.firstChange && !_.isEqual(influencer.currentValue, influencer.previousValue)) {
       this.selectedInfluencer = influencer.currentValue;
       this.fetchData({
         ...this.filterService.filter,

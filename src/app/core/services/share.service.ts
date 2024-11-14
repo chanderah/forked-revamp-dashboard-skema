@@ -8,13 +8,11 @@ import { BASE_URL } from '../api';
   providedIn: 'root',
 })
 export class ShareService {
-  private baseUrl = BASE_URL
+  private baseUrl = BASE_URL;
   constructor(private http: HttpClient) {}
 
   getMedias(): Observable<{ results: WartawanMedia[] }> {
-    return this.http.get<{ results: WartawanMedia[] }>(
-      `${this.baseUrl}/v1/wartawan/medias`
-    );
+    return this.http.get<{ results: WartawanMedia[] }>(`${this.baseUrl}/v1/wartawan/medias`);
   }
 
   sendEmail(payload: {
@@ -26,9 +24,6 @@ export class ShareService {
     images?: { base64: string; filename: string }[];
     media_names?: string[];
   }): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(
-      `${this.baseUrl}/v1/wartawan/upload`,
-      payload
-    );
+    return this.http.post<{ message: string }>(`${this.baseUrl}/v1/wartawan/upload`, payload);
   }
 }

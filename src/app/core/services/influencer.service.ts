@@ -2,12 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { FilterRequestPayload } from '../models/request.model';
-import {
-  InfluencerCountResponse,
-  InfluencerQuotes,
-  InfluencerResponse,
-  MediaShare,
-} from '../models/influencer.model';
+import { InfluencerCountResponse, InfluencerQuotes, InfluencerResponse, MediaShare } from '../models/influencer.model';
 import { BASE_URL, INFLUENCER_BASE_URL } from '../api';
 import { Article } from '../models/article.model';
 
@@ -19,9 +14,7 @@ export class InfluencerService {
   private baseUrl2 = BASE_URL;
   constructor(private http: HttpClient) {}
 
-  getSpokepersons(
-    filter: FilterRequestPayload
-  ): Observable<InfluencerCountResponse> {
+  getSpokepersons(filter: FilterRequestPayload): Observable<InfluencerCountResponse> {
     const params = {
       start_date: filter.start_date ? filter.start_date + ' 00:00:00' : '',
       end_date: filter.end_date ? filter.end_date + ' 23:59:59' : '',
@@ -33,17 +26,12 @@ export class InfluencerService {
       category_id: filter.category_id ?? 'all',
     };
 
-    return this.http.get<InfluencerCountResponse>(
-      `${this.baseUrl}/v1/spokesperson/quotes/count`,
-      {
-        params,
-      }
-    );
+    return this.http.get<InfluencerCountResponse>(`${this.baseUrl}/v1/spokesperson/quotes/count`, {
+      params,
+    });
   }
 
-  getSpokepersonMediaShares(
-    filter: FilterRequestPayload & { spokeperson_name?: string }
-  ): Observable<{
+  getSpokepersonMediaShares(filter: FilterRequestPayload & { spokeperson_name?: string }): Observable<{
     data: { media_shares: MediaShare[]; total_doc_count: number };
   }> {
     const params = {
@@ -83,12 +71,9 @@ export class InfluencerService {
       spokesperson_name: filter.spokeperson_name ?? '',
     };
 
-    return this.http.get<{ data: InfluencerQuotes[] }>(
-      `${this.baseUrl}/v1/spokesperson/quotes`,
-      {
-        params,
-      }
-    );
+    return this.http.get<{ data: InfluencerQuotes[] }>(`${this.baseUrl}/v1/spokesperson/quotes`, {
+      params,
+    });
   }
 
   getSpokepersonArticles(
@@ -108,11 +93,8 @@ export class InfluencerService {
       spokesperson_name: filter.spokeperson_name ?? '',
     };
 
-    return this.http.get<{ data: Article[] }>(
-      `${this.baseUrl2}/v3/spokesperson/quotes/articles`,
-      {
-        params,
-      }
-    );
+    return this.http.get<{ data: Article[] }>(`${this.baseUrl2}/v3/spokesperson/quotes/articles`, {
+      params,
+    });
   }
 }
