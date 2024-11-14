@@ -8,12 +8,7 @@ import { PasswordModule } from 'primeng/password';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import * as AuthActions from '../../core/store/auth/auth.actions';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../core/store';
 import { Observable } from 'rxjs';
@@ -26,16 +21,7 @@ import { initialState } from '../../core/store/filter/filter.reducer';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    CardModule,
-    ButtonModule,
-    InputTextModule,
-    PasswordModule,
-    CheckboxModule,
-    ReactiveFormsModule,
-    ToastModule,
-  ],
+  imports: [RouterOutlet, CardModule, ButtonModule, InputTextModule, PasswordModule, CheckboxModule, ReactiveFormsModule, ToastModule],
   providers: [MessageService],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -83,8 +69,6 @@ export class LoginComponent implements OnInit {
   login() {
     const { username, password } = this.loginForm.value;
     this.store.dispatch(setFilter({ filter: initialState }));
-    this.store.dispatch(
-      AuthActions.login({ username: username!, password: password! })
-    );
+    this.store.dispatch(AuthActions.login({ username: username!, password: password! }));
   }
 }

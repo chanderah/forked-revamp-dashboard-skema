@@ -6,46 +6,33 @@
           id="visibilityChart"
           title="Visibility Chart"
           [actionButton]="visibilityChartActionButton"
-        >
+          [showBack]="isDrilldownVisibilityChart"
+          (onBack)="getData()">
           <p-chart
             *ngIf="!visibilityChartActionButton.toggle.value"
             type="line"
             [data]="visibilityChartLineData"
             [options]="visibilityChartLineOpts"
-            (onDataSelect)="onVisibilityPieSelect($event, 'line')"
-          ></p-chart>
-          <div *ngIf="visibilityChartActionButton.toggle.value">
-            <p-chart
-              type="bar"
-              [data]="visibilityChartBarData"
-              [options]="visibilityChartBarOpts"
-              [plugins]="visibilityChartBarPlugins"
-              (onDataSelect)="onVisibilityPieSelect($event, 'bar')"
-            ></p-chart>
-          </div>
+            (onDataSelect)="onVisibilityPieSelect($event, 'line')"></p-chart>
+          <p-chart
+            *ngIf="visibilityChartActionButton.toggle.value"
+            type="bar"
+            [data]="visibilityChartBarData"
+            [options]="visibilityChartBarOpts"
+            [plugins]="visibilityChartBarPlugins"
+            (onDataSelect)="onVisibilityPieSelect($event, 'bar')"></p-chart>
         </chart-card>
       </div>
       <div class="col-12">
-        <chart-card
-          title="Visibility Pie"
-          id="visibilityPie"
-          [actionButton]="visibilityPieActionButton"
-        >
-          <div
-            *ngIf="!visibilityPieActionButton.toggle.value"
-            class="flex align-items-center justify-content-center gap-6"
-          >
-            <div
-              id="legend-container"
-              class="flex flex-column justify-content-center align-items-center gap-6"
-            >
+        <chart-card title="Visibility Pie" id="visibilityPie" [actionButton]="visibilityPieActionButton">
+          <div *ngIf="!visibilityPieActionButton.toggle.value" class="flex align-items-center justify-content-center gap-6">
+            <div id="legend-container" class="flex flex-column justify-content-center align-items-center gap-6">
               <p-chart
                 type="pie"
                 [data]="visibilityPieData"
                 [options]="visibilityPieOpts"
                 [plugins]="visibilityPiePlugins"
-                (onDataSelect)="onVisibilityPieSelect($event, 'pie')"
-              ></p-chart>
+                (onDataSelect)="onVisibilityPieSelect($event, 'pie')"></p-chart>
             </div>
           </div>
           <div *ngIf="visibilityPieActionButton.toggle.value">
@@ -54,8 +41,7 @@
               [data]="visibilityChartBarData"
               [options]="visibilityChartBarOpts"
               [plugins]="visibilityChartBarPlugins"
-              (onDataSelect)="onVisibilityPieSelect($event, 'bar')"
-            ></p-chart>
+              (onDataSelect)="onVisibilityPieSelect($event, 'bar')"></p-chart>
           </div>
         </chart-card>
       </div>

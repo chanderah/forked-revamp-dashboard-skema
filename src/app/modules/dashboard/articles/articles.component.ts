@@ -31,7 +31,11 @@ import { FilterService } from '../../../core/services/filter.service';
   templateUrl: './articles.component.html',
   styleUrl: './articles.component.scss',
 })
-export class ArticlesComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class ArticlesComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   type: string | null = null;
   index: string = '0';
   articles: Article[] = [];

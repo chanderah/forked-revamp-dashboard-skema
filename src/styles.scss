@@ -1,7 +1,7 @@
-@import "primeng/resources/primeng.css";
-@import "primeicons/primeicons.css";
-@import "./primeng-themes.scss";
-@import "./primeflex-themes.scss";
+@import 'primeng/resources/primeng.css';
+@import 'primeicons/primeicons.css';
+@import './primeng-themes.scss';
+@import './primeflex-themes.scss';
 
 :root {
   --positive-color: #1b81e2;
@@ -80,6 +80,10 @@ button {
 
 .fill-primary {
   fill: var(--primary-color) !important;
+}
+
+.fill-secondary {
+  fill: var(--text-color-secondary) !important;
 }
 
 .fill-negative {
@@ -253,12 +257,8 @@ body.dark {
     background-color: var(--card-color);
   }
 
-  .p-multiselect-panel
-    .p-multiselect-items
-    .p-multiselect-item:not(.p-highlight):not(.p-disabled).p-focus,
-  .p-multiselect-panel
-    .p-multiselect-items
-    .p-multiselect-item:not(.p-highlight):not(.p-disabled):hover {
+  .p-multiselect-panel .p-multiselect-items .p-multiselect-item:not(.p-highlight):not(.p-disabled).p-focus,
+  .p-multiselect-panel .p-multiselect-items .p-multiselect-item:not(.p-highlight):not(.p-disabled):hover {
     color: #464255;
     background-color: var(--card-color);
   }
@@ -267,7 +267,8 @@ body.dark {
   }
 
   .p-tree,
-  .p-treeselect-header {
+  .p-treeselect-header,
+  .p-treeselect-panel {
     background-color: var(--bg-color);
     .p-treenode-content {
       background-color: var(--bg-color);
@@ -278,4 +279,144 @@ body.dark {
     background-color: var(--card-color);
     border: 1px solid var(--border-color);
   }
+
+  .p-listbox {
+    .p-listbox-item {
+      span {
+        padding-left: 8px;
+        color: var(--card-color) !important;
+      }
+    }
+  }
+
+  .p-tieredmenu {
+    background-color: var(--bg-color);
+    .p-submenu-list {
+      background-color: var(--bg-color);
+    }
+  }
+
+  .p-multiselect-items-wrapper {
+    height: auto;
+    max-height: 70vh;
+  }
+
+  .p-multiselect-panel .p-multiselect-items .p-multiselect-item-group {
+    background-color: var(--bg-color);
+  }
+
+  .p-multiselect {
+    z-index: 9999 !important;
+    background-color: var(--bg-color) !important;
+    border: 1px solid #424b57 !important;
+  }
+
+  .p-multiselect-panel {
+    background-color: var(--card-color);
+  }
+
+  .p-multiselect-token-label {
+    color: var(--bg-color) !important;
+  }
+
+  .p-multiselect .p-multiselect-trigger {
+    background-color: var(--bg-color);
+  }
+
+  .p-multiselect-label-container {
+    background-color: var(--bg-color) !important;
+  }
+
+  .p-multiselect-token-icon {
+    fill: var(--card-color) !important;
+    color: var(--card-color) !important;
+  }
+
+  .p-confirm-popup {
+    background-color: var(--card-color);
+  }
+
+  .p-column-filter-overlay-menu {
+    background-color: var(--card-color);
+
+    .p-column-filter-buttonbar {
+      padding: 0;
+    }
+  }
+
+  .p-dropdown {
+    background-color: var(--card-color);
+  }
+}
+
+.app-card {
+  padding: 8px;
+  background-color: var(--card-color);
+  border-color: var(--border-color) !important;
+  border-width: 1px !important;
+  border-style: solid;
+}
+
+.h-50vh {
+  height: 50vh !important;
+}
+
+.h-55vh {
+  height: 55vh !important;
+}
+
+.h-60vh {
+  height: 60vh !important;
+}
+
+.h-65vh {
+  height: 65vh !important;
+}
+
+.h-70vh {
+  height: 70vh !important;
+}
+
+.h-75vh {
+  height: 75vh !important;
+}
+
+.h-80vh {
+  height: 80vh !important;
+}
+
+.min-h-50vh {
+  min-height: 50vh !important;
+}
+
+.min-h-55vh {
+  min-height: 55vh !important;
+}
+
+.min-h-60vh {
+  min-height: 60vh !important;
+}
+
+.min-h-65vh {
+  min-height: 65vh !important;
+}
+
+.min-h-70vh {
+  min-height: 70vh !important;
+}
+
+.min-h-75vh {
+  min-height: 75vh !important;
+}
+
+.min-h-80vh {
+  min-height: 80vh !important;
+}
+
+.bg-none {
+  background: none !important;
+}
+
+.bg-color {
+  background-color: var(--bg-color);
 }

@@ -7,10 +7,7 @@ import { filterReducer, FilterState } from './filter/filter.reducer';
 import { mediaSOVReducer, MediaSOVState } from './media-sov/media-sov.reducer';
 import { analyzeReducer, AnalyzeState } from './analyze/analyze.reducer';
 import { AnalyzeEffects } from './analyze/analyze.effects';
-import {
-  spokespersonReducer,
-  SpokespersonState,
-} from './spokesperson/spokesperson.reducer';
+import { spokespersonReducer, SpokespersonState } from './spokesperson/spokesperson.reducer';
 import { SpokespersonEffects } from './spokesperson/spokesperson.effects';
 import { articlesReducer, ArticlesState } from './articles/articles.reducer';
 import { ArticlesEffects } from './articles/articles.effects';
@@ -35,10 +32,4 @@ export const reducers: ActionReducerMap<AppState> = {
   mediaSov: mediaSOVReducer,
 };
 
-export const effects = [
-  AuthEffects,
-  OverviewEffects,
-  AnalyzeEffects,
-  SpokespersonEffects,
-  ArticlesEffects,
-];
+export const effects = [AuthEffects, OverviewEffects, AnalyzeEffects, SpokespersonEffects, ArticlesEffects];

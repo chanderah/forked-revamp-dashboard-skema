@@ -13,10 +13,7 @@ import { selectOverviewState } from '../../../../core/store/overview/overview.se
 import { Article } from '../../../../core/models/article.model';
 import { getUserEditingPlus } from '../../../../core/store/overview/overview.actions';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
-import {
-  FilterState,
-  initialState,
-} from '../../../../core/store/filter/filter.reducer';
+import { FilterState, initialState } from '../../../../core/store/filter/filter.reducer';
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
@@ -39,7 +36,11 @@ import { FilterService } from '../../../../core/services/filter.service';
   templateUrl: './top-article.component.html',
   styleUrl: './top-article.component.scss',
 })
-export class TopArticleComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class TopArticleComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   overviewState: Observable<OverviewState>;
   articles: Article[] = [];
   isLoading: boolean = false;

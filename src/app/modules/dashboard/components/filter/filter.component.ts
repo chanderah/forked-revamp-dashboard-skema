@@ -5,10 +5,7 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../core/store';
 import { FormsModule } from '@angular/forms';
-import {
-  FilterState,
-  initialState,
-} from '../../../../core/store/filter/filter.reducer';
+import { FilterState, initialState } from '../../../../core/store/filter/filter.reducer';
 import { Observable } from 'rxjs';
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { setFilter } from '../../../../core/store/filter/filter.actions';
@@ -39,19 +36,15 @@ const DEFAULT_MEDIA: Option = {
 @Component({
   selector: 'app-filter',
   standalone: true,
-  imports: [
-    DropdownModule,
-    ButtonModule,
-    FloatLabelModule,
-    FormsModule,
-    CommonModule,
-    CalendarModule,
-    DividerModule,
-  ],
+  imports: [DropdownModule, ButtonModule, FloatLabelModule, FormsModule, CommonModule, CalendarModule, DividerModule],
   templateUrl: './filter.component.html',
   styleUrl: './filter.component.scss',
 })
-export class FilterComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class FilterComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   isCustom: boolean = false;
   selectedPeriodic: string = initialState.date_type;
   selectedCategory: number = initialState.category_set;
@@ -110,10 +103,7 @@ export class FilterComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscrib
           name: category.category_id,
           value: category.category_id,
         }));
-        this.subCategoryOptions = [
-          ...this.subCategoryOptions,
-          ...subCategoryOptions,
-        ];
+        this.subCategoryOptions = [...this.subCategoryOptions, ...subCategoryOptions];
       },
       () => {
         // on Error
@@ -143,7 +133,7 @@ export class FilterComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscrib
   };
 
   onChangeCategory = (data: any) => {
-    this.getSubCategoriesOptions(data)
+    this.getSubCategoriesOptions(data);
   };
 
   onSetFilter() {
@@ -157,12 +147,8 @@ export class FilterComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscrib
     const defaultStartDate = dateRange[this.selectedPeriodic][0];
     const defaultEndDate = dateRange[this.selectedPeriodic][1];
 
-    const startDate = this.isCustom
-      ? moment(this.startDate).format('YYYY-MM-DD')
-      : defaultStartDate;
-    const endDate = this.isCustom
-      ? moment(this.endDate).format('YYYY-MM-DD')
-      : defaultEndDate;
+    const startDate = this.isCustom ? moment(this.startDate).format('YYYY-MM-DD') : defaultStartDate;
+    const endDate = this.isCustom ? moment(this.endDate).format('YYYY-MM-DD') : defaultEndDate;
 
     const filter: FilterState = {
       category_set: this.selectedCategory,

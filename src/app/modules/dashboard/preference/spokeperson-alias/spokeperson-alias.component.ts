@@ -8,12 +8,7 @@ import { MessageService } from 'primeng/api';
 import { PaginatorModule } from 'primeng/paginator';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { TabMenuModule } from 'primeng/tabmenu';
@@ -56,7 +51,11 @@ import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.di
   templateUrl: './spokeperson-alias.component.html',
   styleUrl: './spokeperson-alias.component.scss',
 })
-export class SpokepersonAliasComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class SpokepersonAliasComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   categories: SpokepersonAlias[] = [];
   totalRecords!: number;
   loading: boolean = false;
@@ -168,14 +167,7 @@ export class SpokepersonAliasComponent{ filter: any; ngOnDestroy(){this.filter?.
 
   updateSpokeperson = async () => {
     const { spokeperson } = this.editedValues.controls;
-    const promises = [
-      this.preferenceService
-        .updateSpokeperson(
-          this.selectedSpokeperson?.influencer!,
-          spokeperson.value!
-        )
-        .toPromise(),
-    ];
+    const promises = [this.preferenceService.updateSpokeperson(this.selectedSpokeperson?.influencer!, spokeperson.value!).toPromise()];
 
     if (this.uploadedImage) {
       const base64 = await this.file2Base64(this.uploadedImage);

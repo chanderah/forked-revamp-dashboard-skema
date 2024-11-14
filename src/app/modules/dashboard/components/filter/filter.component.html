@@ -7,9 +7,8 @@
       optionValue="value"
       placeholder="Yesterday"
       styleClass="border-200"
-      [style]="{backgroundColor: 'var(--bg-color)'}"
-      [disabled]="isCustom"
-    ></p-dropdown>
+      [style]="{ backgroundColor: 'var(--bg-color)' }"
+      [disabled]="isCustom"></p-dropdown>
     <label>Periodic</label>
   </span>
   <span class="select-container">
@@ -21,10 +20,9 @@
       optionValue="value"
       placeholder="All Category"
       styleClass="border-200"
-      [style]="{backgroundColor: 'var(--bg-color)'}"
+      [style]="{ backgroundColor: 'var(--bg-color)' }"
       inputId="category"
-      [disabled]="isLoadingCategoryOptions"
-    ></p-dropdown>
+      [disabled]="isLoadingCategoryOptions"></p-dropdown>
     <label for="category">Category</label>
   </span>
   <span class="select-container">
@@ -34,11 +32,10 @@
       optionLabel="name"
       optionValue="value"
       styleClass="border-200"
-      [style]="{backgroundColor: 'var(--bg-color)'}"
+      [style]="{ backgroundColor: 'var(--bg-color)' }"
       placeholder="All Sub Category"
       inputId="subCategory"
-      [disabled]="isLoadingSubCategoryOptions"
-    ></p-dropdown>
+      [disabled]="isLoadingSubCategoryOptions"></p-dropdown>
     <label for="subCategory">Sub Category</label>
   </span>
   <span class="select-container">
@@ -49,10 +46,9 @@
       optionValue="value"
       placeholder="All Media"
       styleClass="border-200"
-      [style]="{backgroundColor: 'var(--bg-color)'}"
+      [style]="{ backgroundColor: 'var(--bg-color)' }"
       inputId="media"
-      [disabled]="isLoadingMediaOptions"
-    ></p-dropdown>
+      [disabled]="isLoadingMediaOptions"></p-dropdown>
     <label for="media">Media</label>
   </span>
   <ng-container *ngIf="isCustom">
@@ -70,8 +66,7 @@
               dateFormat="yy-m-d"
               [showButtonBar]="true"
               styleClass="border-200"
-              [inputStyle]="{backgroundColor: 'var(--bg-color)'}"
-            ></p-calendar>
+              [inputStyle]="{ backgroundColor: 'var(--bg-color)' }"></p-calendar>
             <label for="startDate">Start Date</label>
           </span>
           <span class="select-container">
@@ -80,11 +75,10 @@
               inputId="startDate"
               class="datepicker"
               styleClass="border-200"
-              [inputStyle]="{backgroundColor: 'var(--bg-color)'}"
+              [inputStyle]="{ backgroundColor: 'var(--bg-color)' }"
               styleClass="w-full"
               [showButtonBar]="true"
-              [timeOnly]="true"
-            ></p-calendar>
+              [timeOnly]="true"></p-calendar>
             <label for="startDate">Time</label>
           </span>
         </div>
@@ -98,10 +92,9 @@
               inputId="endDate"
               class="datepicker"
               styleClass="w-full border-200"
-              [inputStyle]="{backgroundColor: 'var(--bg-color)'}"
+              [inputStyle]="{ backgroundColor: 'var(--bg-color)' }"
               dateFormat="yy-m-d"
-              [showButtonBar]="true"
-            ></p-calendar>
+              [showButtonBar]="true"></p-calendar>
             <label for="endDate">End Date</label>
           </span>
           <span class="select-container">
@@ -110,10 +103,9 @@
               inputId="endDate"
               class="datepicker"
               styleClass="w-full border-200"
-              [inputStyle]="{backgroundColor: 'var(--bg-color)'}"
+              [inputStyle]="{ backgroundColor: 'var(--bg-color)' }"
               [showButtonBar]="true"
-              [timeOnly]="true"
-            ></p-calendar>
+              [timeOnly]="true"></p-calendar>
             <label for="endDate">Time</label>
           </span>
         </div>
@@ -125,11 +117,7 @@
       <p-button label="Set Filter" (onClick)="onSetFilter()"></p-button>
     </div>
     <div class="col-6">
-      <p-button
-        [label]="isCustom ? 'Close' : 'Custom'"
-        severity="secondary"
-        (onClick)="onClickCustom()"
-      ></p-button>
+      <p-button [label]="isCustom ? 'Close' : 'Custom'" severity="secondary" (onClick)="onClickCustom()"></p-button>
     </div>
   </div>
 </div>

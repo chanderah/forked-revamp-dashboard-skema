@@ -35,7 +35,11 @@ import { ArticleService } from '../../../../core/services/article.service';
   templateUrl: './headline-news.component.html',
   styleUrl: './headline-news.component.scss',
 })
-export class HeadlineNewsComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class HeadlineNewsComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   articles: Article[] = [];
   isLoading: boolean = false;
 

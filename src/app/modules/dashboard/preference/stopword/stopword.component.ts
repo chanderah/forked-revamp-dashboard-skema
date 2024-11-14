@@ -9,12 +9,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { CommonModule } from '@angular/common';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DialogModule } from 'primeng/dialog';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormatAmountPipe } from '../../../../core/pipes/format-amount.pipe';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -54,7 +49,11 @@ interface StopwordData {
   templateUrl: './stopword.component.html',
   styleUrl: './stopword.component.scss',
 })
-export class StopwordComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class StopwordComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   stopwords: StopwordData[] = [];
   totalRecords!: number;
   loading: boolean = false;
@@ -152,17 +151,15 @@ export class StopwordComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscr
 
   updateCategory = () => {
     const { stopword } = this.editedValues.controls;
-    this.preferenceService
-      .updateStopword(this.selectedStopword?.stopword!, stopword.value!)
-      .subscribe(() => {
-        this.fetchData();
-        this.modalUpdateOpen = false;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Update success',
-          detail: 'Stopword has been updated.',
-        });
+    this.preferenceService.updateStopword(this.selectedStopword?.stopword!, stopword.value!).subscribe(() => {
+      this.fetchData();
+      this.modalUpdateOpen = false;
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Update success',
+        detail: 'Stopword has been updated.',
       });
+    });
   };
 
   openEditModal = async (stopword: StopwordData) => {

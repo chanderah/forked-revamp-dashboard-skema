@@ -4,10 +4,7 @@ import { Store, select } from '@ngrx/store';
 import { Observable, map, pluck } from 'rxjs';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { AppState } from '../../../../core/store';
-import {
-  FilterState,
-  initialState,
-} from '../../../../core/store/filter/filter.reducer';
+import { FilterState, initialState } from '../../../../core/store/filter/filter.reducer';
 import { ScrollerModule } from 'primeng/scroller';
 import { CommonModule } from '@angular/common';
 import { ImgFallbackDirective } from '../../../../core/directive/img-fallback.directive';
@@ -26,15 +23,7 @@ import _ from 'lodash';
 @Component({
   selector: 'app-statements',
   standalone: true,
-  imports: [
-    IconDialogueComponent,
-    IconInfoComponent,
-    ScrollerModule,
-    CommonModule,
-    ImgFallbackDirective,
-    SpinnerComponent,
-    RouterLink,
-  ],
+  imports: [IconDialogueComponent, IconInfoComponent, ScrollerModule, CommonModule, ImgFallbackDirective, SpinnerComponent, RouterLink],
   templateUrl: './statements.component.html',
   styleUrl: './statements.component.scss',
 })
@@ -109,11 +98,7 @@ export class StatementsComponent {
 
   ngOnChanges(changes: any) {
     const { media, tone } = changes;
-    if (
-      media &&
-      !media.firstChange &&
-      !_.isEqual(media.currentValue, media.previousValue)
-    ) {
+    if (media && !media.firstChange && !_.isEqual(media.currentValue, media.previousValue)) {
       this.selectedMedia = media;
       this.fetchData({
         ...this.filterService.filter,
@@ -122,11 +107,7 @@ export class StatementsComponent {
       });
     }
 
-    if (
-      tone &&
-      !tone.firstChange &&
-      !_.isEqual(tone.currentValue, tone.previousValue)
-    ) {
+    if (tone && !tone.firstChange && !_.isEqual(tone.currentValue, tone.previousValue)) {
       this.selectedTone = tone;
       this.fetchData({
         ...this.filterService.filter,
@@ -135,5 +116,4 @@ export class StatementsComponent {
       });
     }
   }
-
 }

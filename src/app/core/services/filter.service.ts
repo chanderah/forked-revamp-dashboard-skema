@@ -18,8 +18,8 @@ export class FilterService {
 
   subscribe = (callback: (data: FilterState) => void) => {
     return this.filterState.subscribe((data) => {
-      this.filter = data
-      callback(data)
-    })
+      this.filter = data;
+      callback(data);
+    });
   };
 }

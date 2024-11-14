@@ -21,15 +21,12 @@ export class AnalyzeEffects {
       switchMap(({ filter }) => {
         return this.articleService.getHighlights(filter).pipe(
           map((response) => {
-            if ((response as any).code === 401)
-              throw new Error((response as any).message);
+            if ((response as any).code === 401) throw new Error((response as any).message);
             return AnalyzeActions.getHighlightsSuccess({
               data: response.data,
             });
           }),
-          catchError((error) =>
-            of(AnalyzeActions.getHighlightsError({ error: error.message }))
-          )
+          catchError((error) => of(AnalyzeActions.getHighlightsError({ error: error.message })))
         );
       })
     )
@@ -41,15 +38,12 @@ export class AnalyzeEffects {
       switchMap(({ filter }) => {
         return this.toneService.getTones(filter).pipe(
           map((response) => {
-            if ((response as any).code === 401)
-              throw new Error((response as any).message);
+            if ((response as any).code === 401) throw new Error((response as any).message);
             return AnalyzeActions.getTonesSuccess({
               data: response.data,
             });
           }),
-          catchError((error) =>
-            of(AnalyzeActions.getTonesError({ error: error.message }))
-          )
+          catchError((error) => of(AnalyzeActions.getTonesError({ error: error.message })))
         );
       })
     )
@@ -61,15 +55,12 @@ export class AnalyzeEffects {
       switchMap(({ filter }) => {
         return this.analyzeService.getMediaVisibility(filter).pipe(
           map((response) => {
-            if ((response as any).code === 401)
-              throw new Error((response as any).message);
+            if ((response as any).code === 401) throw new Error((response as any).message);
             return AnalyzeActions.getMediaVisibilitySuccess({
               data: response.data,
             });
           }),
-          catchError((error) =>
-            of(AnalyzeActions.getMediaVisibilityError({ error: error.message }))
-          )
+          catchError((error) => of(AnalyzeActions.getMediaVisibilityError({ error: error.message })))
         );
       })
     )
@@ -81,15 +72,12 @@ export class AnalyzeEffects {
       switchMap(({ filter }) => {
         return this.toneService.getToneByCategory(filter).pipe(
           map((response) => {
-            if ((response as any).code === 401)
-              throw new Error((response as any).message);
+            if ((response as any).code === 401) throw new Error((response as any).message);
             return AnalyzeActions.getToneByCategorySuccess({
               data: response.data,
             });
           }),
-          catchError((error) =>
-            of(AnalyzeActions.getToneByCategoryError({ error: error.message }))
-          )
+          catchError((error) => of(AnalyzeActions.getToneByCategoryError({ error: error.message })))
         );
       })
     )
@@ -101,15 +89,12 @@ export class AnalyzeEffects {
       switchMap(({ filter }) => {
         return this.toneService.getToneByMedia(filter).pipe(
           map((response) => {
-            if ((response as any).code === 401)
-              throw new Error((response as any).message);
+            if ((response as any).code === 401) throw new Error((response as any).message);
             return AnalyzeActions.getToneByMediaSuccess({
               data: response.data,
             });
           }),
-          catchError((error) =>
-            of(AnalyzeActions.getToneByMediaError({ error: error.message }))
-          )
+          catchError((error) => of(AnalyzeActions.getToneByMediaError({ error: error.message })))
         );
       })
     )
@@ -121,37 +106,31 @@ export class AnalyzeEffects {
       switchMap(({ filter }) => {
         return this.analyzeService.getTopIssue(filter).pipe(
           map((response) => {
-            if ((response as any).code === 401)
-              throw new Error((response as any).message);
+            if ((response as any).code === 401) throw new Error((response as any).message);
             return AnalyzeActions.getTopIssueSuccess({
               data: response.data,
             });
           }),
-          catchError((error) =>
-            of(AnalyzeActions.getTopIssueError({ error: error.message }))
-          )
+          catchError((error) => of(AnalyzeActions.getTopIssueError({ error: error.message })))
         );
       })
     )
   );
 
   getArticlesByTone = createEffect(() =>
-  this.actions$.pipe(
-    ofType(AnalyzeActions.getArticlesByTone),
-    switchMap(({ filter }) => {
-      return this.articleService.getArticlesByTone(filter).pipe(
-        map((response) => {
-          if ((response as any).code === 401)
-            throw new Error((response as any).message);
-          return AnalyzeActions.getArticlesByToneSuccess({
-            data: response.data,
-          });
-        }),
-        catchError((error) =>
-          of(AnalyzeActions.getArticlesByToneError({ error: error.message }))
-        )
-      );
-    })
-  )
-);
+    this.actions$.pipe(
+      ofType(AnalyzeActions.getArticlesByTone),
+      switchMap(({ filter }) => {
+        return this.articleService.getArticlesByTone(filter).pipe(
+          map((response) => {
+            if ((response as any).code === 401) throw new Error((response as any).message);
+            return AnalyzeActions.getArticlesByToneSuccess({
+              data: response.data,
+            });
+          }),
+          catchError((error) => of(AnalyzeActions.getArticlesByToneError({ error: error.message })))
+        );
+      })
+    )
+  );
 }

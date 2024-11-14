@@ -49,12 +49,7 @@ export class MapArticlesComponent {
     }
   }
 
-  fetchArticlesByGeo = (
-    location: string,
-    page: number,
-    rows: number,
-    filter: any
-  ) => {
+  fetchArticlesByGeo = (location: string, page: number, rows: number, filter: any) => {
     this.isLoading = true;
     this.mapService
       .getArticleByGeo({
@@ -74,11 +69,6 @@ export class MapArticlesComponent {
     this.page = event.page;
     this.rows = event.rows;
     this.first = event.first;
-    this.fetchArticlesByGeo(
-      this.location!,
-      event.page,
-      event.rows,
-      this.filterService.filter
-    );
+    this.fetchArticlesByGeo(this.location!, event.page, event.rows, this.filterService.filter);
   };
 }

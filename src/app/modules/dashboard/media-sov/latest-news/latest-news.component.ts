@@ -20,18 +20,15 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-latest-news',
   standalone: true,
-  imports: [
-    IconNewspaperComponent,
-    IconInfoComponent,
-    CommonModule,
-    ImgFallbackDirective,
-    SpinnerComponent,
-    RouterLink,
-  ],
+  imports: [IconNewspaperComponent, IconInfoComponent, CommonModule, ImgFallbackDirective, SpinnerComponent, RouterLink],
   templateUrl: './latest-news.component.html',
   styleUrl: './latest-news.component.scss',
 })
-export class LatestNewsComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class LatestNewsComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   articles: Article[] = [];
   isLoading: boolean = false;
   mediaSOVState: Observable<MediaSOVState>;
@@ -61,10 +58,7 @@ export class LatestNewsComponent{ filter: any; ngOnDestroy(){this.filter?.unsubs
 
   ngOnChanges(changes: any) {
     const { media } = changes;
-    if (
-      !media.firstChange &&
-      !_.isEqual(media.currentValue, media.previousValue)
-    ) {
+    if (!media.firstChange && !_.isEqual(media.currentValue, media.previousValue)) {
       this.fetchData({
         ...this.filterService.filter,
         media_id: media.currentValue?.media_id,

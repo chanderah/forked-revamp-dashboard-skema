@@ -7,10 +7,7 @@ import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { AppState } from '../../../../core/store';
-import {
-  getArticlesByTone,
-  getTones,
-} from '../../../../core/store/analyze/analyze.actions';
+import { getArticlesByTone, getTones } from '../../../../core/store/analyze/analyze.actions';
 import { AnalyzeState } from '../../../../core/store/analyze/analyze.reducer';
 import { selectAnalyzeState } from '../../../../core/store/analyze/analyze.selectors';
 import { Article } from '../../../../core/models/article.model';
@@ -22,15 +19,7 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-featured-news',
   standalone: true,
-  imports: [
-    IconInfoComponent,
-    IconNewspaperComponent,
-    ScrollerModule,
-    CommonModule,
-    SpinnerComponent,
-    ImgFallbackDirective,
-    RouterLink,
-  ],
+  imports: [IconInfoComponent, IconNewspaperComponent, ScrollerModule, CommonModule, SpinnerComponent, ImgFallbackDirective, RouterLink],
   templateUrl: './featured-news.component.html',
   styleUrl: './featured-news.component.scss',
 })

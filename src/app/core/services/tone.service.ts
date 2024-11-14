@@ -11,7 +11,7 @@ import { BASE_URL } from '../api';
   providedIn: 'root',
 })
 export class ToneService {
-  private baseUrl = BASE_URL
+  private baseUrl = BASE_URL;
   constructor(private http: HttpClient) {}
 
   getTones(filter: FilterRequestPayload): Observable<TonesResponse> {
@@ -28,15 +28,10 @@ export class ToneService {
     });
   }
 
-  getToneByMedia(
-    filter: FilterRequestPayload
-  ): Observable<ToneByMediaResponse> {
-    return this.http.post<ToneByMediaResponse>(
-      `${this.baseUrl}/v1/dashboard/tone-by-media`,
-      {
-        ...filter,
-        media_id: 0,
-      }
-    );
+  getToneByMedia(filter: FilterRequestPayload): Observable<ToneByMediaResponse> {
+    return this.http.post<ToneByMediaResponse>(`${this.baseUrl}/v1/dashboard/tone-by-media`, {
+      ...filter,
+      media_id: 0,
+    });
   }
 }

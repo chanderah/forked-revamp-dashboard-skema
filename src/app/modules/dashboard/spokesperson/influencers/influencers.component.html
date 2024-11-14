@@ -5,20 +5,14 @@
     <icon-info></icon-info>
   </div>
   <spinner [spinning]="isLoading">
-    <div
-      style="height: 700px"
-      class="overflow-auto"
-      (scroll)="onLazyLoad($event)"
-    >
+    <div style="height: 700px" class="overflow-auto" (scroll)="onLazyLoad($event)">
       <div
         *ngFor="let item of influencerCount"
         class="grid grid-nogutter cursor-pointer"
         [ngClass]="{
-          ' border-left-3 border-primary bg-gray-100':
-            item.spokesperson_name === selectedInfluencer?.spokesperson_name
+          ' border-left-3 border-primary bg-gray-100': item.spokesperson_name === selectedInfluencer?.spokesperson_name,
         }"
-        (click)="onClick(item)"
-      >
+        (click)="onClick(item)">
         <div class="col-12">
           <div class="flex align-items-center py-1 gap-3">
             <div class="w-4rem pl-1">
@@ -27,23 +21,14 @@
                 [alt]="item.spokesperson_name"
                 class="h-4rem w-full border-round"
                 style="object-fit: cover"
-                imgFallback="https://placehold.co/600x400?text=No+Image+Available"
-              />
+                imgFallback="https://placehold.co/600x400?text=No+Image+Available" />
             </div>
-            <div
-              class="flex flex-columnjustify-content-between align-items-centerflex-1"
-            >
+            <div class="flex flex-columnjustify-content-between align-items-centerflex-1">
               <div class="flex flex-column">
-                <div
-                  class="text-sm font-semibold white-space-nowrap text-overflow-ellipsis overflow-hidden"
-                  style="width: 140px"
-                >
+                <div class="text-sm font-semibold white-space-nowrap text-overflow-ellipsis overflow-hidden" style="width: 140px">
                   {{ item.spokesperson_name }}
                 </div>
-                <p
-                  class="white-space-nowrap overflow-hidden text-overflow-ellipsis p-0 mt-1"
-                  style="width: 140px"
-                >
+                <p class="white-space-nowrap overflow-hidden text-overflow-ellipsis p-0 mt-1" style="width: 140px">
                   {{ item.doc_count }}
                   <span class="text-color-secondary">Statement</span>
                 </p>

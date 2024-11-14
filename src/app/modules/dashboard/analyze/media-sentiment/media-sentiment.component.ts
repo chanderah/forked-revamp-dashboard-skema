@@ -1,48 +1,31 @@
 import { Component } from '@angular/core';
-import { CardModule } from 'primeng/card';
-import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
-import { ChartModule } from 'primeng/chart';
-import { IconRadioComponent } from '../../../../core/components/icons/radio/radio.component';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { AppState } from '../../../../core/store';
-import { AnalyzeState } from '../../../../core/store/analyze/analyze.reducer';
-import { selectAnalyzeState } from '../../../../core/store/analyze/analyze.selectors';
-import {
-  FilterState,
-  initialState,
-} from '../../../../core/store/filter/filter.reducer';
-import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
-import { FilterRequestPayload } from '../../../../core/models/request.model';
-import {
-  getArticlesByTone,
-  getTones,
-} from '../../../../core/store/analyze/analyze.actions';
-import { ChartBar, Tones } from '../../../../core/models/tone.model';
-import moment from 'moment';
-import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
 import _ from 'lodash';
+import moment from 'moment';
+import { CardModule } from 'primeng/card';
+import { ChartModule } from 'primeng/chart';
+import { Observable } from 'rxjs';
+import { IconInfoComponent } from '../../../../core/components/icons/info/info.component';
+import { IconRadioComponent } from '../../../../core/components/icons/radio/radio.component';
+import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
+import { FilterRequestPayload } from '../../../../core/models/request.model';
+import { ChartBar, Tones } from '../../../../core/models/tone.model';
 import { FilterService } from '../../../../core/services/filter.service';
 import { ToneService } from '../../../../core/services/tone.service';
+import { AppState } from '../../../../core/store';
+import { getArticlesByTone, getTones } from '../../../../core/store/analyze/analyze.actions';
+import { AnalyzeState } from '../../../../core/store/analyze/analyze.reducer';
+import { selectAnalyzeState } from '../../../../core/store/analyze/analyze.selectors';
+import { initialState } from '../../../../core/store/filter/filter.reducer';
 
 @Component({
   selector: 'app-media-sentiment',
   standalone: true,
-  imports: [
-    CardModule,
-    IconInfoComponent,
-    IconRadioComponent,
-    ChartModule,
-    SpinnerComponent,
-  ],
+  imports: [CardModule, IconInfoComponent, IconRadioComponent, ChartModule, SpinnerComponent],
   templateUrl: './media-sentiment.component.html',
   styleUrl: './media-sentiment.component.scss',
 })
 export class MediaSentimentComponent {
-  filter: any;
-  ngOnDestroy() {
-    this.filter?.unsubscribe?.();
-  }
   analyzeState: Observable<AnalyzeState>;
   isLoading: boolean = false;
   chartData: any;
@@ -58,25 +41,27 @@ export class MediaSentimentComponent {
   }
 
   ngOnInit() {
-    this.initChartOpts();
     this.analyzeState.subscribe(({ tones }) => {
       if (tones.data && !_.isEqual(this.tones, tones.data)) {
         this.tones = tones.data;
+        this.initChartOpts(tones.data);
         this.initChartData(tones.data);
       }
       this.isLoading = tones.isLoading;
     });
-    this.filterService.subscribe(this.onFilterChange);
+    this.filterService.subscribe((v) => {
+      const filter = { ...v };
+      this.store.dispatch(getTones({ filter }));
+    });
   }
 
   initChartData = (tones: Tones) => {
     const documentStyle = getComputedStyle(document.documentElement);
     const negativeColor = documentStyle.getPropertyValue('--negative-color');
     const positiveColor = documentStyle.getPropertyValue('--positive-color');
-    const neutralColor = documentStyle.getPropertyValue('--neutral-color');
+    // const neutralColor = documentStyle.getPropertyValue('--neutral-color');
 
-    const { labels, negativeValues, neutralValues, positiveValues, dates } =
-      this.getChartData(tones.chart_bar ?? []);
+    const { labels, negativeValues, neutralValues, positiveValues, dates } = this.getChartData(tones.chart_bar ?? []);
 
     this.chartData = {
       labels,
@@ -110,18 +95,15 @@ export class MediaSentimentComponent {
     };
   };
 
-  initChartOpts = () => {
+  initChartOpts = (tones: Tones) => {
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--text-color');
-    const textColorSecondary = documentStyle.getPropertyValue(
-      '--text-color-secondary'
-    );
+    const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
     const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
     const isDarkModeStorage = window.localStorage.getItem('useDarkMode');
-    const isDarkMode = isDarkModeStorage
-      ? JSON.parse(isDarkModeStorage)
-      : false;
+    const isDarkMode = isDarkModeStorage ? JSON.parse(isDarkModeStorage) : false;
 
+    const { labels } = this.getChartData(tones.chart_bar ?? []);
     this.options = {
       maintainAspectRatio: false,
       aspectRatio: 0.6,
@@ -139,7 +121,7 @@ export class MediaSentimentComponent {
       },
       elements: {
         point: {
-          radius: 0,
+          radius: labels.length === 1 ? 8 : 1,
           hitRadius: 20,
         },
       },
@@ -201,10 +183,5 @@ export class MediaSentimentComponent {
       dates.push(bucket.key_as_string);
     });
     return { labels, dates, negativeValues, positiveValues, neutralValues };
-  };
-
-  onFilterChange = (filterState: FilterState) => {
-    const filter = { ...filterState } as FilterRequestPayload;
-    this.store.dispatch(getTones({ filter }));
   };
 }

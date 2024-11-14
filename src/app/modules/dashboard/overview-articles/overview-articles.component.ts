@@ -33,12 +33,16 @@ import { FilterService } from '../../../core/services/filter.service';
     TitleCasePipe,
     SpinnerComponent,
     RouterModule,
-    ArticleListComponent
+    ArticleListComponent,
   ],
   templateUrl: './overview-articles.component.html',
   styleUrl: './overview-articles.component.scss',
 })
-export class OverviewArticlesComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class OverviewArticlesComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   type: string | null = null;
   index: string = '0';
   articles: Article[] = [];
@@ -72,9 +76,7 @@ export class OverviewArticlesComponent{ filter: any; ngOnDestroy(){this.filter?.
   async ngOnInit() {
     this.type = this.route.snapshot.queryParamMap.get('type');
     this.index = this.route.snapshot.queryParamMap.get('index') ?? '0';
-    const store = await this.store
-      .pipe(select(selectOverviewState), take(1))
-      .toPromise();
+    const store = await this.store.pipe(select(selectOverviewState), take(1)).toPromise();
 
     if (!store) return;
 
@@ -84,25 +86,21 @@ export class OverviewArticlesComponent{ filter: any; ngOnDestroy(){this.filter?.
       this.fetchArticles(currentMedia, 0, 16);
     }
 
-    this.store
-      .select(selectArticlesState)
-      .subscribe(({ mediaCountArticles }) => {
-        this.isLoading = mediaCountArticles.isLoading;
-        if (mediaCountArticles.data) {
-          this.articles = mediaCountArticles.data.data;
-          this.totalRecords = mediaCountArticles.data.recordsTotal;
-        }
-      });
+    this.store.select(selectArticlesState).subscribe(({ mediaCountArticles }) => {
+      this.isLoading = mediaCountArticles.isLoading;
+      if (mediaCountArticles.data) {
+        this.articles = mediaCountArticles.data.data;
+        this.totalRecords = mediaCountArticles.data.recordsTotal;
+      }
+    });
 
     this.filterService.subscribe((filter) => {
-      this.overviewService
-      .getMediaCount(filter as FilterRequestPayload)
-      .subscribe((resp) => {
+      this.overviewService.getMediaCount(filter as FilterRequestPayload).subscribe((resp) => {
         const currentMedia = resp.data[+this.index];
-        this.currentMedia = currentMedia
+        this.currentMedia = currentMedia;
         this.fetchArticles(currentMedia, 0, 16);
       });
-    })
+    });
   }
 
   onPageChange = (event: any) => {
@@ -110,5 +108,5 @@ export class OverviewArticlesComponent{ filter: any; ngOnDestroy(){this.filter?.
     this.rows = event.rows;
     this.first = event.first;
     this.fetchArticles(this.currentMedia!, event.page, event.rows);
-  }
+  };
 }

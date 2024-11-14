@@ -8,11 +8,10 @@
         iconPos="left"
         styleClass="border-0"
         [style]="{ backgroundColor: '#F1F4FA' }"
-        (onClick)="modalAddOpen = true"
-      >
+        (onClick)="modalAddOpen = true">
         <div class="flex gap-2 align-items-center">
           <i class="pi pi-plus text-primary"></i>
-          <div class="text-sm" style="color: #464255 !important;">Stopword</div>
+          <div class="text-sm" style="color: #464255 !important">Stopword</div>
         </div>
       </p-button>
     </div>
@@ -26,8 +25,7 @@
         [totalRecords]="totalRecords"
         [showFirstLastIcon]="false"
         [loading]="loading"
-        [tableStyle]="{ 'min-width': '50rem' }"
-      >
+        [tableStyle]="{ 'min-width': '50rem' }">
         <ng-template pTemplate="header">
           <tr class="text-sm font-medium">
             <th class="w-6rem">
@@ -66,8 +64,7 @@
                   [text]="true"
                   size="small"
                   styleClass="p-2 border-1 border-200 bg-white"
-                  (onClick)="openEditModal(stopword)"
-                >
+                  (onClick)="openEditModal(stopword)">
                   <icon-pencil class="fill-text-color"></icon-pencil>
                 </p-button>
                 <p-button
@@ -75,8 +72,7 @@
                   [text]="true"
                   size="small"
                   styleClass="p-2 border-1 border-200 bg-white"
-                  (onClick)="deleteStopword(stopword)"
-                >
+                  (onClick)="deleteStopword(stopword)">
                   <i class="pi pi-trash text-red-500"></i>
                 </p-button>
               </div>
@@ -90,14 +86,11 @@
         [rows]="rows"
         [totalRecords]="totalRecords"
         [templateLeft]="customLeftTemplate"
-        [showFirstLastIcon]="false"
-      >
+        [showFirstLastIcon]="false">
         <ng-template #customLeftTemplate let-state>
           <span class="text-sm text-color">
             Total Stopword:
-            <span class="text-sm font-semibold">{{
-              state.totalRecords
-            }}</span></span
+            <span class="text-sm font-semibold">{{ state.totalRecords }}</span></span
           >
         </ng-template>
       </p-paginator>
@@ -110,8 +103,7 @@
   [(visible)]="modalAddOpen"
   [modal]="true"
   [style]="{ width: '50rem' }"
-  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
->
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
   <ng-template pTemplate="header">
     <div class="inline-flex align-items-center justify-content-center gap-2">
       <span class="font-bold text-md">Create Stopword</span>
@@ -120,27 +112,17 @@
   <form [formGroup]="createValues" class="flex flex-column gap-4">
     <div class="flex flex-column gap-2">
       <label for="stopword" class="font-semibold text-sm">Stopword</label>
-      <input
-        pInputText
-        formControlName="stopword"
-        id="stopword"
-        placeholder="Stopword"
-      />
+      <input pInputText formControlName="stopword" id="stopword" placeholder="Stopword" />
     </div>
   </form>
   <ng-template pTemplate="footer">
-    <p-button
-      (click)="modalAddOpen = false"
-      label="Cancel"
-      [outlined]="true"
-    ></p-button>
+    <p-button (click)="modalAddOpen = false" label="Cancel" [outlined]="true"></p-button>
     <p-button
       (click)="createStopword()"
       label="Submit"
       pAutoFocus
       [autofocus]="true"
-      [disabled]="!this.createValues.controls.stopword.valid"
-    ></p-button>
+      [disabled]="!this.createValues.controls.stopword.valid"></p-button>
   </ng-template>
 </p-dialog>
 
@@ -149,8 +131,7 @@
   [(visible)]="modalUpdateOpen"
   [modal]="true"
   [style]="{ width: '50rem' }"
-  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
->
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
   <ng-template pTemplate="header">
     <div class="inline-flex align-items-center justify-content-center gap-2">
       <span class="font-bold text-md">Detail Stopword</span>
@@ -163,19 +144,13 @@
     </div>
   </form>
   <ng-template pTemplate="footer">
-    <p-button
-      (click)="modalUpdateOpen = false"
-      label="Cancel"
-      pAutoFocus
-      [outlined]="true"
-    ></p-button>
+    <p-button (click)="modalUpdateOpen = false" label="Cancel" pAutoFocus [outlined]="true"></p-button>
     <p-button
       (click)="updateCategory()"
       label="Save"
       pAutoFocus
       [disabled]="!this.editedValues.controls.stopword.valid"
-      [autofocus]="true"
-    ></p-button>
+      [autofocus]="true"></p-button>
   </ng-template>
 </p-dialog>
 
@@ -184,8 +159,7 @@
   [(visible)]="modalDeleteOpen"
   [modal]="true"
   [style]="{ width: '50rem' }"
-  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
->
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
   <ng-template pTemplate="header">
     <div class="inline-flex align-items-center justify-content-center gap-2">
       <span class="font-bold text-md">Delete Stopword</span>
@@ -194,25 +168,16 @@
   <div class="text-center">
     <icon-alert></icon-alert>
     <div class="text-2xl font-semibold mb-2">Are you sure?</div>
-    <div class="text-md">
-      Do you really want to delete this data? <br />this process can't be
-      undone.
-    </div>
+    <div class="text-md">Do you really want to delete this data? <br />this process can't be undone.</div>
   </div>
   <ng-template pTemplate="footer">
-    <p-button
-      (click)="modalDeleteOpen = false"
-      label="Cancel"
-      pAutoFocus
-      [outlined]="true"
-    ></p-button>
+    <p-button (click)="modalDeleteOpen = false" label="Cancel" pAutoFocus [outlined]="true"></p-button>
     <p-button
       (click)="confirmDeleteCategory()"
       [loading]="isDeleting"
       label="Delete"
       severity="danger"
       pAutoFocus
-      [autofocus]="true"
-    ></p-button>
+      [autofocus]="true"></p-button>
   </ng-template>
 </p-dialog>

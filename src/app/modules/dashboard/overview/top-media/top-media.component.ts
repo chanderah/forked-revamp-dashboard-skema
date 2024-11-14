@@ -14,18 +14,11 @@ import { selectOverviewState } from '../../../../core/store/overview/overview.se
 import { getToneByMedia } from '../../../../core/store/overview/overview.actions';
 import { Tone, ToneByMedia } from '../../../../core/models/tone-by-media.model';
 import { CommonModule } from '@angular/common';
-import {
-  FilterState,
-  initialState,
-} from '../../../../core/store/filter/filter.reducer';
+import { FilterState, initialState } from '../../../../core/store/filter/filter.reducer';
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
-import {
-  NEGATIVE_TONE,
-  NEUTRAL_TONE,
-  POSITIVE_TONE,
-} from '../../../../shared/utils/Constants';
+import { NEGATIVE_TONE, NEUTRAL_TONE, POSITIVE_TONE } from '../../../../shared/utils/Constants';
 import { Router } from '@angular/router';
 import { FilterService } from '../../../../core/services/filter.service';
 import { OverviewService } from '../../../../core/services/overview.service';
@@ -62,10 +55,10 @@ export class TopMediaComponent implements OnInit {
   ) {
     this.overviewState = this.store.select(selectOverviewState);
   }
-  filter: any
+  filter: any;
 
   ngOnDestroy() {
-    this.filter.unsubscribe()
+    this.filter.unsubscribe();
   }
 
   ngOnInit() {
@@ -131,8 +124,6 @@ export class TopMediaComponent implements OnInit {
   };
 
   onSelectTone = (mediaId: number, mediaName: string, tone: number) => {
-    this.router.navigateByUrl(
-      `/dashboard/articles-by-tone?mediaId=${mediaId}&tone=${tone}&mediaName=${mediaName}`
-    );
+    this.router.navigateByUrl(`/dashboard/articles-by-tone?mediaId=${mediaId}&tone=${tone}&mediaName=${mediaName}`);
   };
 }

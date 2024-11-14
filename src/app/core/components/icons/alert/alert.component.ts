@@ -5,24 +5,25 @@ import { Component, Input } from '@angular/core';
   standalone: true,
   imports: [],
   template: `
-    <svg
-      [attr.width]="width"
-      [attr.height]="height"
-      viewBox="0 0 80 80"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg [attr.width]="width" [attr.height]="height" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
         d="M40 5C49.2826 5 58.185 8.68749 64.7487 15.2513C71.3125 21.815 75 30.7174 75 40C75 49.2826 71.3125 58.185 64.7487 64.7487C58.185 71.3125 49.2826 75 40 75C30.7174 75 21.815 71.3125 15.2513 64.7487C8.68749 58.185 5 49.2826 5 40C5 30.7174 8.68749 21.815 15.2513 15.2513C21.815 8.68749 30.7174 5 40 5ZM40 80C50.6087 80 60.7828 75.7857 68.2843 68.2843C75.7857 60.7828 80 50.6087 80 40C80 29.3913 75.7857 19.2172 68.2843 11.7157C60.7828 4.21427 50.6087 0 40 0C29.3913 0 19.2172 4.21427 11.7157 11.7157C4.21427 19.2172 0 29.3913 0 40C0 50.6087 4.21427 60.7828 11.7157 68.2843C19.2172 75.7857 29.3913 80 40 80ZM40 20C38.625 20 37.5 21.125 37.5 22.5V42.5C37.5 43.875 38.625 45 40 45C41.375 45 42.5 43.875 42.5 42.5V22.5C42.5 21.125 41.375 20 40 20ZM43.75 55C43.75 54.0054 43.3549 53.0516 42.6516 52.3484C41.9484 51.6451 40.9946 51.25 40 51.25C39.0054 51.25 38.0516 51.6451 37.3484 52.3484C36.6451 53.0516 36.25 54.0054 36.25 55C36.25 55.9946 36.6451 56.9484 37.3484 57.6516C38.0516 58.3549 39.0054 58.75 40 58.75C40.9946 58.75 41.9484 58.3549 42.6516 57.6516C43.3549 56.9484 43.75 55.9946 43.75 55Z"
         fill="#FB3B52"
         [attr.fill]="fill"
-        [attr.class]="class"
-      />
+        [attr.class]="class" />
     </svg>
   `,
-  styles: `:host {line-height:0;}`,
+  styles: `
+    :host {
+      line-height: 0;
+    }
+  `,
 })
-export class IconAlertComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class IconAlertComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   @Input() class = '';
   @Input() fill = '#FB3B52';
   @Input() width = 80;

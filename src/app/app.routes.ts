@@ -15,9 +15,7 @@ export const routes: Routes = [
   },
   {
     path: 'login',
-    loadComponent: () =>
-      import('./modules/login/login.component').then(
-        (module) => module.LoginComponent
-      ),
+    loadComponent: () => import('./modules/login/login.component').then((module) => module.LoginComponent),
   },
+  { path: '**', redirectTo: '' },
 ];

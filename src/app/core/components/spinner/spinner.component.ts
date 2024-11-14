@@ -9,6 +9,6 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   templateUrl: './spinner.component.html',
   styleUrl: './spinner.component.scss',
 })
-export class SpinnerComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class SpinnerComponent {
   @Input() spinning: boolean = true;
 }

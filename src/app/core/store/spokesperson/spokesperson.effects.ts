@@ -10,7 +10,7 @@ import { InfluencerService } from '../../services/influencer.service';
 export class SpokespersonEffects {
   constructor(
     private actions$: Actions,
-    private articleService: ArticleService,
+    private articleService: ArticleService
   ) {}
   getLatestNews = createEffect(() =>
     this.actions$.pipe(
@@ -18,8 +18,7 @@ export class SpokespersonEffects {
       switchMap(({ filter }) => {
         return this.articleService.getHighlights(filter).pipe(
           map((response) => {
-            if ((response as any).code === 401)
-              throw new Error((response as any).message);
+            if ((response as any).code === 401) throw new Error((response as any).message);
             return SpokespersonActions.getLatestNewsSuccess({
               data: response.data,
             });

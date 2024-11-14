@@ -1,19 +1,20 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { BASE_URL } from '../api';
+import { Article } from '../models/article.model';
 import { MediaSOV, MediaTone } from '../models/media.model';
 import { FilterRequestPayload } from '../models/request.model';
-import { Article } from '../models/article.model';
-import { BASE_URL } from '../api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MediaSOVService {
   private baseUrl = BASE_URL;
+
   constructor(private http: HttpClient) {}
 
-  getMedias(filter: FilterRequestPayload): Observable<{ data: MediaSOV[] }> {
+  getMedias(filter: FilterRequestPayload) {
     const params = {
       start_date: filter.start_date ? filter.start_date + ' 00:00:00' : '',
       end_date: filter.end_date ? filter.end_date + ' 23:59:59' : '',
@@ -23,17 +24,19 @@ export class MediaSOVService {
       category_set: filter.category_set ?? '',
       user_media_type_id: filter.user_media_type_id ?? '',
     };
-    // console.log('params', params)
 
-    return this.http.get<{ data: MediaSOV[] }>(
-      `${this.baseUrl}/v3/media-sov/media-list`,
-      { params }
-    );
+    return this.http.get<{
+      data: MediaSOV[];
+      meta: {
+        total_data: number;
+        page: number;
+        max_size: number;
+        total_page: number;
+      };
+    }>(`${this.baseUrl}/v3/media-sov/media-list`, { params });
   }
 
-  getLatestArticles(
-    filter: FilterRequestPayload
-  ): Observable<{ data: Article[] }> {
+  getLatestArticles(filter: FilterRequestPayload): Observable<{ data: Article[] }> {
     const params = {
       start_date: filter.start_date ? filter.start_date + ' 00:00:00' : '',
       end_date: filter.end_date ? filter.end_date + ' 23:59:59' : '',
@@ -45,10 +48,7 @@ export class MediaSOVService {
       tone: filter.tone ?? '',
     };
 
-    return this.http.get<{ data: Article[] }>(
-      `${this.baseUrl}/v3/media-sov/latest-articles`,
-      { params }
-    );
+    return this.http.get<{ data: Article[] }>(`${this.baseUrl}/v3/media-sov/latest-articles`, { params });
   }
 
   getMediaTones(filter: FilterRequestPayload): Observable<{ data: MediaTone }> {
@@ -61,9 +61,6 @@ export class MediaSOVService {
       category_id: filter.category_id ?? '',
     };
 
-    return this.http.get<{ data: MediaTone }>(
-      `${this.baseUrl}/v3/media-sov/media-tones`,
-      { params }
-    );
+    return this.http.get<{ data: MediaTone }>(`${this.baseUrl}/v3/media-sov/media-tones`, { params });
   }
 }

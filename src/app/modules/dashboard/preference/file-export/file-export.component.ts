@@ -9,12 +9,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { CommonModule } from '@angular/common';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { DialogModule } from 'primeng/dialog';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormatAmountPipe } from '../../../../core/pipes/format-amount.pipe';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -53,7 +48,11 @@ import { DropdownModule } from 'primeng/dropdown';
   templateUrl: './file-export.component.html',
   styleUrl: './file-export.component.scss',
 })
-export class FileExportComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class FileExportComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   columns: Column[] = [];
   totalRecords!: number;
   loading: boolean = false;
@@ -158,17 +157,15 @@ export class FileExportComponent{ filter: any; ngOnDestroy(){this.filter?.unsubs
 
   updateColumn = () => {
     const { name, autoCheck } = this.editedValues.controls;
-    this.preferenceService
-      .updateColumn(this.selectedColumn?.id!, name.value!, autoCheck.value!)
-      .subscribe(() => {
-        this.fetchData();
-        this.modalUpdateOpen = false;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Update success',
-          detail: 'Column has been updated.',
-        });
+    this.preferenceService.updateColumn(this.selectedColumn?.id!, name.value!, autoCheck.value!).subscribe(() => {
+      this.fetchData();
+      this.modalUpdateOpen = false;
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Update success',
+        detail: 'Column has been updated.',
       });
+    });
   };
 
   openEditModal = async (column: Column) => {

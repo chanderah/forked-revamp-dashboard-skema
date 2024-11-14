@@ -19,8 +19,7 @@ export class ArticlesEffects {
       switchMap(({ filter }) => {
         return this.articleService.getMediaCountArticles(filter).pipe(
           map((response) => {
-            if ((response as any).code === 401)
-              throw new Error((response as any).message);
+            if ((response as any).code === 401) throw new Error((response as any).message);
             return ArticlesActions.getMediaCountArticlesSuccess({
               data: response.data,
             });

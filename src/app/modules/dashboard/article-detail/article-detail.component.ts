@@ -15,13 +15,7 @@ import { FilterService } from '../../../core/services/filter.service';
 import { ButtonModule } from 'primeng/button';
 import { TreeSelect, TreeSelectModule } from 'primeng/treeselect';
 import { DialogModule } from 'primeng/dialog';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Category } from '../../../core/models/category.model';
 import { PreferenceService } from '../../../core/services/preference.service';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -57,7 +51,11 @@ const highlightKeywords = (content: string, keywords: string[]): string => {
   styleUrl: './article-detail.component.scss',
   providers: [MessageService],
 })
-export class ArticleDetailComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class ArticleDetailComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   article: (Article & { toneLabel: string }) | undefined;
   isLoading: boolean = false;
   sanitizedContent: SafeHtml | null = null;
@@ -68,21 +66,15 @@ export class ArticleDetailComponent{ filter: any; ngOnDestroy(){this.filter?.uns
   ingredient: any;
 
   updateCategory() {
-    const selectedIds = this.selectedSubCategories.reduce(
-      (subCategories: any, subCategory: any) => {
-        if (subCategory.isSelectAll || subCategory.isParent)
-          return subCategories;
-        return [...subCategories, subCategory.data];
-      },
-      []
-    );
+    const selectedIds = this.selectedSubCategories.reduce((subCategories: any, subCategory: any) => {
+      if (subCategory.isSelectAll || subCategory.isParent) return subCategories;
+      return [...subCategories, subCategory.data];
+    }, []);
     const articleId = this.activatedRoute.snapshot.paramMap.get('id');
     const payload = {
       article_id: articleId,
       category_ids: selectedIds,
-      datee: this.article?.datee
-        ? this.article?.datee.split(' ')[0]
-        : moment(new Date()).format('YYYY-MM-DD'),
+      datee: this.article?.datee ? this.article?.datee.split(' ')[0] : moment(new Date()).format('YYYY-MM-DD'),
       media_id: this.article?.media_id,
       tone: this.article?.tone ?? 0,
       advalue_fc: this.article?.advalue_fc,
@@ -133,9 +125,7 @@ export class ArticleDetailComponent{ filter: any; ngOnDestroy(){this.filter?.uns
   openEditModal = async () => {
     this.ingredient = this.article?.tone ?? 0;
     // this.selectedCategory = category;
-    const response = await this.articleService
-      .getSubCategoriesDistinct()
-      .toPromise();
+    const response = await this.articleService.getSubCategoriesDistinct().toPromise();
 
     const actualData =
       response?.results.map((subCateg) => {
@@ -177,12 +167,8 @@ export class ArticleDetailComponent{ filter: any; ngOnDestroy(){this.filter?.uns
         this.isLoading = false;
         const articleData = articleResp.data;
         this.filter = this.filterService.subscribe((filter) => {
-          const hightligtedWords = highlightKeywords(
-            articleData.content,
-            articleData?.keywords ?? []
-          );
-          this.sanitizedContent =
-            this.sanitizer.bypassSecurityTrustHtml(hightligtedWords);
+          const hightligtedWords = highlightKeywords(articleData.content, articleData?.keywords ?? []);
+          this.sanitizedContent = this.sanitizer.bypassSecurityTrustHtml(hightligtedWords);
         });
         let file = articleData?.file_pdf;
         if (articleData?.media_type === 'media cetak') {

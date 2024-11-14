@@ -7,10 +7,7 @@ import { OverviewState } from '../../../../core/store/overview/overview.reducer'
 import { Observable } from 'rxjs';
 import { getMediaCount } from '../../../../core/store/overview/overview.actions';
 import { CommonModule } from '@angular/common';
-import {
-  FilterState,
-  initialState,
-} from '../../../../core/store/filter/filter.reducer';
+import { FilterState, initialState } from '../../../../core/store/filter/filter.reducer';
 import { selectFilterState } from '../../../../core/store/filter/filter.selectors';
 import { FilterRequestPayload } from '../../../../core/models/request.model';
 import { SpinnerComponent } from '../../../../core/components/spinner/spinner.component';
@@ -30,7 +27,11 @@ interface MediaCountTiles {
   templateUrl: './overview-tiles.component.html',
   styleUrl: './overview-tiles.component.scss',
 })
-export class OverviewTilesComponent{ filter: any; ngOnDestroy(){this.filter?.unsubscribe?.()}
+export class OverviewTilesComponent {
+  filter: any;
+  ngOnDestroy() {
+    this.filter?.unsubscribe?.();
+  }
   overviewState: Observable<OverviewState>;
   isLoading: boolean = false;
   mediaCount: MediaCountTiles = {
@@ -79,8 +80,7 @@ export class OverviewTilesComponent{ filter: any; ngOnDestroy(){this.filter?.uns
       if (media.label === 'Online') mediaCountTmp.online = media.total ?? 0;
       if (media.label === 'TV') mediaCountTmp.tv = media.total ?? 0;
     });
-    mediaCountTmp.total =
-      mediaCountTmp.print + mediaCountTmp.online + mediaCountTmp.tv;
+    mediaCountTmp.total = mediaCountTmp.print + mediaCountTmp.online + mediaCountTmp.tv;
 
     this.mediaCount = mediaCountTmp;
   };

@@ -1,63 +1,40 @@
 <div>
   <div class="flex align-items-center gap-2 mb-4">
-    <icon-dialogue
-      fill="var(--primary-color)"
-      [width]="20"
-      [height]="16"
-    ></icon-dialogue>
+    <icon-dialogue fill="var(--primary-color)" [width]="20" [height]="16"></icon-dialogue>
     <div class="text-sm font-semibold">Articles</div>
     <icon-info></icon-info>
   </div>
   <spinner [spinning]="isLoading">
     <div style="height: 595px" class="overflow-auto">
-      <div
-        *ngFor="let item of articles"
-        class="grid grid-nogutter cursor-pointer"
-        [routerLink]="'/dashboard/articles/' + item.article_id"
-      >
+      <div *ngFor="let item of articles" class="grid grid-nogutter cursor-pointer" [routerLink]="'/dashboard/articles/' + item.article_id">
         <div class="col-12">
-          <div
-            class="flex flex-column xl:flex-row xl:align-items-start py-1 gap-3"
-          >
+          <div class="flex flex-column xl:flex-row xl:align-items-start py-1 gap-3">
             <div class="w-4rem">
               <img
                 [src]="item.image_url"
                 [alt]="item.title"
                 class="h-4rem w-full border-round"
                 style="object-fit: cover"
-                imgFallback="https://placehold.co/600x400?text=No+Image+Available"
-              />
+                imgFallback="https://placehold.co/600x400?text=No+Image+Available" />
             </div>
-            <div
-              class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1"
-            >
+            <div class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1">
               <div class="flex flex-column gap-1">
-                <div
-                  class="text-xs font-semibold white-space-nowrap text-overflow-ellipsis overflow-hidden"
-                  style="width: 220px"
-                >
+                <div class="text-xs font-semibold white-space-nowrap text-overflow-ellipsis overflow-hidden" style="width: 220px">
                   {{ item.title }}
                 </div>
-                <p
-                  class="white-space-nowrap overflow-hidden text-overflow-ellipsis p-0 mt-0 mb-0"
-                  style="width: 220px"
-                >
+                <p class="white-space-nowrap overflow-hidden text-overflow-ellipsis p-0 mt-0 mb-0" style="width: 220px">
                   {{ item.content }}
                 </p>
                 <div class="flex gap-3 align-items-center">
                   <div class="flex align-items-center gap-2">
                     <i class="pi pi-globe text-500 text-xs"></i>
-                    <span
-                      class="text-xs text-500 p-0 mt-0 white-space-nowrap overflow-hidden text-overflow-ellipsis"
-                      style="width: 80px"
-                      >{{ item.media_name }}</span
-                    >
+                    <span class="text-xs text-500 p-0 mt-0 white-space-nowrap overflow-hidden text-overflow-ellipsis" style="width: 80px">{{
+                      item.media_name
+                    }}</span>
                   </div>
                   <div class="flex align-items-center gap-2">
                     <i class="pi pi-clock text-500 text-xs"></i>
-                    <span class="text-xs text-500 p-0 mt-0">{{
-                      item.datee.split(" ")[0]
-                    }}</span>
+                    <span class="text-xs text-500 p-0 mt-0">{{ item.datee.split(' ')[0] }}</span>
                   </div>
                 </div>
               </div>

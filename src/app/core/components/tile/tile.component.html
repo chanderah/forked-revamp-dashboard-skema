@@ -1,7 +1,4 @@
-<p-card
-  styleClass="relative shadow-none border-1 border-200"
-  [style]="{ width: '260px', backgroundColor: 'var(--card-color)' }"
->
+<p-card styleClass="relative shadow-none border-1 border-200" [style]="{ width: '260px', backgroundColor: 'var(--card-color)' }">
   <div class="flex p-4">
     <div class="flex gap-3">
       <div
@@ -10,13 +7,9 @@
           width: '64px',
           height: '64px',
           background: bgColor,
-        }"
-      >
+        }">
         <icon-globe *ngIf="icon === 'globe'" [fill]="color"></icon-globe>
-        <icon-newspaper
-          *ngIf="icon === 'newspaper'"
-          [fill]="color"
-        ></icon-newspaper>
+        <icon-newspaper *ngIf="icon === 'newspaper'" [fill]="color"></icon-newspaper>
         <icon-screen *ngIf="icon === 'screen'" [fill]="color"></icon-screen>
         <icon-stack *ngIf="icon === 'stack'" [fill]="color"></icon-stack>
       </div>
@@ -27,7 +20,7 @@
     </div>
   </div>
   <a [routerLink]="link" [queryParams]="queryParams" class="right-button cursor-pointer">
-    <div class="h-full flex" >
+    <div class="h-full flex">
       <p-divider layout="vertical"></p-divider>
       <div class="align-self-center px-2">
         <i class="pi pi-angle-right text-primary"></i>

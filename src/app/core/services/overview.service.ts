@@ -17,16 +17,11 @@ export class OverviewService {
   private geoBaseUrl = GEO_BASE_URL;
   constructor(private http: HttpClient) {}
 
-  getMediaCount(
-    filter: FilterRequestPayload
-  ): Observable<{ data: MediaCount[] }> {
-    return this.http.post<{ data: MediaCount[] }>(
-      `${this.baseUrl}/v1/dashboard/media-count`,
-      {
-        ...filter,
-        media_id: 0,
-      }
-    );
+  getMediaCount(filter: FilterRequestPayload): Observable<{ data: MediaCount[] }> {
+    return this.http.post<{ data: MediaCount[] }>(`${this.baseUrl}/v1/dashboard/media-count`, {
+      ...filter,
+      media_id: 0,
+    });
   }
 
   getAllCount(filter: FilterRequestPayload): Observable<AllCount> {
@@ -38,13 +33,10 @@ export class OverviewService {
   }
 
   getWordCloud(filter: FilterRequestPayload): Observable<WordCloudResponse> {
-    return this.http.post<WordCloudResponse>(
-      `${this.baseUrl}/v2/dashboard/wordcloud`,
-      {
-        ...filter,
-        media_id: 0,
-        total_word: 40,
-      }
-    );
+    return this.http.post<WordCloudResponse>(`${this.baseUrl}/v2/dashboard/wordcloud`, {
+      ...filter,
+      media_id: 0,
+      total_word: 40,
+    });
   }
 }
